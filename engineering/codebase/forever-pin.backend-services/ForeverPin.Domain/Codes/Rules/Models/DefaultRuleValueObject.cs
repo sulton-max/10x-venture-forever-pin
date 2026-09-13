@@ -1,0 +1,10 @@
+using ForeverPin.Domain.Codes.Content;
+
+namespace ForeverPin.Domain.Codes.Rules.Models;
+
+/// <summary>Represents the catch-all rule, which serves its own content.</summary>
+public sealed record DefaultRuleValueObject : CodeRuleValueObject
+{
+    /// <summary>Gets the content served when no conditional rule matches.</summary>
+    public required CodeContentValueObject Content { get; init; }
+}

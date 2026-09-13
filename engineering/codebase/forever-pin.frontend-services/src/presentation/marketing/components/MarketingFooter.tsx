@@ -1,0 +1,66 @@
+import { Link } from "react-router-dom";
+import { SizePreset } from "@wow-two-beta/ui/foundation/utils";
+import { Heading, HeadingSize, Text } from "@wow-two-beta/ui/presentation/display";
+import { Container, ContainerSize, Grid, VStack } from "@wow-two-beta/ui/presentation/layout";
+import { Logo } from "./kit";
+import { BRAND } from "../data";
+
+const PRODUCT_LINKS = [
+  { to: "/pricing", label: "Pricing" },
+  { to: "/app/new", label: "Create a code" },
+  { to: "/app", label: "Open the app" },
+];
+
+const LEARN_LINKS = [
+  { to: "/blog", label: "Blog" },
+  { to: "/blog/why-qr-codes-should-never-expire", label: "Why codes never expire" },
+  { to: "/blog/smart-routing-one-code-many-destinations", label: "How smart routing works" },
+];
+
+export function MarketingFooter() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="border-t border-border bg-muted/30">
+      <Container size={ContainerSize.Full} className="max-w-6xl px-6 py-12">
+        <Grid columns="1" gap="10" className="sm:grid-cols-2 lg:grid-cols-4">
+          <div className="lg:col-span-2">
+            <Logo />
+            <Text size={SizePreset.Sm} color="muted" className="mt-3 max-w-xs">
+              {BRAND.pitch}
+            </Text>
+            <Text size={SizePreset.Xs} color="muted" className="mt-4">
+              No hostage codes. No scan caps. No nags.
+            </Text>
+          </div>
+
+          <FooterColumn title="Product" links={PRODUCT_LINKS} />
+          <FooterColumn title="Learn" links={LEARN_LINKS} />
+        </Grid>
+
+        <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
+          <span>© {year} ForeverPin. Your codes, forever.</span>
+          <span>Cancel, export, and delete everything — anytime.</span>
+        </div>
+      </Container>
+    </footer>
+  );
+}
+
+function FooterColumn({ title, links }: { title: string; links: { to: string; label: string }[] }) {
+  return (
+    <div>
+      <Heading level={3} size={HeadingSize.Xs} weight="semibold" className="tracking-normal">
+        {title}
+      </Heading>
+      <VStack as="ul" gap="2" className="mt-3">
+        {links.map((link) => (
+          <li key={link.to}>
+            <Link to={link.to} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </VStack>
+    </div>
+  );
+}

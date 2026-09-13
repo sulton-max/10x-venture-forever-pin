@@ -1,8 +1,8 @@
-# smart-qr-poc
+# 10x-venture-forever-pin
 
-POC for **Smart QR** — a dynamic QR / barcode / link platform whose wedge is **programmable routing** ("one code, many destinations by context") and a **"codes never expire"** promise. Micro-SaaS portfolio product #002.
+POC for **ForeverPin** — a dynamic QR / barcode / link platform whose wedge is **programmable routing** ("one code, many destinations by context") and a **"codes never expire"** promise. Micro-SaaS portfolio product #002.
 
-Full product spec: `wow-two-ws/ideas/smart-qr-spec.md`.
+Full product spec: `wow-two-ws/ideas/forever-pin-spec.md`.
 
 ## What this POC proves
 
@@ -18,14 +18,14 @@ The thin slice from the spec, end-to-end in code:
 Clean Architecture, mirroring the Haven backend (`Api / Application / Domain / Infrastructure / Persistence` layers over shared `Common*` libraries). Two deployable services share the libraries.
 
 ```
-engineering/codebase/smartqr.backend-services/smartqr.backend-services.slnx
-├── SmartQr.Common            # mediator (wraps MediatR), ApiResponse, result pattern, config loader, CORS, settings
-├── SmartQr.Common.Domain     # entities (Code / RoutingRule / ScanEvent) + enums (IEntity, no deps)
-├── SmartQr.Common.Persistence # EF Core DbContext, entity configs, Npgsql enum-mapped data source (snake_case)
-├── SmartQr.Codes             # generation library: QR (QRCoder), barcodes (ZXing.Net), logo overlay (ImageSharp)
-├── SmartQr.Api               # management API (controllers + CQRS): create / read / list codes, render image
-├── SmartQr.Redirect.Api          # hot-path service (minimal API): GET /{slug} → rule eval → 302, async scan log
-└── SmartQr.Tests             # xUnit: generation + routing-engine unit tests
+engineering/codebase/forever-pin.backend-services/forever-pin.backend-services.slnx
+├── ForeverPin.Common            # mediator (wraps MediatR), ApiResponse, result pattern, config loader, CORS, settings
+├── ForeverPin.Common.Domain     # entities (Code / RoutingRule / ScanEvent) + enums (IEntity, no deps)
+├── ForeverPin.Common.Persistence # EF Core DbContext, entity configs, Npgsql enum-mapped data source (snake_case)
+├── ForeverPin.Codes             # generation library: QR (QRCoder), barcodes (ZXing.Net), logo overlay (ImageSharp)
+├── ForeverPin.Api               # management API (controllers + CQRS): create / read / list codes, render image
+├── ForeverPin.Redirect.Api          # hot-path service (minimal API): GET /{slug} → rule eval → 302, async scan log
+└── ForeverPin.Tests             # xUnit: generation + routing-engine unit tests
 ```
 
 > **Layer note:** the API/presentation layer (`Controllers/`, `Configurations/`, `Requests/`) sits at each host project's root rather than under an `Api/` folder — the project name already says `.Api` / `.Redirect`. The other Clean Arch layers are folders, exactly as in Haven.
@@ -52,30 +52,30 @@ This is the "cache the decision, not the picture; make analytics async" design f
 Requires **.NET 9** (SDK 10 builds it) and **PostgreSQL** for the data-touching endpoints. The Api **auto-creates the `smartqr` database + schema on startup** (idempotent) — just have Postgres running (default `localhost:5432`, `postgres`/`postgres`).
 
 ```bash
-cd engineering/codebase/smartqr.backend-services
-dotnet build smartqr.backend-services.slnx
-dotnet test SmartQr.Tests.Unit   # no DB needed — generation + routing + SQLite integration
+cd engineering/codebase/forever-pin.backend-services
+dotnet build forever-pin.backend-services.slnx
+dotnet test ForeverPin.Tests.Unit   # no DB needed — generation + routing + SQLite integration
 
 # Build the React UI into the Api's wwwroot so the backend serves it:
-pnpm -C ../smartqr.frontend-services install && pnpm -C ../smartqr.frontend-services build
+pnpm -C ../forever-pin.frontend-services install && pnpm -C ../forever-pin.frontend-services build
 
-dotnet run --project SmartQr.Api       # → http://localhost:7021  — serves the UI + /api
-dotnet run --project SmartQr.Redirect.Api  # → http://localhost:7023  — redirect hot path
+dotnet run --project ForeverPin.Api       # → http://localhost:7021  — serves the UI + /api
+dotnet run --project ForeverPin.Redirect.Api  # → http://localhost:7023  — redirect hot path
 ```
 
-**Open the app at http://localhost:7021.** Default `dotnet run` uses the **http** profile (`:7021`); for `https://localhost:7020` add `--launch-profile https` (and `dotnet dev-certs https --trust`). Re-run `pnpm -C ../smartqr.frontend-services build` after UI changes.
+**Open the app at http://localhost:7021.** Default `dotnet run` uses the **http** profile (`:7021`); for `https://localhost:7020` add `--launch-profile https` (and `dotnet dev-certs https --trust`). Re-run `pnpm -C ../forever-pin.frontend-services build` after UI changes.
 
 Health checks need no DB: `GET http://localhost:7021/health`, `GET http://localhost:7023/health`.
 
-For live frontend dev with hot reload: `pnpm -C ../smartqr.frontend-services dev` (http://localhost:7025, proxies `/api` → the Api).
+For live frontend dev with hot reload: `pnpm -C ../forever-pin.frontend-services dev` (http://localhost:7025, proxies `/api` → the Api).
 
-Try the API flows in `SmartQr.Api/SmartQr.Api.http` and `SmartQr.Redirect.Api/SmartQr.Redirect.Api.http`.
+Try the API flows in `ForeverPin.Api/ForeverPin.Api.http` and `ForeverPin.Redirect.Api/ForeverPin.Redirect.Api.http`.
 
 ### Configuration
 
 | Setting | appsettings section | Env var |
 |---|---|---|
-| DB connection | `SmartQrDbSettings:ConnectionString` | `SMARTQR_DB_CONNECTION` |
+| DB connection | `ForeverPinDbSettings:ConnectionString` | `SMARTQR_DB_CONNECTION` |
 | Redirect base URL (encoded into codes) | `ApiSettings:RedirectBaseUrl` | `SMARTQR_REDIRECT_BASE_URL` |
 | Redis (optional; enables Redis store) | `RedirectSettings:RedisConnectionString` | `SMARTQR_REDIS_CONNECTION` |
 

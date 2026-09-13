@@ -1,8 +1,8 @@
-# Smart QR — Business Knowledge
+# ForeverPin — Business Knowledge
 
 *Last updated: 2026-06-03*
 
-> Durable business facts. Full market sizing, competitor map, and risk analysis live in the portfolio brief (`wow-two-ws/ideas/smart-qr-spec.md`).
+> Durable business facts. Full market sizing, competitor map, and risk analysis live in the portfolio brief (`wow-two-ws/ideas/forever-pin-spec.md`).
 
 ## Model
 

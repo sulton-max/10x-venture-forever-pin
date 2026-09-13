@@ -1,4 +1,4 @@
-# Vector Sweep — Smart QR × SDK capability map
+# Vector Sweep — ForeverPin × SDK capability map
 
 *Last updated: 2026-07-13*
 
@@ -28,7 +28,7 @@ Three sources for any vector, three destinations:
 
 ## TL;DR — the shape of the work
 
-- **The single biggest win is frontend infra adoption.** The SDK shipped `/router`, `/query` (+ optimistic mutation), `/auth`, `/feedback`, and `createApiClient` days ago — **several designed with smart-qr in mind** (cookie strategy = the guest model; `useOptimisticMutation` = the smart-qr delete). The app adopted **only** `/forms-engine`; it still hand-rolls react-router, has **no query cache**, and calls **raw `fetch()`** in every `integration/*.ts`. Five ADOPT vectors, all pure fit, all sitting unused.
+- **The single biggest win is frontend infra adoption.** The SDK shipped `/router`, `/query` (+ optimistic mutation), `/auth`, `/feedback`, and `createApiClient` days ago — **several designed with forever-pin in mind** (cookie strategy = the guest model; `useOptimisticMutation` = the forever-pin delete). The app adopted **only** `/forms-engine`; it still hand-rolls react-router, has **no query cache**, and calls **raw `fetch()`** in every `integration/*.ts`. Five ADOPT vectors, all pure fit, all sitting unused.
 - **Two app-owned vectors are worth polishing to perfection:** content types (registry is generic on the backend but every frontend form is a bespoke `switch` case) and routing conditions (fixed 5-arm switch). Everything else infrastructural is already SDK-backed.
 - **A handful of vectors fit the logic but exist in neither** — caching (redirect hot-path; SDK `Caching` module is *empty*), geo (MaxMind; `NoopGeoResolver` today), charts (scan-analytics dashboard; SDK has no chart primitives), link primitives (expiring/capped/password). These are the true ADD list.
 - **A pending domain decision reshapes two vectors at once:** *dynamic-by-default* (`polish-track/p0.2`) makes routing a per-code choice, not a per-content-type trait — **every** content type becomes routable. The content-type and routing vectors merge.
@@ -46,8 +46,8 @@ Adopted today: `presentation/*`, `forms-engine/tanstack`, `foundation/{utils,sto
 |---|---|---|---|---|
 | **HTTP api-client** | raw `fetch()` in `integration/{identity,codes,billing}.ts` (~6 wrappers) | `/foundation/http` `createApiClient` · `wowTwoEnvelope` unwraps `{data}` · ProblemDetails→`ApiError` · cookie/bearer inject · `onUnauthorized` | **MIGRATE** | envelope == backend `ApiResponse<T>`; `credentials:'include'` == the guest/auth cookie. One client kills ~6 hand-rolled fetches. **Unblocks query + auth.** |
 | **Data fetching / query** | none — manual state + refetch | `/query` `useAppQuery` · `useAppPaginatedQuery` · `useAppLazyQuery` · cache · invalidation (07-10) | **ADOPT** (net-new) | codes list · billing `/me` · preview. Paginated query for the code cap (3/25/200). |
-| **Mutations / optimistic** | manual re-fetch after edit/delete/toggle | `/query` `useOptimisticMutation` (cancel→snapshot→patch→rollback→invalidate) | **ADOPT** (net-new) | toggle-active + delete are the canonical demo ("smart-qr delete = 5-liner w/ rollback"). |
-| **Auth / session** | `@react-oauth/google` + `integration/identity` raw fetch + gate in `AppLayout` | `/auth` `AuthProvider`/`useAuth` · `createCookieStrategy` (me-resolve incl. guest/`isAnonymous`) · `createAuthBridge` | **ADOPT/MIGRATE** | cookie strategy **is** smart-qr's model (guest cookie · `/identity/me` · Google · claim). Bridge unifies 401→router. Keep `@react-oauth/google` button; SDK owns the session machine. |
+| **Mutations / optimistic** | manual re-fetch after edit/delete/toggle | `/query` `useOptimisticMutation` (cancel→snapshot→patch→rollback→invalidate) | **ADOPT** (net-new) | toggle-active + delete are the canonical demo ("forever-pin delete = 5-liner w/ rollback"). |
+| **Auth / session** | `@react-oauth/google` + `integration/identity` raw fetch + gate in `AppLayout` | `/auth` `AuthProvider`/`useAuth` · `createCookieStrategy` (me-resolve incl. guest/`isAnonymous`) · `createAuthBridge` | **ADOPT/MIGRATE** | cookie strategy **is** forever-pin's model (guest cookie · `/identity/me` · Google · claim). Bridge unifies 401→router. Keep `@react-oauth/google` button; SDK owns the session machine. |
 | **Routing** | hand-rolled `react-router` `<BrowserRouter>` + route table | `/router` `createAppRouter` · typed `definePath` · `requireAuth` guard · `useNavigationBlocker` · `useBreadcrumbs` · `usePrefetch` · `DocumentTitle`/`DocumentMeta` · `PageViewTracker` (07-10) | **ADOPT/MIGRATE** | multi-surface SPA already (marketing · `/app/*` · gate). `useNavigationBlocker` = dirty-builder guard; `DocumentMeta` replaces custom `usePageMeta`. |
 | **Feedback / toasts** | `presentation/feedback` UI used; no bus | `/feedback` `notify` · `feedbackBus` · `feedbackQueryErrors()` (query errors → auto-toast) | **ADOPT** (net-new) | create/save/delete confirmations + error surfacing. Fire-and-forget, nothing auto-nags = GWDNBM-native. |
 | **Validation (server→field)** | client zod only; server 400s not mapped to fields | `SubmitErrors`: ProblemDetails `fieldErrors`→per-field (camelCase rewrite) · `focusFirstInvalid` | **ADOPT** | backend already emits RFC-9457 `errors[]` (MVC filter). Closes the loop for slug-uniqueness + content validation. |
@@ -66,11 +66,11 @@ Adopted today: `presentation/*`, `forms-engine/tanstack`, `foundation/{utils,sto
 
 ### The frontend-infra adopt bundle (do this first)
 
-Six vectors, one coherent adoption, all SDK-mature and shape-matched to smart-qr:
+Six vectors, one coherent adoption, all SDK-mature and shape-matched to forever-pin:
 
 - **Order matters:** `createApiClient` first (envelope + cookie + 401 seam) → it feeds `/query` (data) and `/auth` (`createAuthBridge` reads the 401 hook) → `/router` consumes `requireAuth(bridge)` → `/feedback` bridges `createQueryClient({ onError: feedbackQueryErrors() })`.
 - **Replaces:** raw `fetch` ×6, manual loading/error state, a hand-rolled router table, the `@react-oauth/google`-only session, and custom `usePageMeta`.
-- **Why now:** these are the *exact* siblings of the forms/validation the app just adopted — built 07-10/11, nothing to extract from the app, pure fit. `createCookieStrategy` and `useOptimisticMutation` were written against smart-qr's own shapes.
+- **Why now:** these are the *exact* siblings of the forms/validation the app just adopted — built 07-10/11, nothing to extract from the app, pure fit. `createCookieStrategy` and `useOptimisticMutation` were written against forever-pin's own shapes.
 - **Watch:** 31 of the fancier SDK form controls aren't `FormControlContext`-wired yet (custom pickers pass aria/errors manually); no i18n (English baked into field components). Neither blocks the six.
 
 ---

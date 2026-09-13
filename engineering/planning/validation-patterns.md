@@ -219,7 +219,7 @@ Worth citing because it makes the architectural point crisply: **any design wher
   → https://www.uml-diagrams.org/state-machine-diagrams.html · https://sparxsystems.com/resources/tutorials/uml2/state-diagram.html
 - **.NET spellings:** `Stateless` — `PermitIf(trigger, state, guard)`; guards for one trigger must be mutually exclusive; failed guards surface as `UnmetGuardConditions` → https://github.com/dotnet-state-machine/stateless
 - **MassTransit / Automatonymous:** an event not accepted in the current state throws `NotAcceptedStateMachineException` ("Not accepted in state X") — i.e. transition legality is enforced by the machine's topology, not by a validator.
-- **Trade-off if adopted here:** a state machine gives you the legal-transition table for free and makes it introspectable (`PermitedTriggers`), but it only covers *status-like* transitions. It does nothing for "field immutable once set" or "value must be monotonic". Over-engineering unless SmartQr grows a real lifecycle.
+- **Trade-off if adopted here:** a state machine gives you the legal-transition table for free and makes it introspectable (`PermitedTriggers`), but it only covers *status-like* transitions. It does nothing for "field immutable once set" or "value must be monotonic". Over-engineering unless ForeverPin grows a real lifecycle.
 
 ### D5 · Async / IO-dependent validation `[F]` — and whether it belongs in a validator
 
@@ -427,12 +427,12 @@ Rationale in one line each:
 9. **If a validator ever does read state** (escape hatch, not the default): it must use the request-scoped `DbContext` and `Find`/`FindAsync` with tracking on, so the identity map absorbs the second read. Document all three preconditions together or the guarantee silently fails.
 10. **Do not adopt `EntityEntry.OriginalValues` as the compare-old-vs-new mechanism.** It is a load-time snapshot inside one context, unavailable on attached-disconnected entities, and meaningless before the entity is loaded. Its legitimate homes are `SaveChanges` interceptors and concurrency-conflict resolution.
 
-## What this changes in smart-qr
+## What this changes in forever-pin
 
 - Nothing in the current wiring is wrong. Step 1 already works exactly as the recommendation describes.
 - The already-decided shape in `validation.md` (command-scoped · nested `CodeContentValidator` · `SetInheritanceValidator`) is **entirely step 1** and lands unchanged.
 - The deferred *"2-layer validation convention"* item can now be written: its name is **two-step validation**, its split line is **state reach**, and its hard rule is **validators don't read the database**.
-- Open, deliberately: whether SmartQr has enough lifecycle to justify a state machine (D4). Today it does not.
+- Open, deliberately: whether ForeverPin has enough lifecycle to justify a state machine (D4). Today it does not.
 
 ---
 

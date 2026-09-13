@@ -8,7 +8,7 @@ using Npgsql;
 
 var connectionString = args.FirstOrDefault()
     ?? Environment.GetEnvironmentVariable("DATASEAM_DB")
-    ?? "Host=localhost;Port=5432;Database=smartqr_dataseam;Username=postgres;Password=postgres";
+    ?? "Host=localhost;Port=5432;Database=foreverpin_dataseam;Username=postgres;Password=postgres";
 
 await ResetSchemaAsync(connectionString);
 

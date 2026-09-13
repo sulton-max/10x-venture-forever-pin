@@ -1,0 +1,27 @@
+using FluentValidation;
+using ForeverPin.Application.Codes.Core.Commands;
+using ForeverPin.Application.Codes.Rules.Models;
+using ForeverPin.Application.Codes.Rules.Validators;
+
+namespace ForeverPin.Application.Codes.Core.Validators;
+
+/// <summary>Validates create-code input.</summary>
+/// <remarks>A new rule or rule-set member gets its rule there, not here.</remarks>
+/// <seealso cref="CodeRuleValidator"/>
+/// <seealso cref="CodeRuleSetValidator"/>
+public sealed class CodeCreateCommandValidator : AbstractValidator<CodeCreateCommand>
+{
+    /// <summary>Builds the create-code rules.</summary>
+    public CodeCreateCommandValidator()
+    {
+        RuleFor(command => command.Name)
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(200).WithMessage("Name must be 200 characters or fewer.");
+
+        RuleForEach(command => command.Rules).SetValidator(new CodeRuleValidator());
+
+        RuleFor(command => new CodeRuleSet(command.Mode, command.ContentType, command.Rules))
+            .SetValidator(new CodeRuleSetValidator());
+    }
+}

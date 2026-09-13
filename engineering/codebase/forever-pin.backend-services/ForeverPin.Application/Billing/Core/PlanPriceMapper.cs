@@ -1,0 +1,32 @@
+using ForeverPin.Domain.Billing.Enums;
+using BillingSettings = ForeverPin.Application.Settings.BillingSettings;
+
+namespace ForeverPin.Application.Billing.Core;
+
+/// <summary>Maps a paid plan to its Stripe price id and back.</summary>
+public static class PlanPriceMapper
+{
+    /// <summary>Gets the Stripe price id for a paid plan; null for Free or an unconfigured plan.</summary>
+    public static string? PriceIdFor(BillingSettings billing, Plan plan) => plan switch
+    {
+        Plan.Solo => NullIfEmpty(billing.Prices.Solo),
+        Plan.Pro => NullIfEmpty(billing.Prices.Pro),
+        Plan.Agency => NullIfEmpty(billing.Prices.Agency),
+        _ => null,
+    };
+
+    /// <summary>Resolves a price id to its plan, or Free when unmatched.</summary>
+    public static Plan PlanFor(BillingSettings billing, string? priceId)
+    {
+        if (string.IsNullOrWhiteSpace(priceId))
+            return Plan.Free;
+
+        if (priceId == NullIfEmpty(billing.Prices.Solo)) return Plan.Solo;
+        if (priceId == NullIfEmpty(billing.Prices.Pro)) return Plan.Pro;
+        if (priceId == NullIfEmpty(billing.Prices.Agency)) return Plan.Agency;
+
+        return Plan.Free;
+    }
+
+    private static string? NullIfEmpty(string value) => string.IsNullOrWhiteSpace(value) ? null : value;
+}

@@ -30,19 +30,19 @@ Condition matching (`RuleConditionType`):
 
 | Type | File |
 |---|---|
-| `RoutingService` (the logic) | `engineering/codebase/smartqr.backend-services/SmartQr.Redirect.Api/Infrastructure/Routing/RoutingService.cs` |
-| `IRoutingService` | `SmartQr.Redirect.Api/Application/Routing/Services/IRoutingService.cs` |
-| `CodeRouteConfig` / `RouteRule` / `ScanContext` / `RouteDecision` / `RouteOutcome` | `SmartQr.Redirect.Api/Application/Routing/Models/` |
-| `UserAgentDeviceResolver` | `SmartQr.Redirect.Api/Infrastructure/Routing/UserAgentDeviceResolver.cs` |
-| `IGeoResolver` / `NoopGeoResolver` | `SmartQr.Redirect.Api/.../Routing/` (geo is a stub — see below) |
-| `RuleConditionType` / `DeviceType` (enums) | `SmartQr.Common.Domain/Codes/Enums/` |
-| Persisted: `RoutingRuleEntity` / `CodeEntity` | `SmartQr.Common.Domain/Codes/Entities/` |
+| `RoutingService` (the logic) | `engineering/codebase/forever-pin.backend-services/ForeverPin.Redirect.Api/Infrastructure/Routing/RoutingService.cs` |
+| `IRoutingService` | `ForeverPin.Redirect.Api/Application/Routing/Services/IRoutingService.cs` |
+| `CodeRouteConfig` / `RouteRule` / `ScanContext` / `RouteDecision` / `RouteOutcome` | `ForeverPin.Redirect.Api/Application/Routing/Models/` |
+| `UserAgentDeviceResolver` | `ForeverPin.Redirect.Api/Infrastructure/Routing/UserAgentDeviceResolver.cs` |
+| `IGeoResolver` / `NoopGeoResolver` | `ForeverPin.Redirect.Api/.../Routing/` (geo is a stub — see below) |
+| `RuleConditionType` / `DeviceType` (enums) | `ForeverPin.Common.Domain/Codes/Enums/` |
+| Persisted: `RoutingRuleEntity` / `CodeEntity` | `ForeverPin.Common.Domain/Codes/Entities/` |
 
 **Persisted → hot:** `RoutingRuleEntity` (DB) projects to `RouteRule` inside `CodeRouteConfig` (the cached hot-path shape) — see `redirect-and-scaling.md`.
 
 ## Decisions & tradeoffs
 
-- **Pure routing service, no I/O** — testable in isolation (see `SmartQr.Tests/RoutingServiceTests.cs`), fast on the hot path. Context (device/geo/lang) is resolved *before* evaluation, in the endpoint.
+- **Pure routing service, no I/O** — testable in isolation (see `ForeverPin.Tests/RoutingServiceTests.cs`), fast on the hot path. Context (device/geo/lang) is resolved *before* evaluation, in the endpoint.
 - **Never-expire is the default** and overrides expiry/cap checks — the product promise, enforced in code.
 - **First-match-wins, ordered** — simple, predictable, matches how incumbents present "smart rules."
 

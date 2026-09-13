@@ -1,4 +1,4 @@
-# smart-qr frontend → Vue — handoff
+# forever-pin frontend → Vue — handoff
 
 *Last updated: 2026-08-14*
 
@@ -6,7 +6,7 @@
 > this app's exact imports. This doc is the whole brief — a fresh chat should need nothing else from the
 > session that produced it.
 >
-> **What this is:** smart-qr is the pilot for a React→Vue move of the wow-two frontend SDK. The SDK port is
+> **What this is:** forever-pin is the pilot for a React→Vue move of the wow-two frontend SDK. The SDK port is
 > done; rebuilding this app on it is the test of whether Vue is actually better to build with. That question
 > — *how it feels to build* — is the deliverable, not just parity.
 
@@ -17,7 +17,7 @@
 | | React (today) | Vue (target) |
 |---|---|---|
 | SDK | `@wow-two-beta/ui@0.0.97` | **`@wow-two-beta/ui-vue@0.0.5`** (npm, published) |
-| App | `engineering/codebase/smartqr.frontend-services` | same path, rebuilt |
+| App | `engineering/codebase/forever-pin.frontend-services` | same path, rebuilt |
 | Size | 132 files · 6,667 LOC | — |
 
 The Vue SDK is a complete port: 41 `foundation` modules · 18 primitives · 17 composables · 237 components
@@ -154,8 +154,8 @@ Sign-In can use the GIS script directly, and `qrcode` already ships the renderin
 
 ## 7 · Theme
 
-The `smart-qr` theme is `validated` in the SDK's theme registry — app-proven, safe to use. Apply as in the
-React app: import `@wow-two-beta/ui-vue/themes.css` and put `theme-smart-qr` (+ `dark`) on a root element.
+The `forever-pin` theme is `validated` in the SDK's theme registry — app-proven, safe to use. Apply as in the
+React app: import `@wow-two-beta/ui-vue/themes.css` and put `theme-forever-pin` (+ `dark`) on a root element.
 Tokens, variants and the OKLCH engine are byte-identical to the React package, so **visual parity is free** —
 any visual difference is a bug, not a design decision.
 
@@ -202,5 +202,5 @@ The port's whole purpose is a fluency bet, not a parity exercise. Worth writing 
 - What did `v-model` simplify that `value` + `onChange` made noisy?
 - What did you miss from React?
 
-If it goes well, smart-qr stays on Vue and the rest of the products follow. If not, the React SDK is
+If it goes well, forever-pin stays on Vue and the rest of the products follow. If not, the React SDK is
 untouched and still published.

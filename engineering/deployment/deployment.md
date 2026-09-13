@@ -1,4 +1,4 @@
-# Smart QR — Deployment
+# ForeverPin — Deployment
 
 Dockerfile · compose · ops · domain setup — how the services ship and run in production.
 

@@ -1,6 +1,6 @@
 # Case Study — me-qr.com
 
-> Competitor teardown through the smart-qr (ForeverPin) lens: never-expire · contextual routing · GWDNBM calm UI. Source: live generator + feature/pricing pages, 2026-06-24.
+> Competitor teardown through the forever-pin (ForeverPin) lens: never-expire · contextual routing · GWDNBM calm UI. Source: live generator + feature/pricing pages, 2026-06-24.
 
 *Last updated: 2026-06-24*
 
@@ -106,7 +106,7 @@ User's read confirmed: *"whole site UI looks chaotic but has good ideas."*
 
 ---
 
-## Borrow / avoid / adapt for smart-qr
+## Borrow / avoid / adapt for forever-pin
 
 | Idea | Verdict | Why |
 |---|---|---|

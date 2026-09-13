@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Render a code (QR or barcode) to SVG or PNG from a payload (typically a code's short URL). Vector-first, cross-platform, styleable. Lives in the standalone `SmartQr.Codes` library so it's reusable across services (and extractable as `Wow.Two.Sdk.Beta.Codes` later).
+Render a code (QR or barcode) to SVG or PNG from a payload (typically a code's short URL). Vector-first, cross-platform, styleable. Lives in the standalone `ForeverPin.Codes` library so it's reusable across services (and extractable as `Wow.Two.Sdk.Beta.Codes` later).
 
 ## How it works
 
@@ -27,16 +27,16 @@ RenderedCode (bytes, content-type, format)
 
 | Type | File |
 |---|---|
-| `ICodeRenderer` | `engineering/codebase/smartqr.backend-services/SmartQr.Codes/ICodeRenderer.cs` |
-| `CodeRenderer` (facade/dispatch) | `SmartQr.Codes/Rendering/CodeRenderer.cs` |
-| `QrCodeRenderer` | `SmartQr.Codes/Rendering/QrCodeRenderer.cs` |
-| `BarcodeRenderer` | `SmartQr.Codes/Rendering/BarcodeRenderer.cs` |
-| `ImageSharpLogoCompositor` | `SmartQr.Codes/Logo/ImageSharpLogoCompositor.cs` |
-| `CodeRenderRequest` / `CodeRenderOptions` / `RenderedCode` / `EccLevel` | `SmartQr.Codes/Models/` |
-| `BarcodeFormat` / `ImageFormat` | `SmartQr.Common.Domain/Codes/Enums/` |
-| DI: `AddSmartQrCodes()` | `SmartQr.Codes/ServiceCollectionExtensions.cs` |
+| `ICodeRenderer` | `engineering/codebase/forever-pin.backend-services/ForeverPin.Codes/ICodeRenderer.cs` |
+| `CodeRenderer` (facade/dispatch) | `ForeverPin.Codes/Rendering/CodeRenderer.cs` |
+| `QrCodeRenderer` | `ForeverPin.Codes/Rendering/QrCodeRenderer.cs` |
+| `BarcodeRenderer` | `ForeverPin.Codes/Rendering/BarcodeRenderer.cs` |
+| `ImageSharpLogoCompositor` | `ForeverPin.Codes/Logo/ImageSharpLogoCompositor.cs` |
+| `CodeRenderRequest` / `CodeRenderOptions` / `RenderedCode` / `EccLevel` | `ForeverPin.Codes/Models/` |
+| `BarcodeFormat` / `ImageFormat` | `ForeverPin.Common.Domain/Codes/Enums/` |
+| DI: `AddForeverPinCodes()` | `ForeverPin.Codes/ServiceCollectionExtensions.cs` |
 
-Consumed by the API via `ICodeImageService` (`SmartQr.Api/Infrastructure/Codes/Services/CodeImageService.cs`).
+Consumed by the API via `ICodeImageService` (`ForeverPin.Api/Infrastructure/Codes/Services/CodeImageService.cs`).
 
 ## Decisions & tradeoffs
 

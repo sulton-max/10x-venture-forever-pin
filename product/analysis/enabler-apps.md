@@ -1,4 +1,4 @@
-# ForeverPin (smart-qr) — Enabler-App Ideas
+# ForeverPin (forever-pin) — Enabler-App Ideas
 
 *Last updated: 2026-07-07*
 

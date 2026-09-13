@@ -4,7 +4,7 @@
 
 ## Purpose
 
-React web app for Smart QR, built on the `@wow-two-beta/ui` component library. Two surfaces in one SPA: a **public marketing site** (landing · pricing · blog) and the **guest-gated app** (codes list + Create-Code builder), split by route.
+React web app for ForeverPin, built on the `@wow-two-beta/ui` component library. Two surfaces in one SPA: a **public marketing site** (landing · pricing · blog) and the **guest-gated app** (codes list + Create-Code builder), split by route.
 
 ## Stack
 
@@ -27,7 +27,7 @@ React web app for Smart QR, built on the `@wow-two-beta/ui` component library. T
 ## Layout
 
 ```
-engineering/codebase/smartqr.frontend-services/
+engineering/codebase/forever-pin.frontend-services/
 ├── src/App.tsx          react-router route table (marketing + /app/*)
 ├── src/main.tsx         <BrowserRouter> root
 ├── src/marketing/       public surface — pages + kit + blog (no API calls)
@@ -42,7 +42,7 @@ engineering/codebase/smartqr.frontend-services/
 ├── src/screens/         page-level screens (Codes list, Create/Edit builder, Login gate)
 ├── src/components/       in-project domain components (QrPreview, RuleBuilder)
 ├── src/lib/             usePageMeta (title/meta/OG) · ScrollToTop
-├── src/api.ts           management API client (SmartQr.Api)
+├── src/api.ts           management API client (ForeverPin.Api)
 ├── src/types.ts         frontend mirror of the backend contract (enums + DTOs)
 ├── src/index.css        Tailwind v4 + lib styles + violet brand @theme + .prose
 └── vite.config.ts
@@ -76,18 +76,18 @@ If a *generic* primitive is ever missing: build it here → test → extract to 
 
 ## Backend wiring
 
-- `createCode()` POSTs to `SmartQr.Api` `/api/codes`; the result block shows the short URL + `CopyButton` + SVG/PNG links (the server render endpoint).
+- `createCode()` POSTs to `ForeverPin.Api` `/api/codes`; the result block shows the short URL + `CopyButton` + SVG/PNG links (the server render endpoint).
 - Live preview is client-side (no backend needed); **the create action needs the Api + DB running** (the DB-migration gap).
 - Config: `VITE_API_BASE` (default `:7020`), `VITE_REDIRECT_BASE` (default `:7022`).
 
 ## Serving — two modes
 
-**Backend serves the SPA (single URL).** `vite build` emits into `SmartQr.Api/wwwroot` (`build.outDir`), and the Api serves it via `UseStaticFiles()` + `MapFallbackToFile("index.html")`. Frontend calls the API **same-origin** (relative `/api`), so no CORS.
+**Backend serves the SPA (single URL).** `vite build` emits into `ForeverPin.Api/wwwroot` (`build.outDir`), and the Api serves it via `UseStaticFiles()` + `MapFallbackToFile("index.html")`. Frontend calls the API **same-origin** (relative `/api`), so no CORS.
 
 ```bash
-pnpm -C engineering/codebase/smartqr.frontend-services install
-pnpm -C engineering/codebase/smartqr.frontend-services build           # → SmartQr.Api/wwwroot
-dotnet run --project engineering/codebase/smartqr.backend-services/SmartQr.Api   # http://localhost:7021  (UI + API)
+pnpm -C engineering/codebase/forever-pin.frontend-services install
+pnpm -C engineering/codebase/forever-pin.frontend-services build           # → ForeverPin.Api/wwwroot
+dotnet run --project engineering/codebase/forever-pin.backend-services/ForeverPin.Api   # http://localhost:7021  (UI + API)
 # https://localhost:7020 also works with: --launch-profile https  (trust the dev cert)
 ```
 
@@ -96,7 +96,7 @@ dotnet run --project engineering/codebase/smartqr.backend-services/SmartQr.Api  
 **Vite dev (hot reload).** For active frontend work, run the Api (any profile) + the Vite dev server; Vite proxies `/api` → the Api on `:7021`.
 
 ```bash
-pnpm -C engineering/codebase/smartqr.frontend-services dev             # http://localhost:7025  (proxies /api → :7021)
+pnpm -C engineering/codebase/forever-pin.frontend-services dev             # http://localhost:7025  (proxies /api → :7021)
 ```
 
 Verified 2026-06-03: builds clean (tsc + vite); the Api serves + renders the SPA with no console errors.

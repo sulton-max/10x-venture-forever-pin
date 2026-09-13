@@ -1,4 +1,4 @@
-# ForeverPin (smart-qr) — Feature Research
+# ForeverPin (forever-pin) — Feature Research
 
 > Purpose: map the QR/codes feature universe against the ForeverPin wedge (programmable-routing-first · never-expire · GWDNBM on flat pricing) to hand-pick a v0.5 batch.
 

@@ -54,21 +54,21 @@
 | `v0.9/v0.9.md` | v0.9 (Content mode — static/dynamic) — **next Feature**. Architecture: **a rule carries content** (CM15) · CM1–CM17 · `CodeRule` hierarchy (`ConditionalRule` · `DefaultRule` · `DefaultPointerRule`, `TargetOrder`) · F1 open (`Encode()` home) · F3 open (resolve-page host) · F5 resolved (one base content type) · Iterations 1–7 (logic → content → condition → rule → code+entity → requests+serialization → forms) |
 | `v0.11/v0.11.md` | v0.11 (Interactive landing hero) — parked experiment (QR-simulation hero canvas); renumbered off v0.9 on 2026-07-18 |
 
-> **Review checklists live at each solution root, not here** — one per IDE: `engineering/codebase/smartqr.backend-services/review-checklist.md` (Rider) and `smartqr.frontend-services/review-checklist.md` (WebStorm). Each covers its half of the content-model v2 sweep under a shared layer numbering (1–6 + 9 on both sides · 7 backend-only · 8 frontend-only), with deletions per layer and a known-open list. Paths are relative to their own root, so the links open in-IDE.
+> **Review checklists live at each solution root, not here** — one per IDE: `engineering/codebase/forever-pin.backend-services/review-checklist.md` (Rider) and `forever-pin.frontend-services/review-checklist.md` (WebStorm). Each covers its half of the content-model v2 sweep under a shared layer numbering (1–6 + 9 on both sides · 7 backend-only · 8 frontend-only), with deletions per layer and a known-open list. Paths are relative to their own root, so the links open in-IDE.
 
-## Engineering — Codebase: Backend (`engineering/codebase/smartqr.backend-services/`)
+## Engineering — Codebase: Backend (`engineering/codebase/forever-pin.backend-services/`)
 
 > Not file-indexed — use `tree`/`find`/`grep`. Overview in `README.md`; per-subsystem detail in `architecture/`.
 
 | Project | Role |
 |---|---|
-| `SmartQr.Common*` | shared libs (mediator, domain entities, EF Core persistence) |
-| `SmartQr.Codes` | generation library (QRCoder / ZXing.Net / Svg.Skia + SkiaSharp) — extracts to backend-beta SDK in v0.6 |
-| `SmartQr.Api` | management API (controllers + CQRS) |
-| `SmartQr.Redirect.Api` | redirect hot path (minimal API) |
-| `SmartQr.Tests.{Unit,Integration,E2E,Migrations}` | xUnit — units · integration · full-API E2E · migrator engine |
+| `ForeverPin.Common*` | shared libs (mediator, domain entities, EF Core persistence) |
+| `ForeverPin.Codes` | generation library (QRCoder / ZXing.Net / Svg.Skia + SkiaSharp) — extracts to backend-beta SDK in v0.6 |
+| `ForeverPin.Api` | management API (controllers + CQRS) |
+| `ForeverPin.Redirect.Api` | redirect hot path (minimal API) |
+| `ForeverPin.Tests.{Unit,Integration,E2E,Migrations}` | xUnit — units · integration · full-API E2E · migrator engine |
 
-## Engineering — Codebase: Frontend (`engineering/codebase/smartqr.frontend-services/`)
+## Engineering — Codebase: Frontend (`engineering/codebase/forever-pin.frontend-services/`)
 
 > React 19 + Vite + Tailwind v4 web app consuming `@wow-two-beta/ui`. See `engineering/architecture/frontend.md`. Navigate source via `tree`/`find`/`grep`.
 
@@ -86,6 +86,6 @@
 
 | Path | Content |
 |---|---|
-| `wow-two-ws/ideas/smart-qr-spec.md` | **Portfolio brief** — market, positioning, full feature spec (north star) |
+| `wow-two-ws/ideas/forever-pin-spec.md` | **Portfolio brief** — market, positioning, full feature spec (north star) |
 | `wow-two-ws/conventions/` | Ecosystem code conventions (XML docs, result pattern, services, …) |
 | `context/.../micro-saas/ven-msaas-context.md` | Portfolio dashboard (#002 row) |

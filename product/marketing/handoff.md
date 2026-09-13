@@ -6,7 +6,7 @@
 
 ## Status
 
-- Product **#002**, pre-launch, on a polish track. **Name + domain locked; marketing playbooks written; landing hero sim in progress.** Code still says "Smart QR" until the rebrand lands.
+- Product **#002**, pre-launch, on a polish track. **Name + domain locked; marketing playbooks written; landing hero sim in progress.** Code still says "ForeverPin" until the rebrand lands.
 
 ---
 
@@ -34,7 +34,7 @@
 - `product/marketing/marketing.md` — app GTM (positioning v2 · $1 experiment · channels).
 - `product/marketing/landing-hero-concept.md` — the hero-sim concept + v2 mode ideas.
 - **Marketing site (live):** landing + pricing + blog + **4 SEO seed posts** (`.../frontend-services/src/presentation/marketing/`).
-- **Promo assets:** `ventures/smart-qr-promo/` — Remotion hero video/GIF (light+dark) + feature/i18n-routing stills. ⚠ still "Smart QR"-branded.
+- **Promo assets:** `ventures/10x-venture-forever-pin-promo/` — Remotion hero video/GIF (light+dark) + feature/i18n-routing stills. ⚠ still "ForeverPin"-branded.
 
 ---
 
@@ -50,7 +50,7 @@
 ## Open / next (ordered)
 
 1. **Grab handles** — `@foreverpinapp` on X + Instagram (bare `foreverpin` taken on IG); `foreverpin` GitHub org (optional). Kit in `marketing.md` open-questions.
-2. **Full rebrand** `Smart QR → ForeverPin` (code strings + promo). Tracked → `engineering/planning/version-track/` (was `Brand & rebrand` backlog) — folder/namespace renames later.
+2. **Full rebrand** `ForeverPin → ForeverPin` (code strings + promo). Tracked → `engineering/planning/version-track/` (was `Brand & rebrand` backlog) — folder/namespace renames later.
 3. **Finish the hero sim** (bake defaults · remove dev bar · v2 modes · mobile).
 4. **Free styled-generator magnet page** — the front door + Product-Hunt/SEO hook.
 5. **Trademark clearance** on "ForeverPin" (USPTO/EUIPO) before hard launch.
@@ -67,4 +67,4 @@
 
 ## Run
 
-- `pnpm -C workbench/ventures/smart-qr-poc/engineering/codebase/smartqr.frontend-services dev` → `https://localhost:7024` (or the preview `:7025`). Backend (for `/app`) needs Postgres + the API.
+- `pnpm -C workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services dev` → `https://localhost:7024` (or the preview `:7025`). Backend (for `/app`) needs Postgres + the API.

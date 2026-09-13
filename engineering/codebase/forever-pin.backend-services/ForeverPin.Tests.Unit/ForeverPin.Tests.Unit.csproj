@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Pure-logic tier: no I/O, no DB, no host boot. Just xUnit + the SUTs (routing evaluation, code rendering, plan-limit math). DB/host concerns live in ForeverPin.Tests.Integration / ForeverPin.Tests.E2E. -->
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <!-- Code-rendering engine now lives in the SDK (extracted v0.6); these tests exercise it directly. -->
+    <PackageReference Include="WoW2.Sdk.Backend.Beta" Version="10.0.45-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <!-- The systems under test: code generation (ForeverPin.Codes), the routing evaluator (ForeverPin.Redirect.Api), and PlanLimits (ForeverPin.Api). Pure types only; the global `Program` of each host is never referenced, so no extern aliases are needed. -->
+  <ItemGroup>
+    <ProjectReference Include="..\ForeverPin.Domain\ForeverPin.Domain.csproj" />
+    <ProjectReference Include="..\ForeverPin.Application\ForeverPin.Application.csproj" />
+    <ProjectReference Include="..\ForeverPin.Infrastructure\ForeverPin.Infrastructure.csproj" />
+    <ProjectReference Include="..\ForeverPin.Redirect.Api\ForeverPin.Redirect.Api.csproj" />
+  </ItemGroup>
+
+</Project>

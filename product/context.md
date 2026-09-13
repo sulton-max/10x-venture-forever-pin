@@ -2,7 +2,7 @@
 
 *Last updated: 2026-06-23*
 
-> **Rebrand in progress: Smart QR → ForeverPin.** The code/repo still says "Smart QR" until the
+> **Rebrand in progress: ForeverPin → ForeverPin.** The code/repo still says "ForeverPin" until the
 > rebrand lands (tracked → `engineering/planning/planning.md` Backlog · Brand). Folder rename later.
 
 ## Current State
@@ -28,7 +28,7 @@ Programmable routing as the headline + **codes never expire** (the #1 incumbent 
 
 - ✅ **Name + domain** — ForeverPin / `foreverpin.com` (Cloudflare).
 - **Grab `@foreverpin` handles** (X + Instagram) same-day; GitHub org optional.
-- **Full rebrand Smart QR → ForeverPin** — tracked → `engineering/planning/planning.md` Backlog · Brand.
+- **Full rebrand ForeverPin → ForeverPin** — tracked → `engineering/planning/planning.md` Backlog · Brand.
 - **Marketing playbook** — wow-two marketing convention in progress (deep-research → doc, mirrors the naming convention).
 - **Validate the wedge** — scan r/smallbusiness, r/restaurateur, IndieHackers for hostage-code complaints.
 - Build-side tasks → `engineering/planning/planning.md`.
@@ -47,7 +47,7 @@ Programmable routing as the headline + **codes never expire** (the #1 incumbent 
 
 ## Links
 
-- Portfolio brief (market, full spec): `wow-two-ws/ideas/smart-qr-spec.md`
+- Portfolio brief (market, full spec): `wow-two-ws/ideas/forever-pin-spec.md`
 - Roadmap / feature log: `engineering/planning/planning.md`
 - Business model / pricing: `product/product.md`
 - Naming convention: `wow-two-ws/conventions/marketing/brand-naming-and-domains.md`

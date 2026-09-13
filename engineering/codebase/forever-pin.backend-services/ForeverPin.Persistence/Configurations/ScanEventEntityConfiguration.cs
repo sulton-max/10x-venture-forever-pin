@@ -1,0 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ForeverPin.Domain.Codes.Core.Entities;
+
+namespace ForeverPin.Persistence.Configurations;
+
+/// <summary>Configures the scan_events table mapping.</summary>
+public class ScanEventEntityConfiguration : IEntityTypeConfiguration<ScanEventEntity>
+{
+    public void Configure(EntityTypeBuilder<ScanEventEntity> builder)
+    {
+        builder.ToTable(ScanEventEntity.TableName);
+
+        builder.HasKey(e => e.Id);
+
+        // Time-series reads per code (dashboard charts).
+        builder.HasIndex(e => new { e.CodeId, e.ScannedAt });
+    }
+}

@@ -1,4 +1,4 @@
-# Smart QR — Operations
+# ForeverPin — Operations
 
 Runtime ops · repo setup · scripts · runbooks — keeping the running system healthy.
 

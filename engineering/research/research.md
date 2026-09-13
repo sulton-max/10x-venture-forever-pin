@@ -1,4 +1,4 @@
-# Smart QR — Research
+# ForeverPin — Research
 
 Technical research dumps feeding architecture + iteration decisions.
 

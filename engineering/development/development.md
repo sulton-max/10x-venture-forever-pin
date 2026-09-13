@@ -1,4 +1,4 @@
-# Smart QR — Development
+# ForeverPin — Development
 
 Build guidelines + process — how the code is written, tested, and iterated.
 

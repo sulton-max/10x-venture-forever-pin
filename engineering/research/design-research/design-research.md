@@ -1,8 +1,8 @@
-# Smart QR — design system (locked v1)
+# ForeverPin — design system (locked v1)
 
 *Last updated: 2026-06-24*
 
-> Source of truth for the product UI. Light + dark. Apply via Tailwind v4 `@theme` + `@wow-two-beta/ui` semantic tokens (`engineering/codebase/smartqr.frontend-services/src/index.css`). Map to SDK after a few screen iterations.
+> Source of truth for the product UI. Light + dark. Apply via Tailwind v4 `@theme` + `@wow-two-beta/ui` semantic tokens (`engineering/codebase/forever-pin.frontend-services/src/index.css`). Map to SDK after a few screen iterations.
 
 ## Concept
 
@@ -180,7 +180,7 @@ Override in `index.css`. ✓ = var confirmed present in lib; ? = standard shadcn
 - dark surfaces ≈ SDK zinc defaults (`#09090b`/`#18181b`/`#27272a`); nudge to `#121214`/`#1C1C1F`/`#2A2A2E`.
 - **use as-is** — `Button` · `UrlInput` · `TextInput` · `Select` · `ColorField`/`ColorPicker` · `SegmentedControl` · `MultiSelect`/`TagsInput` · `Tag`/`Badge` · `Status`/`NotificationDot` · `StepCard` · `Accordion` · `EmptyState` · `Breadcrumb` · `CopyButton` · `FormField`/`FormErrorMessage` · `Skeleton` · `Toast` · `Switch` · `Tooltip`.
 - **extend SDK** — `accent` token family (+ raw scale) · `Card` `sheen`/`glow` gradient variant · brand→violet override · `Accordion` drag-reorder.
-- **build** — `Sortable` list primitive (SDK, generic) · `RuleBuilder` field→op→value + match toggle (smart-qr first → extract per `dev-cycle`) · QR preview (product, `qrcode.react`).
+- **build** — `Sortable` list primitive (SDK, generic) · `RuleBuilder` field→op→value + match toggle (forever-pin first → extract per `dev-cycle`) · QR preview (product, `qrcode.react`).
 - status = compose `Badge` (neutral) + `NotificationDot`/dot — never a colored pill.
 
 ## Iterate next (then map to SDK)

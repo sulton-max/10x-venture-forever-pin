@@ -1,4 +1,4 @@
-# Smart QR — Architecture
+# ForeverPin — Architecture
 
 System + per-area design docs.
 

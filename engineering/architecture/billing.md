@@ -2,7 +2,7 @@
 
 *Last updated: 2026-06-15*
 
-> Stripe subscription billing for Smart QR — **international only, TEST mode**, Hosted Checkout (`mode=subscription`) + Customer Portal, **no on-site card capture**.
+> Stripe subscription billing for ForeverPin — **international only, TEST mode**, Hosted Checkout (`mode=subscription`) + Customer Portal, **no on-site card capture**.
 > Keyed by the existing guest `UserId` (`ICurrentUser.Id` / `CodeEntity.UserId`); **no auth built this pass**. Stripe behind `IBillingBroker`; this doc points to code paths, never restates code.
 > **Status: built (backend + frontend + 23 new units), 2026-06-15.** Sections below describe the as-built shape.
 
@@ -10,14 +10,14 @@
 
 - Subscription is keyed by `UserId` (the guest-cookie Guid). Checkout `client_reference_id = UserId`; Portal opened from the stored `StripeCustomerId` looked up by `UserId`.
 - Guest with **no** `subscriptions` row ⇒ **Free**. No row is ever required to use the app.
-- **Never-deactivate-on-downgrade.** `SmartQr.Redirect.Api` stays **plan-agnostic** — never add a plan/limit check on the redirect hot path. A code over the cap still resolves forever (the never-expire promise). Enforcement is **create-time only**.
+- **Never-deactivate-on-downgrade.** `ForeverPin.Redirect.Api` stays **plan-agnostic** — never add a plan/limit check on the redirect hot path. A code over the cap still resolves forever (the never-expire promise). Enforcement is **create-time only**.
 - Price IDs are **never hardcoded** — always from config (`Billing:Prices:{Solo,Pro,Agency}`). `appsettings` holds **empty placeholders only**; real keys live in env / user-secrets.
 
 ---
 
 ## Data model
 
-New domain folder `SmartQr.Common.Domain/Billing/` (mirrors `Codes/`): `Entities/` + `Enums/`. EF maps over the hand-authored SQL (schema-first) exactly like `CodeEntity`.
+New domain folder `ForeverPin.Common.Domain/Billing/` (mirrors `Codes/`): `Entities/` + `Enums/`. EF maps over the hand-authored SQL (schema-first) exactly like `CodeEntity`.
 
 ### `SubscriptionEntity` — `Billing/Entities/SubscriptionEntity.cs`
 
@@ -32,7 +32,7 @@ New domain folder `SmartQr.Common.Domain/Billing/` (mirrors `Codes/`): `Entities
 | `StripeCustomerId` | `string` | `cus_…`. Source for Portal sessions. |
 | `StripeSubscriptionId` | `string` | `sub_…`. |
 | `CurrentPeriodEnd` | `DateTimeOffset?` | from `subscription.current_period_end`. SQLite-safe (DbContext binary converter). |
-| `CreatedAt` / `UpdatedAt` | `DateTimeOffset` | auto-stamped by `SmartQrDbContext.ApplyTimestamps()`. |
+| `CreatedAt` / `UpdatedAt` | `DateTimeOffset` | auto-stamped by `ForeverPinDbContext.ApplyTimestamps()`. |
 
 ### `Plan` enum — `Billing/Enums/Plan.cs`
 
@@ -44,28 +44,28 @@ New domain folder `SmartQr.Common.Domain/Billing/` (mirrors `Codes/`): `Entities
 
 ### `PlanLimits` — code cap per plan
 
-Static map, lives with billing application code (`SmartQr.Api/Application/Billing/Core/PlanLimits.cs`): `Free=3`, `Solo=25`, `Pro=200`, `Agency=int.MaxValue`. Two accessors + an `Unlimited = -1` const:
+Static map, lives with billing application code (`ForeverPin.Api/Application/Billing/Core/PlanLimits.cs`): `Free=3`, `Solo=25`, `Pro=200`, `Agency=int.MaxValue`. Two accessors + an `Unlimited = -1` const:
 
 - `MaxCodes(Plan) → int` — raw cap (Agency = `int.MaxValue`); used by the **enforcement gate** (count vs cap).
 - `MaxCodesForApi(Plan) → int` — wire form; collapses Agency's `int.MaxValue` to the `Unlimited` (`-1`) sentinel the frontend renders as ∞. Used by `/me`.
 
 ### `PlanPriceMap` — price ↔ plan, config-driven
 
-`SmartQr.Api/Application/Billing/Core/PlanPriceMap.cs` — both directions off `Billing:Prices`, **never hardcodes ids**:
+`ForeverPin.Api/Application/Billing/Core/PlanPriceMap.cs` — both directions off `Billing:Prices`, **never hardcodes ids**:
 
 - `PriceIdFor(billing, Plan) → string?` — paid plan → price id (`Free`/unconfigured → null). Used by the checkout handler.
 - `PlanFor(billing, priceId) → Plan` — inverse; an id matching nothing configured falls back to `Free`. Used by the webhook handler to resolve the plan from a session/subscription's price id.
 
 ### Persistence wiring
 
-- Register in `SmartQrDbContext` (`SmartQr.Common.Persistence/DataContexts/`): add `DbSet<SubscriptionEntity> Subscriptions`; add `Plan` + `SubscriptionStatus` to `ConfigureConventions` (`HaveConversion<string>`); add `SubscriptionEntityConfiguration : IEntityTypeConfiguration<SubscriptionEntity>` in `Configurations/` (table name + **unique index on `UserId`**) — picked up by the existing `ApplyConfigurationsFromAssembly`.
+- Register in `ForeverPinDbContext` (`ForeverPin.Common.Persistence/DataContexts/`): add `DbSet<SubscriptionEntity> Subscriptions`; add `Plan` + `SubscriptionStatus` to `ConfigureConventions` (`HaveConversion<string>`); add `SubscriptionEntityConfiguration : IEntityTypeConfiguration<SubscriptionEntity>` in `Configurations/` (table name + **unique index on `UserId`**) — picked up by the existing `ApplyConfigurationsFromAssembly`.
 - Registering it on the EF model is what gives the **SQLite test DB** (`SqliteTestDb.EnsureCreated()`) the `subscriptions` table automatically — no migrator needed in tests.
 
 ---
 
 ## SQL migration — `002-billing` (bespoke migrator, NOT EF Migrations)
 
-New folder `SmartQr.Common.Persistence/Migrations/002-billing/` with `Apply.sql` + `Rollback.sql` (Rollback **mandatory** — scanner throws otherwise). Authored to the same dialect as `001-baseline/Apply.sql`: snake_case columns, `text` for enums, `timestamptz`, `pk_`/`ix_` naming. Already dual-ships (embedded + on-disk) via the existing `<EmbeddedResource Include="Migrations\**\*.sql">` glob in `SmartQr.Common.Persistence.csproj` — no csproj change.
+New folder `ForeverPin.Common.Persistence/Migrations/002-billing/` with `Apply.sql` + `Rollback.sql` (Rollback **mandatory** — scanner throws otherwise). Authored to the same dialect as `001-baseline/Apply.sql`: snake_case columns, `text` for enums, `timestamptz`, `pk_`/`ix_` naming. Already dual-ships (embedded + on-disk) via the existing `<EmbeddedResource Include="Migrations\**\*.sql">` glob in `ForeverPin.Common.Persistence.csproj` — no csproj change.
 
 `Apply.sql` (shape):
 
@@ -85,13 +85,13 @@ CREATE TABLE subscriptions (
 CREATE UNIQUE INDEX ix_subscriptions_user_id ON subscriptions (user_id);
 ```
 
-`Rollback.sql`: `DROP TABLE subscriptions;`. Real flow: draft under `Migrations/Dev/<utc-ts>_add-subscriptions.sql`, promote to `002-billing/` at merge (ordinal = `max(NNN)+1`). Applied at Api startup by the existing `MigrateSmartQrDatabaseAsync()` in `HostConfiguration.cs`.
+`Rollback.sql`: `DROP TABLE subscriptions;`. Real flow: draft under `Migrations/Dev/<utc-ts>_add-subscriptions.sql`, promote to `002-billing/` at merge (ordinal = `max(NNN)+1`). Applied at Api startup by the existing `MigrateForeverPinDatabaseAsync()` in `HostConfiguration.cs`.
 
 ---
 
 ## API contract
 
-New `BillingController` (`SmartQr.Api/Controllers/BillingController.cs`), `[Route("api/billing")]`, owner-scoped via `ICurrentUser` exactly like `CodesController` (anonymous ⇒ `Unauthorized()`). All success bodies wrapped in `ApiResponse<T>.Ok(...)`; failures → `Problem(...)`. Webhook is the **only** action **not** owner-scoped (Stripe is the caller).
+New `BillingController` (`ForeverPin.Api/Controllers/BillingController.cs`), `[Route("api/billing")]`, owner-scoped via `ICurrentUser` exactly like `CodesController` (anonymous ⇒ `Unauthorized()`). All success bodies wrapped in `ApiResponse<T>.Ok(...)`; failures → `Problem(...)`. Webhook is the **only** action **not** owner-scoped (Stripe is the caller).
 
 Each action's handler returns a discriminated `ApplicationResult<TSuccess, TFailure>` (per-op result type per the result-pattern convention) — `Success.Data` carries the DTO, `Failure.Error` a typed failure record with bool discriminator flags the controller maps to a status code (no `ApiResults.ToStatusCode` helper in the repo yet — inline like `CodesController`):
 
@@ -102,11 +102,11 @@ Each action's handler returns a discriminated `ApplicationResult<TSuccess, TFail
 | webhook | `BillingWebhookResult` | — | `InvalidSignature` → 400, else 500 |
 | me | `BillingMeResult` | `Status : BillingStatusDto` | (no flag) else 500 |
 
-DTOs in `SmartQr.Api/Application/Billing/Core/Models/`.
+DTOs in `ForeverPin.Api/Application/Billing/Core/Models/`.
 
 ### 1. `POST /api/billing/checkout` → `{ url }`
 
-Request `CheckoutRequest { Plan plan }` (`SmartQr.Api/Requests/CheckoutRequest.cs`, enum-as-text via the configured `JsonStringEnumConverter`).
+Request `CheckoutRequest { Plan plan }` (`ForeverPin.Api/Requests/CheckoutRequest.cs`, enum-as-text via the configured `JsonStringEnumConverter`).
 Response `ApiResponse<CheckoutSessionDto>.Ok`, `CheckoutSessionDto { string Url }`.
 
 ```jsonc
@@ -162,7 +162,7 @@ Response `ApiResponse<BillingStatusDto>.Ok`:
 
 ## Enforcement point (HTTP 402)
 
-**Gate exactly one place: `CodeCreateCommandHandler`** (`SmartQr.Api/Infrastructure/Codes/CommandHandlers/CodeCreateCommandHandler.cs`). Nowhere else — update/setactive/redirect are untouched.
+**Gate exactly one place: `CodeCreateCommandHandler`** (`ForeverPin.Api/Infrastructure/Codes/CommandHandlers/CodeCreateCommandHandler.cs`). Nowhere else — update/setactive/redirect are untouched.
 
 - Add `Task<int> CountByUserAsync(Guid userId, CancellationToken ct)` to `ICodeRepository` + `CodeRepository` (`db.Codes.CountAsync(c => c.UserId == userId, ct)`).
 - Inject `ISubscriptionRepository` (or a thin `IPlanResolver`) + `PlanLimits` into the handler. Resolve the caller's `Plan` (Free if no row) → `cap = PlanLimits.MaxCodes(plan)`.
@@ -175,7 +175,7 @@ Agency (`cap = int.MaxValue`) never trips. The gate is a **count vs cap**, no St
 
 ## Stripe gateway abstraction
 
-`IBillingBroker` (`SmartQr.Api/Application/Billing/Core/Services/IBillingBroker.cs`) — **no Stripe SDK type crosses the seam**:
+`IBillingBroker` (`ForeverPin.Api/Application/Billing/Core/Services/IBillingBroker.cs`) — **no Stripe SDK type crosses the seam**:
 
 - `CreateCheckoutSessionAsync(userId, priceId, successUrl, cancelUrl, ct) → string url`
 - `CreatePortalSessionAsync(stripeCustomerId, returnUrl, ct) → string url`
@@ -183,16 +183,16 @@ Agency (`cap = int.MaxValue`) never trips. The gate is a **count vs cap**, no St
 
 Implementations:
 
-- **`StripeBillingBroker`** (real) — `SmartQr.Api/Infrastructure/Billing/Services/StripeBillingBroker.cs`, uses **Stripe.net** (`SmartQr.Api.csproj` pins `Stripe.net` `52.0.0`). Constructs `SessionService` / `Stripe.BillingPortal.SessionService`, verifies via `EventUtility.ConstructEvent(rawBody, sig, BillingSettings.WebhookSecret)` and flattens the event into a `BillingWebhookEvent`.
-- **`FakeBillingBroker`** (tests) — in `SmartQr.Tests.E2E/Harness/FakeBillingBroker.cs`, returns canned URLs + lets a test hand-craft the returned `BillingWebhookEvent`; **no network, no real Stripe**.
+- **`StripeBillingBroker`** (real) — `ForeverPin.Api/Infrastructure/Billing/Services/StripeBillingBroker.cs`, uses **Stripe.net** (`ForeverPin.Api.csproj` pins `Stripe.net` `52.0.0`). Constructs `SessionService` / `Stripe.BillingPortal.SessionService`, verifies via `EventUtility.ConstructEvent(rawBody, sig, BillingSettings.WebhookSecret)` and flattens the event into a `BillingWebhookEvent`.
+- **`FakeBillingBroker`** (tests) — in `ForeverPin.Tests.E2E/Harness/FakeBillingBroker.cs`, returns canned URLs + lets a test hand-craft the returned `BillingWebhookEvent`; **no network, no real Stripe**.
 
-DI: register `IBillingBroker → StripeBillingBroker` and `ISubscriptionRepository → SubscriptionRepository` in a new `HostConfiguration.AddBilling()` step (`SmartQr.Api/Configurations/HostConfiguration.Extensions.cs`), added to the `Configure(builder)` chain in `HostConfiguration.cs`.
+DI: register `IBillingBroker → StripeBillingBroker` and `ISubscriptionRepository → SubscriptionRepository` in a new `HostConfiguration.AddBilling()` step (`ForeverPin.Api/Configurations/HostConfiguration.Extensions.cs`), added to the `Configure(builder)` chain in `HostConfiguration.cs`.
 
 ---
 
 ## Config
 
-Settings class **`BillingSettings`** (`SmartQr.Api/Settings/BillingSettings.cs`) binds the **`Billing`** appsettings section. `ConfigurationLoader.Load<T>` defaults the section to `typeof(T).Name`, so the `Settings`-suffixed type passes the section name explicitly — `Load<BillingSettings>(builder.Configuration, "Billing")` — keeping the config keys (`Billing:Prices:{…}`) and any existing user-secrets unchanged. Registered as a singleton in `HostConfiguration.Extensions.cs::AddSettings()` alongside `ApiSettings`. Secrets carry `[EnvironmentVariable("…")]` for env override.
+Settings class **`BillingSettings`** (`ForeverPin.Api/Settings/BillingSettings.cs`) binds the **`Billing`** appsettings section. `ConfigurationLoader.Load<T>` defaults the section to `typeof(T).Name`, so the `Settings`-suffixed type passes the section name explicitly — `Load<BillingSettings>(builder.Configuration, "Billing")` — keeping the config keys (`Billing:Prices:{…}`) and any existing user-secrets unchanged. Registered as a singleton in `HostConfiguration.Extensions.cs::AddSettings()` alongside `ApiSettings`. Secrets carry `[EnvironmentVariable("…")]` for env override.
 
 | Property | Env var | appsettings |
 |---|---|---|
@@ -219,11 +219,11 @@ Local secrets: `dotnet user-secrets set "Billing:SecretKey" "sk_test_…"` etc. 
 
 ---
 
-## Test plan — extend `SmartQr.Tests` (SQLite + Fake gateway, **no Docker / no real Stripe**)
+## Test plan — extend `ForeverPin.Tests` (SQLite + Fake gateway, **no Docker / no real Stripe**)
 
-`SmartQr.Tests` already: refs `SmartQr.Api` + `SmartQr.Common.Persistence`, uses `SqliteTestDb` (in-memory, real relational provider, `EnsureCreated()` off the EF model), and instantiates repos/handlers directly. Billing tests follow that exact pattern — **no new infra, no `WebApplicationFactory`, no Testcontainers** (those stay in `SmartQr.IntegrationTests`, which needs Docker and is out of scope here).
+`ForeverPin.Tests` already: refs `ForeverPin.Api` + `ForeverPin.Common.Persistence`, uses `SqliteTestDb` (in-memory, real relational provider, `EnsureCreated()` off the EF model), and instantiates repos/handlers directly. Billing tests follow that exact pattern — **no new infra, no `WebApplicationFactory`, no Testcontainers** (those stay in `ForeverPin.IntegrationTests`, which needs Docker and is out of scope here).
 
-Once `SubscriptionEntity` is on `SmartQrDbContext`, `SqliteTestDb` builds the `subscriptions` table automatically.
+Once `SubscriptionEntity` is on `ForeverPinDbContext`, `SqliteTestDb` builds the `subscriptions` table automatically.
 
 | File | Covers |
 |---|---|
@@ -232,21 +232,21 @@ Once `SubscriptionEntity` is on `SmartQrDbContext`, `SqliteTestDb` builds the `s
 | `CodeCreateLimitTests.cs` | **the 402 gate** — construct `CodeCreateCommandHandler` with `CodeRepository` (SQLite) + a Free/Solo subscription; seed N codes; assert create succeeds at `count < cap` and returns `Failure { LimitReached = true }` at `count == cap`; Agency never trips. |
 | `BillingHandlersTests.cs` | checkout handler rejects `Free`, resolves price from config, calls `FakeBillingBroker` and returns its URL; portal handler fails when no `StripeCustomerId`; webhook handler upserts a row from a Fake-parsed `checkout.session.completed` and flips status on `…deleted`. |
 | `BillingMeQueryTests.cs` | no row ⇒ `Free/active`, correct `maxCodes` + live `codeCount`; with a Pro row ⇒ Pro limits. |
-| (assert) `RedirectResolutionTests.cs` | **negative guard** — a code whose owner is over-cap still resolves (redirect stays plan-agnostic). Confirm `SmartQr.Redirect.Api` gains **no** billing reference. |
+| (assert) `RedirectResolutionTests.cs` | **negative guard** — a code whose owner is over-cap still resolves (redirect stays plan-agnostic). Confirm `ForeverPin.Redirect.Api` gains **no** billing reference. |
 
-`FakeBillingBroker` lives in `SmartQr.Tests.E2E/Harness/FakeBillingBroker.cs` (implements `IBillingBroker`): canned checkout/portal URLs; `ParseWebhookEvent` returns a test-supplied `BillingWebhookEvent` so webhook-handler logic is exercised without signature/network.
+`FakeBillingBroker` lives in `ForeverPin.Tests.E2E/Harness/FakeBillingBroker.cs` (implements `IBillingBroker`): canned checkout/portal URLs; `ParseWebhookEvent` returns a test-supplied `BillingWebhookEvent` so webhook-handler logic is exercised without signature/network.
 
-**As built:** 23 billing units (`PlanLimits` 4 · `CodeCreateLimit` 4 · `SubscriptionRepository` 5 · `BillingHandlers` 7 · `BillingMeQuery` 3) → `SmartQr.Tests` is **44 green** (was 20). `SmartQr.IntegrationTests` unchanged at 18 (no billing E2E this pass).
+**As built:** 23 billing units (`PlanLimits` 4 · `CodeCreateLimit` 4 · `SubscriptionRepository` 5 · `BillingHandlers` 7 · `BillingMeQuery` 3) → `ForeverPin.Tests` is **44 green** (was 20). `ForeverPin.IntegrationTests` unchanged at 18 (no billing E2E this pass).
 
 ---
 
 ## File plan (new + edited)
 
-As built — paths relative to `SmartQr.Api/` unless prefixed.
+As built — paths relative to `ForeverPin.Api/` unless prefixed.
 
-**New** — domain: `SmartQr.Common.Domain/Billing/Entities/SubscriptionEntity.cs`, `Billing/Enums/{Plan,SubscriptionStatus}.cs`. Persistence: `SmartQr.Common.Persistence/Configurations/SubscriptionEntityConfiguration.cs`, `Migrations/002-billing/{Apply,Rollback}.sql`. Api application (`Application/Billing/Core/`): `PlanLimits.cs`, `PlanPriceMap.cs`, `Services/{IBillingBroker,ISubscriptionRepository}.cs`, `Commands/{BillingCheckoutCommand,BillingPortalCommand,BillingWebhookCommand}.cs`, `Queries/BillingMeQuery.cs`, `Models/{CheckoutSessionDto,PortalSessionDto,BillingStatusDto,LimitsDto,UsageDto,BillingWebhookEvent,BillingWebhookEventType}.cs` + the per-op results `Models/{BillingCheckoutResult,BillingPortalResult,BillingWebhookResult,BillingMeResult}.cs`. Api infra (`Infrastructure/Billing/`): `CommandHandlers/{BillingCheckoutCommandHandler,BillingPortalCommandHandler,BillingWebhookCommandHandler}.cs`, `QueryHandlers/BillingMeQueryHandler.cs`, `Services/StripeBillingBroker.cs`. Api persistence: `Persistence/Repositories/SubscriptionRepository.cs`. Presentation: `Controllers/BillingController.cs`, `Requests/CheckoutRequest.cs`, `Settings/BillingSettings.cs` (incl. nested `BillingPricesSettings`). Tests (`SmartQr.Tests/`): `{PlanLimitsTests,CodeCreateLimitTests,SubscriptionRepositoryTests,BillingHandlersTests,BillingMeQueryTests}.cs` + `FakeBillingBroker.cs`.
+**New** — domain: `ForeverPin.Common.Domain/Billing/Entities/SubscriptionEntity.cs`, `Billing/Enums/{Plan,SubscriptionStatus}.cs`. Persistence: `ForeverPin.Common.Persistence/Configurations/SubscriptionEntityConfiguration.cs`, `Migrations/002-billing/{Apply,Rollback}.sql`. Api application (`Application/Billing/Core/`): `PlanLimits.cs`, `PlanPriceMap.cs`, `Services/{IBillingBroker,ISubscriptionRepository}.cs`, `Commands/{BillingCheckoutCommand,BillingPortalCommand,BillingWebhookCommand}.cs`, `Queries/BillingMeQuery.cs`, `Models/{CheckoutSessionDto,PortalSessionDto,BillingStatusDto,LimitsDto,UsageDto,BillingWebhookEvent,BillingWebhookEventType}.cs` + the per-op results `Models/{BillingCheckoutResult,BillingPortalResult,BillingWebhookResult,BillingMeResult}.cs`. Api infra (`Infrastructure/Billing/`): `CommandHandlers/{BillingCheckoutCommandHandler,BillingPortalCommandHandler,BillingWebhookCommandHandler}.cs`, `QueryHandlers/BillingMeQueryHandler.cs`, `Services/StripeBillingBroker.cs`. Api persistence: `Persistence/Repositories/SubscriptionRepository.cs`. Presentation: `Controllers/BillingController.cs`, `Requests/CheckoutRequest.cs`, `Settings/BillingSettings.cs` (incl. nested `BillingPricesSettings`). Tests (`ForeverPin.Tests/`): `{PlanLimitsTests,CodeCreateLimitTests,SubscriptionRepositoryTests,BillingHandlersTests,BillingMeQueryTests}.cs` + `FakeBillingBroker.cs`.
 
-**Edited** — `SmartQrDbContext.cs` (`DbSet<SubscriptionEntity>` + `Plan`/`SubscriptionStatus` conversions), `CodeCreateCommandHandler.cs` (limit gate), `CodesController.cs` (`Create` → 402 arm), `ICodeRepository.cs` + `CodeRepository.cs` (`CountByUserAsync`), `CodeCreateResult.cs` (`LimitReached` flag), `HostConfiguration.Extensions.cs` (`AddBilling` + `BillingSettings` in `AddSettings`), `HostConfiguration.cs` (chain `.AddBilling()`), `SmartQr.Api.csproj` (`Stripe.net` 52.0.0), `appsettings.json` (empty `Billing` block).
+**Edited** — `ForeverPinDbContext.cs` (`DbSet<SubscriptionEntity>` + `Plan`/`SubscriptionStatus` conversions), `CodeCreateCommandHandler.cs` (limit gate), `CodesController.cs` (`Create` → 402 arm), `ICodeRepository.cs` + `CodeRepository.cs` (`CountByUserAsync`), `CodeCreateResult.cs` (`LimitReached` flag), `HostConfiguration.Extensions.cs` (`AddBilling` + `BillingSettings` in `AddSettings`), `HostConfiguration.cs` (chain `.AddBilling()`), `ForeverPin.Api.csproj` (`Stripe.net` 52.0.0), `appsettings.json` (empty `Billing` block).
 
 ### Frontend (as built)
 

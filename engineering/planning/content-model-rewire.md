@@ -116,8 +116,8 @@ public abstract record CodeContent
 
 - Domain: `Domain/Codes/Content/{Type}/Models/*` (new) · `Common.Domain/Codes/Content/{Type}/Enums/*` (SDK-generic sub-enums).
 - Application: `Codes/Content/{Type}/Validation/*` · `Codes/Content/{IContentTypeSpec, ContentTypes}` · `Codes/Core/Validation/ContentValidation` · handlers (`Infrastructure/Codes/Core/CommandHandlers/*`).
-- Persistence: `Common.Persistence`→`SmartQr.Persistence/Configurations/CodeEntityConfiguration` · `…/Migrations/006-*` · `Domain/Codes/Core/Entities/CodeEntity`.
-- Render: `SmartQr.Infrastructure/Codes/Core/Services/CodeImageService`.
+- Persistence: `Common.Persistence`→`ForeverPin.Persistence/Configurations/CodeEntityConfiguration` · `…/Migrations/006-*` · `Domain/Codes/Core/Entities/CodeEntity`.
+- Render: `ForeverPin.Infrastructure/Codes/Core/Services/CodeImageService`.
 - Api: `Requests/Codes/{Create,Update,Preview}CodeApiRequest` · `Controllers/CodesController` · `Application/Codes/Core/Models/CodeDto`.
 - Frontend: `lib/contentTypes.ts` · `types.ts` · `api.ts` · `screens/CreateCodeScreen.tsx` · `components/{MobileAppFields,ContentTypeForm,QrPreview}.tsx` · `lib/contentTypes.test.ts`.
 - Delete: `Application/Codes/Core/Models/ContentSpec.cs` (+ `ContentSpecJson`).

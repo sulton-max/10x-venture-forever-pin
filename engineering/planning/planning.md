@@ -1,10 +1,10 @@
-# Smart QR — Platform Planning
+# ForeverPin — Platform Planning
 
 *Last updated: 2026-06-26*
 
 Durable roadmap + backlog for the technical platform — the standing plan that version docs pull from
 and return to. Business roadmap → `product/context.md`. Strategy →
-`wow-two-ws/ideas/smart-qr-spec.md`. Doc shape → `wow-two-ws/conventions/planning/`.
+`wow-two-ws/ideas/forever-pin-spec.md`. Doc shape → `wow-two-ws/conventions/planning/`.
 
 ## Versions
 
@@ -16,7 +16,7 @@ Shipped + the active/next version only — future work lives in the ordered back
 | Version | Theme | Type | Deliverables | Status |
 |---|---|---|---|---|
 | v0.1 | Product foundation | Feature | Generate + serve codes (QR · routing · fallback) · guest identity + ownership · manage codes (edit / enable-disable / delete / search · edit→next-scan); verified e2e | ✅ |
-| v0.2 | Migration layer | Adoption | Built the migrator inline → extracted to `WoW2.Sdk.Backend.Beta` + `wow-migrate` CLI; SQLite dialect + web-freedom arch test; **adopted across all 3 apps** (smart-qr · secrets-vault · drydock) on Postgres; SDK migrator STABLE | ✅ |
+| v0.2 | Migration layer | Adoption | Built the migrator inline → extracted to `WoW2.Sdk.Backend.Beta` + `wow-migrate` CLI; SQLite dialect + web-freedom arch test; **adopted across all 3 apps** (forever-pin · secrets-vault · drydock) on Postgres; SDK migrator STABLE | ✅ |
 | v0.3 | Accounts & ownership | Feature | sign in with Google · claim guest codes · cross-device management | ✅ |
 | v0.4 | SDK adoption | Adoption | extract all non-business-logic infra to the SDK (incl. the test baseline + the migrator/EF test harness → `Testing.Data`); adopt `@wow-two-beta/ui` fully | ✅ |
 | v0.5 | Code styling | Feature | server-authoritative render (preview == download) · module + finder-eye shapes · linear/radial gradients · transparency · center emoji · design system (lavender/violet/teal · Geist) + dark mode · builder tabs + sticky preview | ✅ |
@@ -45,14 +45,14 @@ Shipped + the active/next version only — future work lives in the ordered back
 | Two services (Api + Redirect) | Isolate the only thing that scales (the redirect) as a slim, stateless, horizontally-scalable process. |
 | Minimal API for Redirect, controllers for Api | Lean hot path; familiar CRUD surface for management. |
 | ImageSharp (2.1, Apache-2.0) for logo, not SkiaSharp | Fully managed, no native-asset friction, license-clean. QR core (QRCoder) needs no native deps. |
-| API-layer folders at host root (no `Api/` wrapper) | Avoids `SmartQr.Api.Api.*`; the project name already says `.Api`. |
+| API-layer folders at host root (no `Api/` wrapper) | Avoids `ForeverPin.Api.Api.*`; the project name already says `.Api`. |
 | ~~In-memory config store default~~ → **redirect reads Postgres directly** for v1.0; Redis swap via settings | Edits hit the next scan with **zero invalidation logic**. Cache (in-memory/Redis) deferred — `CachedRedirectConfigRepository` kept but unwired; re-enable when scan volume warrants (backlog). |
 | Enums as **text** (not native PG enums) | Removes runtime-migration gotchas; easier schema evolution; consistent across Postgres + SQLite tests. **v0.4:** stored as **snake_case** labels via the SDK `EnumCaseConverter` (Postgres-native casing). |
 | ~~Runtime schema bootstrap (`EnsureCreated` on startup)~~ → **bespoke SQL migrator** | `EnsureCreated` never alters → stale-schema 500 on `user_id`. Replaced with raw-`.sql` Apply/Rollback migrator, auto-applied at startup. EF becomes a pure mapper (schema-first). |
 | Bespoke SQL migrator over EF Migrations / DbUp / Grate | Schema-first, easy squash, Apply/Rollback symmetry, normalized-checksum drift guard, host-agnostic engine reused by a CLI + (later) HTTP endpoint. Also the **proving ground** for the wow-two backend-beta SDK migrator (extract once stable). |
 | Marketing integrated into the SPA (not a separate site) + `react-router-dom` | Public landing/pricing/blog need crawlable, shareable URLs (SEO) the hand-rolled view state-machine couldn't give. One build, backend already serves SPA at root w/ fallback, same `@wow-two-beta/ui` design system → no second deploy, no brand split. App moved under `/app/*`; existing screens wrapped untouched in thin route adapters. Marketing routes make **zero API calls** (render with the backend down). |
-| Tests = **E2E** (real Postgres via Testcontainers, both hosts over HTTP) over unit / mock-heavy integration | smart-qr has ~no external APIs to mock → E2E mocks nothing and covers the real flow incl. the two-host wedge. Catches PG/serialization/auth/ownership bugs units miss. Harness mirrors the backend-beta SDK testing scaffold (extract later). |
-| SDK-bound infra split into `SmartQr.Platform.*` libs (`Core` · `Migrations` · `Testing`) + solution folders | **Sanitary separation**: the generic infra (mediator/result/config/conn-factory, migrator engine, generic E2E harness) lives in clearly-named libs referenced by product projects — so the eventual lift to backend-beta is obvious + cheap (move + rename namespaces at lift). Refs go product → platform only. |
+| Tests = **E2E** (real Postgres via Testcontainers, both hosts over HTTP) over unit / mock-heavy integration | forever-pin has ~no external APIs to mock → E2E mocks nothing and covers the real flow incl. the two-host wedge. Catches PG/serialization/auth/ownership bugs units miss. Harness mirrors the backend-beta SDK testing scaffold (extract later). |
+| SDK-bound infra split into `ForeverPin.Platform.*` libs (`Core` · `Migrations` · `Testing`) + solution folders | **Sanitary separation**: the generic infra (mediator/result/config/conn-factory, migrator engine, generic E2E harness) lives in clearly-named libs referenced by product projects — so the eventual lift to backend-beta is obvious + cheap (move + rename namespaces at lift). Refs go product → platform only. |
 | Billing: **Stripe hosted** (Checkout + Customer Portal), TEST mode, no on-site card capture; **subscription keyed by guest `UserId`** (no auth this pass); **bespoke `002-billing` migration** (not EF) | Hosted flow = PCI off-loaded, zero card UI. `UserId`-keyed sub fits guest-first (auth lands later as additive claim flow, no rewrite). `002-billing` keeps the schema-first SQL migrator authority. Enforcement is **create-time only** — redirect stays plan-agnostic (never-deactivate-on-downgrade). |
 | Auth (v0.3) = **Google OAuth** (sign in with Google); session = a server-issued **HttpOnly auth cookie** (ASP.NET cookie auth, not the SDK JWT bearer); Google ID token verified behind an **`IGoogleTokenVerifier`** seam; **bespoke `003-accounts` migration** | One-click, no passwords or email infra to run — strongly GWDNBM. Same-origin SPA+Api → cookie auth is the secure, simplest fit and sidesteps the kit JWT-bearer `init`-only bug (issuance side is fine; bearer is the broken part). The verifier seam keeps E2E mock-free (real verifier hits Google; tests use a fake). **Claim** upgrades the guest user-key **in place** — the guest cookie Guid becomes the account id, so same-device signup needs zero code reassignment; cross-device signup merges the guest's codes into the existing account. |
 
@@ -60,20 +60,20 @@ Shipped + the active/next version only — future work lives in the ordered back
 
 | Component | State |
 |---|---|
-| `SmartQr.Common` (mediator, result, ApiResponse, config) | ✅ built |
-| `SmartQr.Common.Domain` (entities + enums) | ✅ built |
-| `SmartQr.Common.Persistence` (EF Core, Npgsql) | ✅ built — EF mapper + embedded `Migrations/` SQL; **migrator consumed from the SDK** (`WoW2.Sdk.Backend.Beta`, `AddDatabaseBespokeMigrations`) |
-| `SmartQr.Codes` (QR/barcode/logo generation) | ✅ built + tested |
-| `SmartQr.Api` (management API) | ✅ create + manage (edit / toggle / delete / search) |
-| `SmartQr.Redirect.Api` (hot path + async analytics) | ✅ built — direct-DB config read (cache deferred; `CachedRedirectConfigRepository` unwired) |
-| `SmartQr.Tests.Unit` | ✅ **16 green** — pure-logic units only, no I/O: routing permutations · render formats (svg/png) · plan-limit math. Container-free (~40ms) |
-| `SmartQr.Tests.Integration` | ✅ **18 green** — genuine integration: below-HTTP DB branches only (code/subscription repo edge cases — cascade delete · `ExecuteUpdate` · audit stamping · single-row upsert · Stripe-id lookup · type round-trip) + cached redirect config store. Provider-switchable (Postgres default / SQLite via `TestSetupOptions`) |
-| `SmartQr.Tests.E2E` | ✅ **45 green** — **primary tier, E2E over real Postgres** (Testcontainers, both hosts): identity · auth (Google sign-in / claim / cross-device / logout) · codes CRUD/search · ownership edges · render · two-host wedge · **billing (checkout · portal · `/me` · 402 cap · webhook subscribe/upgrade/cancel + never-deactivate-on-downgrade)** over a fake Stripe gateway. Needs Docker |
-| `SmartQr.Tests.Migrations` | ✅ **10 green** — engine tests vs the SDK package (apply · drift+repair · orphan · `@no-transaction` · concurrency · failure-mid-batch · rollback); Testcontainers PG, `Api`-independent |
-| Migrator CLI | ✅ **SDK `wow-migrate` dotnet tool** (`WoW2.Sdk.Backend.Beta.Data.Migrations.Cli`) — local `SmartQr.Migrations.Cli` dropped |
+| `ForeverPin.Common` (mediator, result, ApiResponse, config) | ✅ built |
+| `ForeverPin.Common.Domain` (entities + enums) | ✅ built |
+| `ForeverPin.Common.Persistence` (EF Core, Npgsql) | ✅ built — EF mapper + embedded `Migrations/` SQL; **migrator consumed from the SDK** (`WoW2.Sdk.Backend.Beta`, `AddDatabaseBespokeMigrations`) |
+| `ForeverPin.Codes` (QR/barcode/logo generation) | ✅ built + tested |
+| `ForeverPin.Api` (management API) | ✅ create + manage (edit / toggle / delete / search) |
+| `ForeverPin.Redirect.Api` (hot path + async analytics) | ✅ built — direct-DB config read (cache deferred; `CachedRedirectConfigRepository` unwired) |
+| `ForeverPin.Tests.Unit` | ✅ **16 green** — pure-logic units only, no I/O: routing permutations · render formats (svg/png) · plan-limit math. Container-free (~40ms) |
+| `ForeverPin.Tests.Integration` | ✅ **18 green** — genuine integration: below-HTTP DB branches only (code/subscription repo edge cases — cascade delete · `ExecuteUpdate` · audit stamping · single-row upsert · Stripe-id lookup · type round-trip) + cached redirect config store. Provider-switchable (Postgres default / SQLite via `TestSetupOptions`) |
+| `ForeverPin.Tests.E2E` | ✅ **45 green** — **primary tier, E2E over real Postgres** (Testcontainers, both hosts): identity · auth (Google sign-in / claim / cross-device / logout) · codes CRUD/search · ownership edges · render · two-host wedge · **billing (checkout · portal · `/me` · 402 cap · webhook subscribe/upgrade/cancel + never-deactivate-on-downgrade)** over a fake Stripe gateway. Needs Docker |
+| `ForeverPin.Tests.Migrations` | ✅ **10 green** — engine tests vs the SDK package (apply · drift+repair · orphan · `@no-transaction` · concurrency · failure-mid-batch · rollback); Testcontainers PG, `Api`-independent |
+| Migrator CLI | ✅ **SDK `wow-migrate` dotnet tool** (`WoW2.Sdk.Backend.Beta.Data.Migrations.Cli`) — local `ForeverPin.Migrations.Cli` dropped |
 | DB schema / migrations | ✅ **migrator consumed from the SDK** (`AddDatabaseBespokeMigrations`); `001-baseline` + `002-billing` embedded; local engine extracted → SDK `Data/Migrations/Bespoke/` |
 | User identity (guest cookie + `/identity/me` + `/identity/guest`) | ✅ `ICurrentUser`, `user-id` cookie; `/identity/me` now resolves a signed-in `UserSummaryDto` from claims |
-| Accounts — Google sign-in (`users`, `003-accounts`) | ✅ built — `UserEntity` + `POST /api/auth/google` and `/api/auth/logout`, cookie session (`sqr-auth`), `IGoogleTokenVerifier` seam (real `Google.Apis.Auth`), frontend Google button + header. **Live Google sign-in pending the OAuth client id** |
+| Accounts — Google sign-in (`users`, `003-accounts`) | ✅ built — `UserEntity` + `POST /api/auth/google` and `/api/auth/logout`, cookie session (`foreverpin-auth`), `IGoogleTokenVerifier` seam (real `Google.Apis.Auth`), frontend Google button + header. **Live Google sign-in pending the OAuth client id** |
 | Claim guest codes on sign-in | ✅ built (backend) — same-device upgrade-in-place (guest Guid becomes the account id, zero reassignment); cross-device merge via `ICodeRepository.ReassignOwnerAsync` |
 | Auth E2E | ✅ **6 green** — sign-in/find-or-create · invalid-token 401 · `/me` profile · same-device claim · cross-device ownership · logout (fake verifier seam, Testcontainers PG) |
 | Edit → hot-path propagation | ✅ edits land in Postgres; redirect reads DB directly per scan |
@@ -95,9 +95,9 @@ strike-through + ✅ when done (kept for traceability).
 
 | Item | Type | Notes |
 |---|---|---|
-| Full rebrand `Smart QR` → **`ForeverPin`** | feature | name locked 2026-06-23 (`foreverpin.com`, Cloudflare). Sweep user-facing strings first: frontend `data.ts` `BRAND` · `Logo` · `index.html` title/meta/OG · footer · blog mentions · page `<title>`s · `package.json` name. Then docs (`CLAUDE.md` · spec · architecture). Tagline: **"Pin it once. It points forever."** |
-| Rename `SmartQr.*` backend namespaces / projects | idea | larger sweep (`.sln`/`.csproj`/usings) — defer until the user-facing rebrand is stable |
-| Rename repo folder `smart-qr-poc` → `foreverpin` | idea | touches git + `scripts/active.sh` registry — later |
+| Full rebrand `ForeverPin` → **`ForeverPin`** | feature | name locked 2026-06-23 (`foreverpin.com`, Cloudflare). Sweep user-facing strings first: frontend `data.ts` `BRAND` · `Logo` · `index.html` title/meta/OG · footer · blog mentions · page `<title>`s · `package.json` name. Then docs (`CLAUDE.md` · spec · architecture). Tagline: **"Pin it once. It points forever."** |
+| Rename `ForeverPin.*` backend namespaces / projects | idea | larger sweep (`.sln`/`.csproj`/usings) — defer until the user-facing rebrand is stable |
+| Rename repo folder `10x-venture-forever-pin` → `foreverpin` | idea | touches git + `scripts/active.sh` registry — later |
 
 ### Accounts & ownership (next)
 
@@ -132,7 +132,7 @@ strike-through + ✅ when done (kept for traceability).
 | Re-enable redirect config cache (+ invalidation) | feature | v1.0 reads Postgres directly per scan; restore IMemoryCache/Redis with edit-invalidation when scan volume warrants. `CachedRedirectConfigRepository` is kept for this. |
 | Redis as prod config store | feature | flip from direct-DB; harden the write side |
 | Geo (MaxMind GeoLite2) activation | feature | turns on country routing (resolver is a Noop stub today) |
-| ~~EF Migrations~~ → bespoke SQL migrator | check | ✅ 2026-06-11 — SQL migrator + `smart-qr-migrate` CLI replaced `EnsureCreated`. Follow-up: extract engine → backend-beta SDK |
+| ~~EF Migrations~~ → bespoke SQL migrator | check | ✅ 2026-06-11 — SQL migrator + `forever-pin-migrate` CLI replaced `EnsureCreated`. Follow-up: extract engine → backend-beta SDK |
 | CDN + TLS (Cloudflare) | feature | serve redirects behind a CDN with TLS |
 | Redirect load test (viral burst) | check | gate before charging / scale |
 
@@ -205,7 +205,7 @@ strike-through + ✅ when done (kept for traceability).
 | Public REST API + keys | idea | developer tier |
 | White-label / agency workspaces | idea | client workspaces, per-client domains |
 | Advanced rules (A/B weighting, AND/OR, scheduling) | idea | routing power → routing versions |
-| Dynamic content pages | idea | hosted **editable** pages (dynamic vCard / business card · app-store device-routing landing · dynamic calendar · link-in-bio · menus) → a **separate site-builder micro-SaaS**; smart-qr creates the page + forwards to it; integrated **last**, after routing |
+| Dynamic content pages | idea | hosted **editable** pages (dynamic vCard / business card · app-store device-routing landing · dynamic calendar · link-in-bio · menus) → a **separate site-builder micro-SaaS**; forever-pin creates the page + forwards to it; integrated **last**, after routing |
 
 ### Ecosystem migration (future)
 

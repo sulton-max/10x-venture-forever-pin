@@ -1,0 +1,12 @@
+using FluentValidation;
+using ForeverPin.Domain.Codes.Content.Phone.Models;
+
+namespace ForeverPin.Application.Codes.Content.Validators;
+
+/// <summary>Validates a phone number.</summary>
+public sealed class PhoneContentValidator : AbstractValidator<PhoneContentValueObject>
+{
+    /// <summary>Builds the phone-content rules.</summary>
+    public PhoneContentValidator() =>
+        RuleFor(content => content.Phone).NotEmpty().WithMessage("Phone number is required.");
+}

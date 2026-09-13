@@ -1,0 +1,10 @@
+namespace ForeverPin.Application.Codes.Core.Models;
+
+/// <summary>Represents the outcome of enabling or disabling a code.</summary>
+public abstract record CodeSetActiveResult
+{
+    private CodeSetActiveResult() { }
+
+    /// <summary>Toggled successfully.</summary>
+    public sealed record Success(CodeDto Code) : CodeSetActiveResult;
+}

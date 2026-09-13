@@ -1,4 +1,4 @@
-# Smart QR — Version Track
+# ForeverPin — Version Track
 
 Per-version iteration docs (scope + log). Status table + lifecycle in `../planning.md` § Versions.
 

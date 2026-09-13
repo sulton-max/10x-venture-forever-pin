@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Serve every scan fast and survive viral spikes (a code on a billboard can do millions of scans in minutes), while logging analytics without ever slowing the redirect. This is the only part of the system that scales under load, so it's a separate, slim, stateless service (`SmartQr.Redirect.Api`).
+Serve every scan fast and survive viral spikes (a code on a billboard can do millions of scans in minutes), while logging analytics without ever slowing the redirect. This is the only part of the system that scales under load, so it's a separate, slim, stateless service (`ForeverPin.Redirect.Api`).
 
 ## Caching philosophy
 
@@ -30,13 +30,13 @@ Analytics is decoupled: `ChannelScanRecorder` is a bounded in-memory queue (drop
 
 | Type | File |
 |---|---|
-| Endpoint `GET /{slug}` | `engineering/codebase/smartqr.backend-services/SmartQr.Redirect.Api/Endpoints/RedirectEndpoints.cs` |
-| `IRedirectConfigRepository` | `SmartQr.Redirect.Api/Application/Routing/Services/IRedirectConfigRepository.cs` |
-| `CachedRedirectConfigRepository` (default: IMemoryCache over DB) | `SmartQr.Redirect.Api/Infrastructure/Routing/CachedRedirectConfigRepository.cs` |
-| `RedisRedirectConfigRepository` (production) | `SmartQr.Redirect.Api/Infrastructure/Routing/RedisRedirectConfigRepository.cs` |
-| `ChannelScanRecorder` (queue) | `SmartQr.Redirect.Api/Infrastructure/Analytics/ChannelScanRecorder.cs` |
-| `ScanFlushBackgroundService` (batch flush) | `SmartQr.Redirect.Api/Infrastructure/Analytics/ScanFlushBackgroundService.cs` |
-| Store/recorder selection (DI) | `SmartQr.Redirect.Api/Configurations/HostConfiguration.Extensions.cs` |
+| Endpoint `GET /{slug}` | `engineering/codebase/forever-pin.backend-services/ForeverPin.Redirect.Api/Endpoints/RedirectEndpoints.cs` |
+| `IRedirectConfigRepository` | `ForeverPin.Redirect.Api/Application/Routing/Services/IRedirectConfigRepository.cs` |
+| `CachedRedirectConfigRepository` (default: IMemoryCache over DB) | `ForeverPin.Redirect.Api/Infrastructure/Routing/CachedRedirectConfigRepository.cs` |
+| `RedisRedirectConfigRepository` (production) | `ForeverPin.Redirect.Api/Infrastructure/Routing/RedisRedirectConfigRepository.cs` |
+| `ChannelScanRecorder` (queue) | `ForeverPin.Redirect.Api/Infrastructure/Analytics/ChannelScanRecorder.cs` |
+| `ScanFlushBackgroundService` (batch flush) | `ForeverPin.Redirect.Api/Infrastructure/Analytics/ScanFlushBackgroundService.cs` |
+| Store/recorder selection (DI) | `ForeverPin.Redirect.Api/Configurations/HostConfiguration.Extensions.cs` |
 
 ## Scaling levers
 

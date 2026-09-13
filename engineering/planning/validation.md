@@ -23,7 +23,7 @@
 
 ### V1 · `ContentValidation` shouldn't exist
 
-- `SmartQr.Application/Codes/Core/Validation/ContentValidation.cs` does two things: the `IsSupported()` gate + spec dispatch
+- `ForeverPin.Application/Codes/Core/Validation/ContentValidation.cs` does two things: the `IsSupported()` gate + spec dispatch
 - once the spec dies, the gate is a declarative one-liner — no helper type earns its place
 - it exists only because spec dispatch needed imperative code (`foreach` over `ContentError` → `AddFailure`)
 - **verdict: delete**; the gate folds into the nested content validator
@@ -283,7 +283,7 @@ EntityGateBehavior<TRequest, TResponse>   // registered BEFORE ValidationBehavio
 - *one behavior, two validation passes selected by rule-set* — RuleSets are unreachable through the pipeline (§ *Shape — rejected: RuleSets*).
 - *keep it in the handler* — works, but the order then rests on per-handler discipline, which is what a convention exists to remove.
 
-**Home.** The behavior + marker + gate interface are generic infra → backend-beta SDK. Per the extract-in-the-`+0.1` doctrine: build inline in smart-qr first, extract after it has one real consumer.
+**Home.** The behavior + marker + gate interface are generic infra → backend-beta SDK. Per the extract-in-the-`+0.1` doctrine: build inline in forever-pin first, extract after it has one real consumer.
 
 **Not now.** The command-handler pattern already in place is the template until Iteration 9.
 

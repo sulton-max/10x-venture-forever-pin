@@ -1,4 +1,4 @@
-# Smart QR — Engineering
+# ForeverPin — Engineering
 
 Technical layer — build · ship · run. The code lives under `codebase/`.
 
