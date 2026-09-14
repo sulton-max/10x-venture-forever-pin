@@ -1,5 +1,6 @@
-# ForeverPin — Operations
+# Operations
 
-Runtime ops · repo setup · scripts · runbooks — keeping the running system healthy.
-
-Conventions live in `wow-two-ws/conventions/` — follow them, never restate here.
+- [Verification](verification.md): latest executed checks and remaining provider gates.
+- [Rebrand](rebrand.md): names, compatibility, and repository rename.
+- [Documentation audit](documentation-audit.md): source ownership and sweep boundaries.
+- Production monitoring, backup/restore, incident handling, and load evidence remain unverified.

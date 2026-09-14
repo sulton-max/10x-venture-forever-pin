@@ -1,5 +1,8 @@
 # v0.9 model re-design — frontend review checklist
 
+> Historical review snapshot from 2026-07-28; links follow current filenames.
+> Current tasks: [v0.9](../../planning/version-track/v0.9/v0.9.md). Historical verdicts do not establish current completion.
+
 *Last updated: 2026-07-28*
 
 > The frontend half of the content-model **v2** (CM15) sweep. Open in WebStorm; every path is relative to this project root.

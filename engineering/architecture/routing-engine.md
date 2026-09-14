@@ -1,59 +1,49 @@
-# Architecture — Routing Engine
+# Routing engine
 
-*Last updated: 2026-06-03*
+*Last updated: 2026-09-13*
 
-## Purpose
+## Evaluation
 
-Resolve a single scanned slug to one destination based on the scanner's context (device, country, language, time-of-day), with a fallback. This is the product's core differentiator — "one code, many destinations." Pure logic, no I/O, runs on the redirect hot path in microseconds.
+1. An inactive code returns `NotFound`.
+2. Conditional rules run in ascending `Order`; the first match supplies content.
+3. A dedicated default supplies its content; a pointer default uses its target's content.
+4. No match and no default returns `NotFound`.
+5. The current resolver encodes content into a redirect destination.
 
-## How it works
+There is no subscription, expiry, password, or scan-limit gate on this path.
+The never-deactivate promise concerns plan changes; an owner can deactivate a code.
 
-A code owns an **ordered** rule list + a fallback URL. The routing service:
+---
 
-1. If the code is inactive → **NotFound**.
-2. If not `NeverExpires`: past `ExpiresAt` or over `MaxScans` → **Gone** (410). `NeverExpires` (the default) bypasses both.
-3. If a password is set → **PasswordRequired** (interstitial).
-4. Walk rules by `Order`; **first match wins** → that rule's destination.
-5. No match → **fallback URL** (the safety net — every scan resolves somewhere).
+## Conditions
 
-Condition matching (`RuleConditionType`):
+| Condition | Source | Behavior |
+|---|---|---|
+| Device | User-Agent | Device mapper |
+| Country | `IGeoBroker` | No country while `NoopGeoBroker` is registered |
+| Language | Accept-Language | First primary language tag |
+| TimeOfDay | UTC clock | Daily window; supports midnight wrap |
 
-| Condition | Matches on |
-|---|---|
-| `Device` | `DeviceType` from User-Agent (`Ios`/`Android`/`Desktop`/`Bot`) |
-| `Country` | ISO country from IP geo |
-| `Language` | primary tag from `Accept-Language` |
-| `TimeOfDay` | `HH:mm-HH:mm` window (UTC; handles wrap past midnight) |
-| `Default` | always (explicit catch-all) |
+The endpoint constructs `ScanContext`; `RoutingService` evaluates without I/O.
+`Default` is a rule role, not a condition.
 
-## Key types / files
+---
 
-| Type | File |
-|---|---|
-| `RoutingService` (the logic) | `engineering/codebase/forever-pin.backend-services/ForeverPin.Redirect.Api/Infrastructure/Routing/RoutingService.cs` |
-| `IRoutingService` | `ForeverPin.Redirect.Api/Application/Routing/Services/IRoutingService.cs` |
-| `CodeRouteConfig` / `RouteRule` / `ScanContext` / `RouteDecision` / `RouteOutcome` | `ForeverPin.Redirect.Api/Application/Routing/Models/` |
-| `UserAgentDeviceResolver` | `ForeverPin.Redirect.Api/Infrastructure/Routing/UserAgentDeviceResolver.cs` |
-| `IGeoResolver` / `NoopGeoResolver` | `ForeverPin.Redirect.Api/.../Routing/` (geo is a stub — see below) |
-| `RuleConditionType` / `DeviceType` (enums) | `ForeverPin.Common.Domain/Codes/Enums/` |
-| Persisted: `RoutingRuleEntity` / `CodeEntity` | `ForeverPin.Common.Domain/Codes/Entities/` |
+## Content delivery
 
-**Persisted → hot:** `RoutingRuleEntity` (DB) projects to `RouteRule` inside `CodeRouteConfig` (the cached hot-path shape) — see `redirect-and-scaling.md`.
+Static symbols encode the payload directly and do not reach this service.
+Dynamic symbols encode the short link.
 
-## Decisions & tradeoffs
+Dynamic WiFi, calendar, vCard, and other non-web payloads need a resolve page.
+The current implementation redirects any nonempty encoding; it does not yet distinguish page delivery.
+Resolve-page decisions and mode invariants live in [content model](content-model.md).
 
-- **Pure routing service, no I/O** — testable in isolation (see `ForeverPin.Tests/RoutingServiceTests.cs`), fast on the hot path. Context (device/geo/lang) is resolved *before* evaluation, in the endpoint.
-- **Never-expire is the default** and overrides expiry/cap checks — the product promise, enforced in code.
-- **First-match-wins, ordered** — simple, predictable, matches how incumbents present "smart rules."
+---
 
-## Edge cases
+## Source
 
-- Android UAs contain "linux" → device check orders Android before Desktop.
-- Time window wrap (e.g. `22:00-02:00`) handled (`start > end` → OR logic).
-- Country/Language rules silently won't match while their inputs are null (geo stub; missing header).
+- `ForeverPin.Redirect.Api/Endpoints/RedirectEndpoints.cs`
+- `ForeverPin.Redirect.Api/Infrastructure/Routing/RoutingService.cs`
+- `ForeverPin.Domain/Codes/Rules/Models/`
 
-## Open questions
-
-- AND/OR condition groups, A/B split with weighting, scheduled date windows (V3).
-- Per-code **timezone** for `TimeOfDay` (currently UTC).
-- Unique-vs-repeat scanner (needs a first-party cookie).
+Paths are relative to `engineering/codebase/forever-pin.backend-services/`.

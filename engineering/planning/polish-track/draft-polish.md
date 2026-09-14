@@ -12,7 +12,7 @@ sdk work
 - need to analyze how we can define inputs with regex - need one for color input for example so that only regex is allowed
 
 
-## Frontend 
+## Frontend
 
 ### Create / Edit Code Layer
 
@@ -20,7 +20,7 @@ sdk work
 
 - need to analyze a component naming convention for grouped controls
 - real example - ShapeControls
-- should it be ShapeControlsGroup or just ShapeControls ? any better alternatives ? 
+- should it be ShapeControlsGroup or just ShapeControls ? any better alternatives ?
 - this is so that all such control groups will have a consistent name
 - need to analyze suffix for inputs / controls as well
 
@@ -52,5 +52,5 @@ sdk work
 
 ##### After Color and Fill separated
 
-- analyze a better to use the trigger of ColorPicker - maybe we can add event in the sdk ? is that the role of the inner button in TileColorPicker.tsx ? 
-- 
+- analyze a better to use the trigger of ColorPicker - maybe we can add event in the sdk ? is that the role of the inner button in TileColorPicker.tsx ?
+-

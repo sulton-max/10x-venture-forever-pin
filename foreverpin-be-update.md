@@ -1,5 +1,7 @@
 # Backend convention updates — forever-pin and the products
 
+> Historical analysis: implementation and active task status are recorded in [the engineering plan](engineering/planning/planning.md).
+
 *Last updated: 2026-08-25*
 
 > Every row the backend SDK conventions sweep raised against this repo and the other products.

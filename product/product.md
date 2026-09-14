@@ -1,40 +1,52 @@
-# ForeverPin — Business Knowledge
+# ForeverPin
 
-*Last updated: 2026-06-03*
+*Last updated: 2026-09-13*
 
-> Durable business facts. Full market sizing, competitor map, and risk analysis live in the portfolio brief (`wow-two-ws/ideas/forever-pin-spec.md`).
+## Product
 
-## Model
+**Pin it once. It points forever.**
 
-Dynamic **redirect platform**. Front-end = a scannable code (QR / barcode) or short link; back-end = a programmable redirect + analytics. **Tier 0** (no AI — pure compute), so margins are ~95%+; the constraint is distribution, not unit cost.
+Generate styled QR codes and barcodes, or create a programmable short link that can change its destination after printing.
+A subscription downgrade must not deactivate an existing redirect.
 
-## Wedge (why us)
+---
 
-1. **Programmable routing as the headline** — incumbents bury smart rules in $30+/mo tiers; we make it the core, generous.
-2. **Codes never expire / deactivate on downgrade** — the #1 one-star complaint against every incumbent (you print 10k flyers, they brick the code). Emotional, defensible, GWDNBM-native.
-3. **One unified surface** — QR + barcodes + short links + password/expiring links + vCard, not five subscriptions.
+## Audience
 
-## Pricing (anchor)
+- Small businesses with printed surfaces: menus, signage, packaging, and events.
+- Developers seeking programmable redirects without enterprise sales.
+- Small agencies managing client codes and campaigns.
 
-| Plan | Price | Includes |
+Enterprise governance and payment rails are outside the current launch scope.
+
+---
+
+## Pricing boundary
+
+| Plan | Current display | Implemented creation cap |
 |---|---|---|
-| Free | $0 | 3 codes, **unlimited scans**, basic analytics, **never expires** |
-| Solo | $5/mo | 25 codes, smart routing, custom domain, full analytics |
-| Pro | $15/mo | 200 codes, A/B + advanced rules, bulk, all code/content types |
-| Dev/Agency | $39–49/mo | API, white-label, client workspaces, webhooks |
+| Free | $0 | 3 codes |
+| Solo | $5/month | 25 codes |
+| Pro | $15/month | 200 codes |
+| Dev/Agency | $39/month | Unlimited |
 
-**Anti-incumbent moves (the marketing):** unlimited scans on *every* tier; smart routing + custom domain from **$5**; codes never deactivate on downgrade.
+The cap currently counts static and dynamic codes together.
+Custom domains, customer analytics, advanced routing, API access, and agency workspaces are not implied by these rows.
 
-## Target Users
+Marketing proposes unlimited free static generation and a $12/year entry experiment.
+The launch pricing and free dynamic allowance remain open; neither proposal is implemented by this document.
 
-- **Primary:** SMBs with physical surfaces — restaurants (menu-by-time), retail, real-estate signage, events, gyms, clinics. Print once, need edit-after-print + never-expire.
-- **Secondary:** developers (flat-priced API), small agencies (A/B + white-label).
-- **Not (v1):** enterprise governance buyers, payments-rail QR.
+---
 
-## GWDNBM
+## Principles and validation
 
-No hostage codes, no scan caps as a paywall lever, no ad emails / "you got a scan!" nags, transparent flat pricing, cancel/export/delete anytime. Here it's not just compliance — it's the differentiator.
+- Preserve printed redirects across plan changes.
+- Avoid advertising and unsolicited scan notifications.
+- Make ownership and export behavior explicit.
+- Validate paid demand before expanding the roadmap.
 
-## Kill Gates (portfolio)
+Portfolio checkpoints: first paying customer by week 4; $100 MRR by month 3;
+$500 by month 6; $2,000 by month 12. These are targets, not measured results.
 
-G1 = 1 paying customer by wk 4 · G2 = $100 MRR by mo 3 · G3 = $500 by mo 6 · G4 = $2K by mo 12 ("hit").
+Market research: `wow-two-ws/ideas/forever-pin-spec.md`.
+Current state: [context](context.md). Future capabilities: [backlog](../engineering/planning/backlog.md).

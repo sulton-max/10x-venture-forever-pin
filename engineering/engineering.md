@@ -1,5 +1,9 @@
-# ForeverPin — Engineering
+# Engineering
 
-Technical layer — build · ship · run. The code lives under `codebase/`.
-
-Map: `architecture/` (system + per-area design) · `codebase/` (the code — backend + frontend services) · `planning/` (roadmap + tracker, incl. `version-track/` per-iteration specs) · `development/` (build guidelines + process) · `deployment/` (Dockerfile / compose / ops / domain setup) · `operations/` (runtime ops · repo setup · scripts · runbooks) · `research/` (technical research dumps).
+- [Planning](planning/planning.md): active release and remaining work.
+- [Architecture](architecture/architecture.md): current contracts and implementation boundaries.
+- [Codebase](codebase/codebase.md): backend and frontend roots.
+- [Development](development/development.md): checks and permission workflow.
+- [Deployment](deployment/deployment.md): hosting requirements and missing evidence.
+- [Operations](operations/operations.md): verification and rename compatibility.
+- [Research](research/research.md): retained analyses.

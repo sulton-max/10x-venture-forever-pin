@@ -1,53 +1,43 @@
-# ForeverPin — Business Context
+# ForeverPin — Product context
 
-*Last updated: 2026-06-23*
+*Last updated: 2026-09-13*
 
-> **Rebrand in progress: ForeverPin → ForeverPin.** The code/repo still says "ForeverPin" until the
-> rebrand lands (tracked → `engineering/planning/planning.md` Backlog · Brand). Folder rename later.
+## Status
 
-## Current State
+- Brand: **ForeverPin**. Tagline: **Pin it once. It points forever.**
+- Domain: `foreverpin.com`, recorded as registered at Cloudflare on 2026-06-23; not rechecked live.
+- Product is pre-launch in local records; no current revenue or deployment claim is verified.
+- Code and local folders are rebranded. [Remote and compatibility status](../engineering/operations/rebrand.md).
+- Active engineering release: [v0.9](../engineering/planning/version-track/v0.9/v0.9.md).
 
-- Portfolio **#002**. Status: **building** (pre-revenue, pre-launch). Backend + frontend + billing built; marketing surface (landing/pricing/blog) live.
-- **Name locked: ForeverPin.** Domain **`foreverpin.com`** registered at **Cloudflare** (Free plan, $10.46 flat) — 2026-06-23.
+---
 
-## Brand
+## Product direction
 
-- **Name:** ForeverPin · **Domain:** `foreverpin.com` (Cloudflare registrar + DNS).
-- **Tagline:** **"Pin it once. It points forever."** — *pin* = drop-a-pin / print-once permanence · *points* = smart routing (one code, many destinations).
-- **Runners-up (logged):** `lodestar.io` (guiding-star metaphor) · `routestone.io` · `permacode`.
-- Chosen via the wow-two naming convention (`conventions/marketing/brand-naming-and-domains.md`): compound-coined + suggestive, clean radio test, standard-priced `.com`, low TM-collision.
-- **Handles to grab same-day:** `@foreverpin` (X · Instagram); `foreverpin` GitHub org (optional — reserve later).
+- Free styled generation attracts users; paid forwarding provides editable printed codes.
+- A plan downgrade must not deactivate an existing redirect.
+- Marketing's proposed entry experiment is $12/year; it is not the implemented pricing model.
+- Current creation limits count all codes, including static ones.
+- Custom domains and customer analytics remain unfinished despite existing marketing claims.
 
-## Positioning
+---
 
-> *"A QR code smart enough to route every scan to the right place — and that you'll never have to reprint."*
+## Open business work
 
-Programmable routing as the headline + **codes never expire** (the #1 incumbent complaint). The GWDNBM cut of a commodity category.
+- Decide the free dynamic allowance and launch pricing.
+- Align pricing, limits, and marketing with implemented capabilities.
+- Confirm handles and brand clearance before launch.
+- Finish launch content and product analytics.
+- Validate real Google and Stripe flows before charging customers.
 
-## Active (business-side)
+Business detail: [product](product.md). Launch work: [marketing](marketing/marketing.md).
 
-- ✅ **Name + domain** — ForeverPin / `foreverpin.com` (Cloudflare).
-- **Grab `@foreverpin` handles** (X + Instagram) same-day; GitHub org optional.
-- **Full rebrand ForeverPin → ForeverPin** — tracked → `engineering/planning/planning.md` Backlog · Brand.
-- **Marketing playbook** — wow-two marketing convention in progress (deep-research → doc, mirrors the naming convention).
-- **Validate the wedge** — scan r/smallbusiness, r/restaurateur, IndieHackers for hostage-code complaints.
-- Build-side tasks → `engineering/planning/planning.md`.
+---
 
-## Decisions Log
+## Decisions
 
-| Date | Decision |
-|---|---|
-| 2026-06-23 | **Name = ForeverPin**; domain `foreverpin.com` at **Cloudflare** (at-cost $10.46 flat; DNS already CF-fronted). Chosen via the naming convention; beat `lodestar.io` / `routestone.io` / `permacode`. Supersedes the earlier `Permacode` lean. |
-| 2026-06-03 | POC-first over shared template repo — validate the crowded-market wedge before shared infra. |
-| 2026-05-31 | Repositioned from generic "smart QR" to programmable-routing-first + never-expire. |
-
-## Ideas / Backlog (parked — not urgent)
-
-- **Image-like QR codes** — render a code that visually *resembles a target image* (artistic / halftone / "QR-as-picture") while staying scannable: map modules onto an image so it reads as a logo/photo rather than gibberish. Differentiation + shareability angle. Feasibility check: error-correction headroom + halftone/image-embed libs. Build-side detail → `engineering/planning/planning.md` (Styling group) when picked up.
-
-## Links
-
-- Portfolio brief (market, full spec): `wow-two-ws/ideas/forever-pin-spec.md`
-- Roadmap / feature log: `engineering/planning/planning.md`
-- Business model / pricing: `product/product.md`
-- Naming convention: `wow-two-ws/conventions/marketing/brand-naming-and-domains.md`
+- 2026-05-31: programmable routing and never-deactivate positioning.
+- 2026-06-03: build the product proof before investing in shared infrastructure.
+- 2026-06-23: select ForeverPin and `foreverpin.com`.
+- 2026-09-13: authorize the complete rebrand and documentation reconciliation.
+- 2026-09-13: exclude application Vue migration from this work.

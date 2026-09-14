@@ -1,5 +1,7 @@
 # Model Conventions — Cross-Product Research
 
+> Historical analysis: implementation and active task status are recorded in [the engineering plan](engineering/planning/planning.md).
+
 *Last updated: 2026-07-03*
 
 > Research feeding a **general model convention** for `wow-two-ws` (not entity-specific). Surveys how models are declared
@@ -44,14 +46,14 @@
 
 | Family | Suffix | Lives in | Example |
 |---|---|---|---|
-| Wire DTO | `Dto` | `api/types.ts` or `types/` | `drydock:ServerDto` · `smartqr:CodeDto` · `vault:SecretDto` |
+| Wire DTO | `Dto` | `api/types.ts` or `types/` | `drydock:ServerDto` · `foreverpin:CodeDto` · `vault:SecretDto` |
 | Request | `*Request` | same | `RegisterServerRequest` · `CreateCodeRequest` · `SetSecretRequest` |
 | Domain model (bare) | — | `types.ts` / `core/*/types.ts` | `sift:Channel`,`Video` · `prism:Wall`,`Level` |
-| Content variant | `*Content` | `smartqr/src/types/content/` | `UrlContent` … union `CodeContent` |
-| Client builder row | `*Draft` | `types/` | `smartqr:RuleDraft` (adds client `id`) |
+| Content variant | `*Content` | `foreverpin/src/types/content/` | `UrlContent` … union `CodeContent` |
+| Client builder row | `*Draft` | `types/` | `foreverpin:RuleDraft` (adds client `id`) |
 | Success envelope | `ApiResponse<T>` (drydock/vault) vs **`ApiSuccess<T>` (forever-pin)** | model file | same `{ data: T }` shape, **forked name** |
 
-- **No `entities/` / `mappers/` folders anywhere; no `Fields`/`EditableFields` form family exists** — form state is local `useState` seeded from DTOs (`smartqr:toDrafts`). `prism` is the outlier: pure client model, no wire types.
+- **No `entities/` / `mappers/` folders anywhere; no `Fields`/`EditableFields` form family exists** — form state is local `useState` seeded from DTOs (`foreverpin:toDrafts`). `prism` is the outlier: pure client model, no wire types.
 
 ---
 
@@ -170,12 +172,12 @@
 | F6 | Datetime | raw `string`, no lib | **`string` + branded aliases + shared format util**; Temporal only when editing dates (workspace call) |
 | X1 | Enum wire casing | Pascal (most) vs camel (`enums.md`) | pick one workspace-wide; if camelCase, set the JSON enum naming policy backend-side so FE stops case-normalizing |
 | X2 | Type-mapping table | ad-hoc | codify the .NET↔wire↔TS table above as the parity reference |
-| — | Doc drift | `models.md`/`enums.md` stale; `component-names.md` cites dead paths (`10x-venture-forever-pin/platform/src/…`) | rewrite against this survey; fix stale citations |
+| — | Doc drift | `models.md`/`enums.md` stale; `component-names.md` cites dead paths (`forever-pin/platform/src/…`) | rewrite against this survey; fix stale citations |
 
 ---
 
 ## Cited sources
 
 - Backend: `Drydock.Application/Products/{Models/ProductDto,Commands/ProductCreate/*}.cs` · `ForeverPin.Domain/Codes/{Core/Entities/CodeEntity,Content/CodeContent}.cs` · `ForeverPin.Application/Codes/Core/{Commands/CodeCreateCommand,Models/CodeCreateResult}.cs` · `secrets-vault:Secrets/Queries/GetSecret/GetSecretResult.cs` · `Sift.Application/Videos/Core/Models/VideoDto.cs` · SDK `Foundation/Serialization/JsonOptionsPresets.cs`, `Web/Contracts/ApiResponse.cs`, `Data.EntityFrameworkCore.Naming/*`.
-- Frontend: `drydock/src/api/{types,client}.ts` · `smartqr/src/types/{index,content/*}.ts` · `vault/src/api/types.ts` + `components/{SecretsTable,TokensPanel}.tsx` · `sift/src/lib/{types,FormatExtensions}.ts` · `prism/src/core/{model,project}/types.ts` · `frontend-beta:forms/DateExtensions.ts`.
+- Frontend: `drydock/src/api/{types,client}.ts` · `foreverpin/src/types/{index,content/*}.ts` · `vault/src/api/types.ts` + `components/{SecretsTable,TokensPanel}.tsx` · `sift/src/lib/{types,FormatExtensions}.ts` · `prism/src/core/{model,project}/types.ts` · `frontend-beta:forms/DateExtensions.ts`.
 - Conventions reconciled: `development/{backend/code-style/{models,naming,documentation,documentation/*},persistence/{entities,enums},foundation/component-names}` · `development/frontend/{models,naming,naming-analysis,enums,documentation,forms,state-and-data}`.

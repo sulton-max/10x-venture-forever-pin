@@ -1,57 +1,23 @@
-# Architecture — Code Generation
+# Code generation
 
-*Last updated: 2026-06-03*
+*Last updated: 2026-09-13*
 
-## Purpose
+## Flow
 
-Render a code (QR or barcode) to SVG or PNG from a payload (typically a code's short URL). Vector-first, cross-platform, styleable. Lives in the standalone `ForeverPin.Codes` library so it's reusable across services (and extractable as `Wow.Two.Sdk.Beta.Codes` later).
+- `CodePayloadMapper` selects the baked content or dynamic short link from the code's mode.
+- Product image services pass payload, symbology, style, and format to the SDK renderer.
+- Preview and downloaded images use server rendering.
+- SVG and PNG exports are available for the supported QR/barcode flows.
+- Shape, gradient, transparency, and emoji controls round-trip through the style contract.
 
-## How it works
+The engine was extracted in v0.6; there is no local `ForeverPin.Codes` project.
 
-```
-CodeRenderRequest (payload, symbology, format, options)
-        ↓
-ICodeRenderer → CodeRenderer (facade)
-        ├─ QR     → QrCodeRenderer (QRCoder: SvgQRCode / PngByteQRCode)
-        │             └─ optional center logo → ImageSharpLogoCompositor (PNG only)
-        └─ barcode → BarcodeRenderer (ZXing.Net → SVG)
-        ↓
-RenderedCode (bytes, content-type, format)
-```
+---
 
-- **QR matrix is the source of truth**; SVG/PNG are renders off the same matrix. SVG = default (vector, infinite print scale, re-styleable, ~1–10 KB); PNG = raster export.
-- **Cross-platform / no `System.Drawing`** — only QRCoder's `SvgQRCode` + `PngByteQRCode` renderers are used (Linux-safe). Barcodes use ZXing's managed SVG renderer. Logo overlay uses ImageSharp (managed).
-- **Error correction** defaults to **Q** so a center logo can occlude the middle and the code still scans.
+## Remaining work
 
-## Key types / files
+- Print sizing guidance and the output-fidelity contract remain in v0.9.
+- File upload, logo controls, frames, PDF, and animated output remain in the backlog.
+- Do not infer builder support from a capability present only in the SDK renderer.
 
-| Type | File |
-|---|---|
-| `ICodeRenderer` | `engineering/codebase/forever-pin.backend-services/ForeverPin.Codes/ICodeRenderer.cs` |
-| `CodeRenderer` (facade/dispatch) | `ForeverPin.Codes/Rendering/CodeRenderer.cs` |
-| `QrCodeRenderer` | `ForeverPin.Codes/Rendering/QrCodeRenderer.cs` |
-| `BarcodeRenderer` | `ForeverPin.Codes/Rendering/BarcodeRenderer.cs` |
-| `ImageSharpLogoCompositor` | `ForeverPin.Codes/Logo/ImageSharpLogoCompositor.cs` |
-| `CodeRenderRequest` / `CodeRenderOptions` / `RenderedCode` / `EccLevel` | `ForeverPin.Codes/Models/` |
-| `BarcodeFormat` / `ImageFormat` | `ForeverPin.Common.Domain/Codes/Enums/` |
-| DI: `AddForeverPinCodes()` | `ForeverPin.Codes/ServiceCollectionExtensions.cs` |
-
-Consumed by the API via `ICodeImageService` (`ForeverPin.Api/Infrastructure/Codes/Services/CodeImageService.cs`).
-
-## Decisions & tradeoffs
-
-- **QRCoder** for QR (best payload generators, managed), **ZXing.Net** for the rest (1D + 2D coverage). Two libs, one facade.
-- **ImageSharp 2.1.x (Apache-2.0)** for logo compositing — managed + license-clean (vs SkiaSharp's native assets).
-- Renderers are **stateless singletons** (thread-safe).
-
-## Edge cases
-
-- Logo only composited on **PNG** (raster); SVG logo embedding is V2. Logo present → keep EC at Q/H.
-- Barcode **PNG** export not implemented (SVG only) — needs a raster binding; V2.
-- GIF/animated export (V2) will band on gradients in 256-color GIF → prefer animated WebP/MP4. See spec §5c.
-
-## Open questions
-
-- Add PDF/EPS export (vector — trivial off the matrix via QRCoder `PdfByteQRCode`)?
-- Logo/pfp **circular knockout** (clear modules behind the image) vs simple overlay — knockout reads cleaner (Telegram-style).
-- Animated formats: GIF (universal) + WebP (smaller) via ImageSharp; MP4 via FFmpeg; Lottie/animated-SVG for web.
+Contracts: [content model](content-model.md). Tasks: [v0.9](../planning/version-track/v0.9/v0.9.md).

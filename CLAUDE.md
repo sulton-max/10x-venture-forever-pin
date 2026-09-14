@@ -1,33 +1,34 @@
 # ForeverPin
 
-Dynamic QR / barcode / link platform — programmable routing ("one code, many destinations by context") + "codes never expire." Micro-SaaS portfolio product #002. Brief → `wow-two-ws/ideas/forever-pin-spec.md`.
+QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `foreverpin.com`.
 
-## Lazy loading
+## Instructions
 
-- Open a file only when the task needs it; `.claude/rules/file-references.md` is a lookup table, not a reading list.
-- Navigate source via `tree`/`find`/`grep` — `.cs` files aren't indexed.
+- Workspace conventions live in `wow-two-ws/conventions/`; repo-specific details follow here.
+- `.claude/rules/file-references.md` is a lazy document index.
+- Preserve existing edits; coordinate by disjoint file sets in the shared checkout.
+- Vue SDK work runs separately. Do not start the application migration in this lane.
 
-## Structure
+## Codebase
 
-Two top-level layers (per `conventions/development/repo/structure/repo-structure.md`):
+- Backend: `engineering/codebase/forever-pin.backend-services/` — .NET 10.
+- Frontend: `engineering/codebase/forever-pin.frontend-services/` — React 19, Vite, Tailwind 4, `@wow-two-beta/ui`.
+- Namespace: `ForeverPin`; product folder: `10x-venture-forever-pin`.
+- Management host: `ForeverPin.Api`, HTTPS/HTTP `7020`/`7021`.
+- Redirect host: `ForeverPin.Redirect.Api`, HTTPS/HTTP `7022`/`7023`.
+- Frontend dev: HTTPS `7024`; pnpm is the package manager.
 
-- **`product/`** — venture layer: model, pricing, positioning, GTM.
-- **`engineering/`** — technical layer: `codebase/` (the .NET + React services) · `architecture/` · `planning/` (incl. `version-track/`) · `development/` · `deployment/` · `operations/` · `research/`.
+## Verification
 
-Backend (`engineering/codebase/forever-pin.backend-services/`) — refs go product → platform, never reverse:
+- `bash engineering/scripts/verify.sh all` runs frontend checks and all backend suites.
+- Node version: `.nvmrc`; the verifier selects that installed runtime.
+- Full backend tests require Docker and local runner sockets.
+- Restricted execution requires native approval for that command; do not weaken global permissions.
+- See `engineering/development/development.md` for the approval workflow.
 
-| Project | Role |
-|---|---|
-| `ForeverPin.Common*` | shared libs — mediator/settings · domain entities · EF Core + SQL migrations |
-| `ForeverPin.Platform.*` | SDK-bound infra (mediator/result/config · migrator · E2E harness) → extracts to backend-beta |
-| `ForeverPin.Codes` | code generation (QRCoder / ZXing / Svg.Skia) → extracts to backend-beta SDK (`…Beta.Codes`) in v0.6 |
-| `ForeverPin.Api` | management API · https **7020** |
-| `ForeverPin.Redirect.Api` | redirect hot path · https **7022** |
-| `ForeverPin.Tests.{Unit,Integration,E2E,Migrations}` | xUnit — pure-logic units · repo/DB integration · full-API E2E (Testcontainers PG) · migrator engine |
+## Planning
 
-Frontend (`engineering/codebase/forever-pin.frontend-services/`) — React 19 + Vite + Tailwind v4 + `@wow-two-beta/ui`; **pnpm** (not npm — `workspace:` protocol); https dev server via mkcert (even port 7024).
-
-## Conventions
-
-- All code / architecture / ports / docs conventions live in **`wow-two-ws/conventions/`** (index: `conventions.md`) — follow them, never restate here.
-- Repo specifics only: single `https` profile per service binding two ports — HTTPS even + HTTP odd (Api `7020`/`7021` · Redirect `7022`/`7023`); TLS upstream in prod. Allocations → `conventions/deployment/hosting/ports.md`.
+- Active release: `engineering/planning/version-track/v0.9/v0.9.md`.
+- Remaining tasks: `engineering/planning/planning.md` and the active track.
+- Durable content decisions: `engineering/architecture/content-model.md`.
+- Rename compatibility: `engineering/operations/rebrand.md`.

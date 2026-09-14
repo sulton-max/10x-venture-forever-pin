@@ -2,7 +2,7 @@
 
 *Last updated: 2026-06-24*
 
-> Source of truth for the product UI. Light + dark. Apply via Tailwind v4 `@theme` + `@wow-two-beta/ui` semantic tokens (`engineering/codebase/forever-pin.frontend-services/src/index.css`). Map to SDK after a few screen iterations.
+> Source of truth for the product UI. Light + dark. Apply via Tailwind v4 `@theme` + `@wow-two-beta/ui` semantic tokens (`engineering/codebase/forever-pin.frontend-services/src/bootstrap/index.css`). Map to SDK after a few screen iterations.
 
 ## Concept
 

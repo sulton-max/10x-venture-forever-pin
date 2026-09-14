@@ -1,0 +1,27 @@
+# Architecture decision record
+
+*Last updated: 2026-09-13*
+
+> Retained rationale from the earlier planning record. Some rows describe earlier implementation states.
+> Current contracts take precedence in [architecture](architecture.md) and [content model](content-model.md).
+
+| Decision | Rationale |
+|---|---|
+| Guest-first (no auth in v1.0); auth added later as a claim flow | Guest creation is the funnel entry; an auth-agnostic user key now makes auth additive, not a rewrite. Fits "traffic from day 1". |
+| Identity = a **User** (guest or, later, registered); a code's `UserId` is the ownership role | "Owner" only made sense relative to codes — the principal is just a user. One vocabulary across guest + auth. |
+| Guest identity = an unguessable `user-id` cookie (HttpOnly + Secure); **no device/IP fingerprint** | Fingerprints collide (→ cross-guest code leak) and drift, and are tracking (anti-GWDNBM). Lost-cookie recovery comes later via the auth claim flow, not a footprint. |
+| `GET /identity/me` read-only (never mints); guests minted explicitly via `POST /identity/guest` | Side-effect-free identity read; no junk guests for pure browsers; no cookie before the user acts. |
+| POC-first over shared template | Validate the crowded-market wedge before shared infra. |
+| Two services (Api + Redirect) | Isolate the only thing that scales (the redirect) as a slim, stateless, horizontally-scalable process. |
+| Minimal API for Redirect, controllers for Api | Lean hot path; familiar CRUD surface for management. |
+| ImageSharp (2.1, Apache-2.0) for logo, not SkiaSharp | Fully managed, no native-asset friction, license-clean. QR core (QRCoder) needs no native deps. |
+| API-layer folders at host root (no `Api/` wrapper) | Avoids `ForeverPin.Api.Api.*`; the project name already says `.Api`. |
+| ~~In-memory config store default~~ → **redirect reads Postgres directly** for v1.0; Redis swap via settings | Edits hit the next scan with **zero invalidation logic**. Cache (in-memory/Redis) deferred — `CachedRedirectConfigRepository` kept but unwired; re-enable when scan volume warrants (backlog). |
+| Enums as **text** (not native PG enums) | Removes runtime-migration gotchas; easier schema evolution; consistent across Postgres + SQLite tests. **v0.4:** stored as **snake_case** labels via the SDK `EnumCaseConverter` (Postgres-native casing). |
+| ~~Runtime schema bootstrap (`EnsureCreated` on startup)~~ → **bespoke SQL migrator** | `EnsureCreated` never alters → stale-schema 500 on `user_id`. Replaced with raw-`.sql` Apply/Rollback migrator, auto-applied at startup. EF becomes a pure mapper (schema-first). |
+| Bespoke SQL migrator over EF Migrations / DbUp / Grate | Schema-first, easy squash, Apply/Rollback symmetry, normalized-checksum drift guard, host-agnostic engine reused by a CLI + (later) HTTP endpoint. Also the **proving ground** for the wow-two backend-beta SDK migrator (extract once stable). |
+| Marketing integrated into the SPA (not a separate site) + `react-router-dom` | Public landing/pricing/blog need crawlable, shareable URLs (SEO) the hand-rolled view state-machine couldn't give. One build, backend already serves SPA at root w/ fallback, same `@wow-two-beta/ui` design system → no second deploy, no brand split. App moved under `/app/*`; existing screens wrapped untouched in thin route adapters. Marketing routes make **zero API calls** (render with the backend down). |
+| Tests = **E2E** (real Postgres via Testcontainers, both hosts over HTTP) over unit / mock-heavy integration | forever-pin has ~no external APIs to mock → E2E mocks nothing and covers the real flow incl. the two-host wedge. Catches PG/serialization/auth/ownership bugs units miss. Harness mirrors the backend-beta SDK testing scaffold (extract later). |
+| SDK-bound infra split into `ForeverPin.Platform.*` libs (`Core` · `Migrations` · `Testing`) + solution folders | **Sanitary separation**: the generic infra (mediator/result/config/conn-factory, migrator engine, generic E2E harness) lives in clearly-named libs referenced by product projects — so the eventual lift to backend-beta is obvious + cheap (move + rename namespaces at lift). Refs go product → platform only. |
+| Billing: **Stripe hosted** (Checkout + Customer Portal), TEST mode, no on-site card capture; **subscription keyed by guest `UserId`** (no auth this pass); **bespoke `002-billing` migration** (not EF) | Hosted flow = PCI off-loaded, zero card UI. `UserId`-keyed sub fits guest-first (auth lands later as additive claim flow, no rewrite). `002-billing` keeps the schema-first SQL migrator authority. Enforcement is **create-time only** — redirect stays plan-agnostic (never-deactivate-on-downgrade). |
+| Auth (v0.3) = **Google OAuth** (sign in with Google); session = a server-issued **HttpOnly auth cookie** (ASP.NET cookie auth, not the SDK JWT bearer); Google ID token verified behind an **`IGoogleTokenVerifier`** seam; **bespoke `003-accounts` migration** | One-click, no passwords or email infra to run — strongly GWDNBM. Same-origin SPA+Api → cookie auth is the secure, simplest fit and sidesteps the kit JWT-bearer `init`-only bug (issuance side is fine; bearer is the broken part). The verifier seam keeps E2E mock-free (real verifier hits Google; tests use a fake). **Claim** upgrades the guest user-key **in place** — the guest cookie Guid becomes the account id, so same-device signup needs zero code reassignment; cross-device signup merges the guest's codes into the existing account. |

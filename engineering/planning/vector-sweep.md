@@ -1,5 +1,7 @@
 # Vector Sweep — ForeverPin × SDK capability map
 
+> Historical analysis: implementation and active task status are recorded in [the engineering plan](planning.md).
+
 *Last updated: 2026-07-13*
 
 > A full-stack completeness sweep of every capability **vector** the app's current logic scope implies —
@@ -30,7 +32,7 @@ Three sources for any vector, three destinations:
 
 - **The single biggest win is frontend infra adoption.** The SDK shipped `/router`, `/query` (+ optimistic mutation), `/auth`, `/feedback`, and `createApiClient` days ago — **several designed with forever-pin in mind** (cookie strategy = the guest model; `useOptimisticMutation` = the forever-pin delete). The app adopted **only** `/forms-engine`; it still hand-rolls react-router, has **no query cache**, and calls **raw `fetch()`** in every `integration/*.ts`. Five ADOPT vectors, all pure fit, all sitting unused.
 - **Two app-owned vectors are worth polishing to perfection:** content types (registry is generic on the backend but every frontend form is a bespoke `switch` case) and routing conditions (fixed 5-arm switch). Everything else infrastructural is already SDK-backed.
-- **A handful of vectors fit the logic but exist in neither** — caching (redirect hot-path; SDK `Caching` module is *empty*), geo (MaxMind; `NoopGeoResolver` today), charts (scan-analytics dashboard; SDK has no chart primitives), link primitives (expiring/capped/password). These are the true ADD list.
+- **A handful of vectors fit the logic but exist in neither** — caching (redirect hot-path; SDK `Caching` module is *empty*), geo (MaxMind; `NoopGeoBroker` today), charts (scan-analytics dashboard; SDK has no chart primitives), link primitives (expiring/capped/password). These are the true ADD list.
 - **A pending domain decision reshapes two vectors at once:** *dynamic-by-default* (`polish-track/p0.2`) makes routing a per-code choice, not a per-content-type trait — **every** content type becomes routable. The content-type and routing vectors merge.
 - **Trim before polish** — content types 10→2-3, shapes 7→3, barcodes 7→2, conditions 5→2. Only content types removes components; the rest are enum/catalog shrinks against generic controls.
 
@@ -89,7 +91,7 @@ App: Clean-Arch (`Domain`/`Application`/`Infrastructure`/`Persistence` + `Common
 | **Persistence / migrator** | adopted | mature | **done** | delete orphan `Common.Persistence` (0 files, referenced by none). |
 | **Identity** | adopted (cookie + Google + guest + claim) | partial→mature | **done** | account-linking / refresh / recovery-link stay app code. |
 | **Caching** | `CachedRedirectConfigRepository` **unwired** ("pending caching backlog") | **`Caching` module EMPTY (0 `.cs`)** | **ADD** | redirect hot-path cache-over-DB — in **neither**, production-readiness backlog. Build the SDK `Caching` vector → wire the redirect store. |
-| **Geo resolution** | `NoopGeoResolver` stub → Country routing silently dead | none | **ADD** | MaxMind GeoLite2 — the `Country` condition exists but never matches. App-side resolver behind the existing seam. |
+| **Geo resolution** | `NoopGeoBroker` stub → Country routing silently dead | none | **ADD** | MaxMind GeoLite2 — the `Country` condition exists but never matches. App-side resolver behind the existing seam. |
 | **Outbound webhooks** | none (dev tier planned) | Messaging `IWebhookPublisher` (**mature**) | **ADOPT** (later) | dev-tier scan webhooks — the SDK already has the vector. |
 | **Rate limit (abuse)** | none | Web `AddPerIpSlidingWindowRateLimit` | **ADOPT** (partial) | trust-&-safety backlog; per-IP from SDK, per-plan/abuse rules app-side. |
 | **Background jobs** | none | `Jobs` (Hangfire) | **available** | analytics rollups · scheduled routing windows. |

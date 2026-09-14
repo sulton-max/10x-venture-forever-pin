@@ -1,5 +1,8 @@
 # v0.9 model re-design — backend review checklist
 
+> Historical review snapshot from 2026-07-28; links follow current filenames.
+> Current tasks: [v0.9](../../planning/version-track/v0.9/v0.9.md). Historical verdicts do not establish current completion.
+
 *Last updated: 2026-07-28*
 
 > The backend half of the content-model **v2** (CM15) sweep. In Rider it sits under the **`docs`** solution folder (registered as a `<File>` in `forever-pin.backend-services.slnx`, since the Solution view only lists what the solution declares). Every path below is relative to the solution root, so the links resolve in-IDE.
@@ -18,9 +21,9 @@
 
 ## 1 · Content
 
-- [ ] [CodeContent.cs](ForeverPin.Domain/Codes/Content/CodeContent.cs) — abstract base + `SubtypeRegistry`
-- [ ] 10 per-type models — [Url](ForeverPin.Domain/Codes/Content/Url/Models/UrlContent.cs) · [MobileAppLink](ForeverPin.Domain/Codes/Content/MobileApp/Models/MobileAppLinkContent.cs) · [Text](ForeverPin.Domain/Codes/Content/Text/Models/TextContent.cs) · [Email](ForeverPin.Domain/Codes/Content/Email/Models/EmailContent.cs) · [Sms](ForeverPin.Domain/Codes/Content/Sms/Models/SmsContentValueObject.cs) · [Phone](ForeverPin.Domain/Codes/Content/Phone/Models/PhoneContent.cs) · [Geo](ForeverPin.Domain/Codes/Content/Geo/Models/GeoContent.cs) · [Wifi](ForeverPin.Domain/Codes/Content/Wifi/Models/WifiContentValueObject.cs) · [VCard](ForeverPin.Domain/Codes/Content/VCard/Models/VCardContent.cs) · [Calendar](ForeverPin.Domain/Codes/Content/Calendar/Models/CalendarContent.cs)
-- [ ] [CodeContentJson.cs](ForeverPin.Domain/Codes/Content/CodeContentJson.cs) · [ContentEncoding.cs](ForeverPin.Domain/Codes/Content/ContentEncoding.cs)
+- [ ] [CodeContentValueObject.cs](ForeverPin.Domain/Codes/Content/CodeContentValueObject.cs) — abstract base + `SubtypeRegistry`
+- [ ] 10 per-type models — [Url](ForeverPin.Domain/Codes/Content/Url/Models/UrlContentValueObject.cs) · [MobileAppLink](ForeverPin.Domain/Codes/Content/MobileApp/Models/MobileAppLinkContentValueObject.cs) · [Text](ForeverPin.Domain/Codes/Content/Text/Models/TextContentValueObject.cs) · [Email](ForeverPin.Domain/Codes/Content/Email/Models/EmailContentValueObject.cs) · [Sms](ForeverPin.Domain/Codes/Content/Sms/Models/SmsContentValueObject.cs) · [Phone](ForeverPin.Domain/Codes/Content/Phone/Models/PhoneContentValueObject.cs) · [Geo](ForeverPin.Domain/Codes/Content/Geo/Models/GeoContentValueObject.cs) · [Wifi](ForeverPin.Domain/Codes/Content/Wifi/Models/WifiContentValueObject.cs) · [VCard](ForeverPin.Domain/Codes/Content/VCard/Models/VCardContentValueObject.cs) · [Calendar](ForeverPin.Domain/Codes/Content/Calendar/Models/CalendarContentValueObject.cs)
+- [ ] [CodeContentJson.cs](ForeverPin.Domain/Codes/Content/CodeContentJson.cs) · [ContentEncodingExtensions.cs](ForeverPin.Domain/Codes/Content/ContentEncodingExtensions.cs)
 - [ ] Per-family extensions — [Wifi](ForeverPin.Domain/Codes/Content/Wifi/Extensions/WifiContentExtensions.cs) · [Sms](ForeverPin.Domain/Codes/Content/Sms/Extensions/SmsContentExtensions.cs)
 - [ ] [CodeContentType.cs](ForeverPin.Domain/Codes/Core/Enums/CodeContentType.cs) — trimmed 26 → 10
 - [ ] [MobileAppStoreType.cs](ForeverPin.Common.Domain/Codes/Content/MobileApp/Enums/MobileAppStoreType.cs) · [WifiEncryption.cs](ForeverPin.Common.Domain/Codes/Content/Wifi/Enums/WifiEncryption.cs)
@@ -34,8 +37,8 @@
 
 ## 3 · Rule
 
-- [ ] [CodeRule.cs](ForeverPin.Domain/Codes/Rules/Models/CodeRule.cs) · [ConditionalRule.cs](ForeverPin.Domain/Codes/Rules/Models/ConditionalRule.cs) · [DefaultRule.cs](ForeverPin.Domain/Codes/Rules/Models/DefaultRule.cs) · [DefaultPointerRule.cs](ForeverPin.Domain/Codes/Rules/Models/DefaultPointerRule.cs)
-- [ ] [CodeRuleType.cs](ForeverPin.Domain/Codes/Rules/Enums/CodeRuleType.cs) · [CodeRuleJson.cs](ForeverPin.Domain/Codes/Rules/CodeRuleJson.cs) · [CodePayload.cs](ForeverPin.Domain/Codes/Rules/CodePayload.cs)
+- [ ] [CodeRuleValueObject.cs](ForeverPin.Domain/Codes/Rules/Models/CodeRuleValueObject.cs) · [ConditionalRuleValueObject.cs](ForeverPin.Domain/Codes/Rules/Models/ConditionalRuleValueObject.cs) · [DefaultRuleValueObject.cs](ForeverPin.Domain/Codes/Rules/Models/DefaultRuleValueObject.cs) · [DefaultPointerRuleValueObject.cs](ForeverPin.Domain/Codes/Rules/Models/DefaultPointerRuleValueObject.cs)
+- [ ] [CodeRuleType.cs](ForeverPin.Domain/Codes/Rules/Enums/CodeRuleType.cs) · [CodeRuleJson.cs](ForeverPin.Domain/Codes/Rules/CodeRuleJson.cs) · [CodePayloadMapper.cs](ForeverPin.Domain/Codes/Rules/CodePayloadMapper.cs)
 - **Deleted:** `RoutingRuleEntity` · `RoutingRuleEntityConfiguration` · `RuleDto` · `RuleApiRequest`
 - *Re-scan verdict: 3 roles symmetric. Round-trip locked by `CodeRuleJsonTests`.*
 
@@ -57,7 +60,7 @@
 - [ ] [CodeListQuery.cs](ForeverPin.Application/Codes/Core/Queries/CodeListQuery.cs) · [ICodeRepository.cs](ForeverPin.Application/Codes/Core/Services/ICodeRepository.cs) · [CodeRepository.cs](ForeverPin.Infrastructure/Persistence/Repositories/CodeRepository.cs) · [CodeMappingExtensions.cs](ForeverPin.Infrastructure/Codes/Core/Extensions/CodeMappingExtensions.cs)
 - [ ] [CodeCreateCommandHandler.cs](ForeverPin.Infrastructure/Codes/Core/CommandHandlers/CodeCreateCommandHandler.cs) · [CodeUpdateCommandHandler.cs](ForeverPin.Infrastructure/Codes/Core/CommandHandlers/CodeUpdateCommandHandler.cs) — style branches removed
 - [ ] [CodesController.cs](ForeverPin.Api/Controllers/CodesController.cs) · [HostConfiguration.Extensions.cs](ForeverPin.Api/Configurations/HostConfiguration.Extensions.cs)
-- [ ] [CodeImageService.cs](ForeverPin.Infrastructure/Codes/Core/Services/CodeImageService.cs) — payload via `CodePayload.Resolve`
+- [ ] [CodeImageService.cs](ForeverPin.Infrastructure/Codes/Core/Services/CodeImageService.cs) — payload via `CodePayloadMapper.Resolve`
 
 ## 6 · Validation
 
@@ -86,14 +89,11 @@
 - [ ] Integration — [CodeRepositoryTests](ForeverPin.Tests.Integration/Tests/CodeRepositoryTests.cs) · [RedirectResolutionTests](ForeverPin.Tests.Integration/Tests/RedirectResolutionTests.cs)
 - [ ] E2E — [HttpExtensions](ForeverPin.Tests.E2E/Support/HttpExtensions.cs) (`CodeRequests.Style()`) · [ApiContracts](ForeverPin.Tests.E2E/Support/ApiContracts.cs) · [AuthTests](ForeverPin.Tests.E2E/Tests/AuthTests.cs) · [BillingTests](ForeverPin.Tests.E2E/Tests/BillingTests.cs) · [CodeImageTests](ForeverPin.Tests.E2E/Tests/CodeImageTests.cs) · [CodePreviewTests](ForeverPin.Tests.E2E/Tests/CodePreviewTests.cs) · [CodesCrudTests](ForeverPin.Tests.E2E/Tests/CodesCrudTests.cs) · [RedirectWedgeTests](ForeverPin.Tests.E2E/Tests/RedirectWedgeTests.cs)
 - **Deleted:** `MobileAppLinkContentSpecTests`
-- Current: Unit **114** · Integration **18** · E2E **61**
+- Historical counts: Unit **114** · Integration **18** · E2E **61**. Current results: [verification](../../operations/verification.md).
 
 ---
 
-## Known-open, deliberately (don't file as review findings)
+## Remaining work
 
-- `UrlContent.Encode()` / `MobileAppLinkContent.Encode()` return **null** — the CM9 deferral; tests assert it on purpose
-- `CodeContent.IsStatic` still exists — dies with F1, in the routing step
-- `CodeRuleSet.Mode` is nullable — marks the missing entity fetch (P4 / Iteration 9), not a modelling slip
-- `CodeUpdateCommandValidator` skips static⟹1-rule — same missing fetch
-- `CodePayload` still carries `?? string.Empty` + `SlugPlaceholder` — Iteration 6's thin-down, open
+The [current-work analysis](../../planning/current-work.md) supersedes the old known-open list.
+Review checkboxes above remain unchecked; renaming their links does not certify the review.
