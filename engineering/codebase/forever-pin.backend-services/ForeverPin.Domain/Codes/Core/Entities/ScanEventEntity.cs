@@ -3,13 +3,13 @@ using WoW.Two.Sdk.Backend.Beta.Data.Abstractions;
 
 namespace ForeverPin.Domain.Codes.Core.Entities;
 
-/// <summary>Represents an append-only record of a single scan / click.</summary>
+/// <summary>Represents a scan or click event.</summary>
 public sealed record ScanEventEntity : IKeyedEntity<Guid>, IHasTableName
 {
-    /// <summary>Gets the storage table name of the scan-event entity.</summary>
+    /// <summary>Gets the storage table name.</summary>
     public static string TableName => "scan_events";
 
-    /// <summary>Gets or sets the UUID primary key of the scan event.</summary>
+    /// <summary>Gets or sets the primary key.</summary>
     public required Guid Id { get; set; }
 
     /// <summary>Gets or sets the id of the code that was scanned.</summary>
@@ -18,24 +18,24 @@ public sealed record ScanEventEntity : IKeyedEntity<Guid>, IHasTableName
     /// <summary>Gets or sets the moment the scan was resolved.</summary>
     public required DateTimeOffset ScannedAt { get; set; }
 
-    /// <summary>Gets or sets the resolved device class of the scan event.</summary>
+    /// <summary>Gets or sets the device class.</summary>
     public DeviceType Device { get; set; }
 
-    /// <summary>Gets or sets the ISO country code of the scan event from IP geo.</summary>
+    /// <summary>Gets or sets the ISO country code, or null when unknown.</summary>
     public string? CountryCode { get; set; }
 
-    /// <summary>Gets or sets the coarse OS string of the scan event, parsed from the User-Agent.</summary>
+    /// <summary>Gets or sets the operating-system family, or null when unknown.</summary>
     public string? Os { get; set; }
 
-    /// <summary>Gets or sets the HTTP referrer of the scan event, when present.</summary>
+    /// <summary>Gets or sets the HTTP referrer, or null when absent.</summary>
     public string? Referrer { get; set; }
 
-    /// <summary>Gets or sets a salted hash of the scan's User-Agent.</summary>
+    /// <summary>Gets or sets the hash of the scan's User-Agent.</summary>
     public string? UserAgentHash { get; set; }
 
-    /// <summary>Gets or sets the order of the routing rule that matched the scan event, if any.</summary>
+    /// <summary>Gets or sets the matched routing rule's order, or null when no rule matched.</summary>
     public int? MatchedRuleOrder { get; set; }
 
-    /// <summary>Gets or sets the destination URL the scan was sent to.</summary>
+    /// <summary>Gets or sets the resolved destination.</summary>
     public required string DestinationUrl { get; set; }
 }

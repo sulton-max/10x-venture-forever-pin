@@ -1,12 +1,13 @@
 # Current work
 
-*Last updated: 2026-09-14*
+*Last updated: 2026-09-15*
 
 ## Position
 
 The product is in v0.9. Its models, storage, forms, and basic copy flow are implemented.
 Automated verification is green; the delivery and correctness gaps below remain real.
 Vue application migration is excluded from this lane.
+Promo and marketing work, including the promo source's repository placement, is parked by the owner.
 
 ---
 
@@ -28,6 +29,7 @@ This document explains ordering and evidence, not a second checklist.
 ## Model review
 
 - Completed: content/rule shapes, persistence, type renames, and the completed summary pass.
+- Reviewed: the four backend entity types and their member summaries; comment-only changes preserve declarations.
 - Remaining: other type/member summaries, backend/frontend member names, and consistent frontend DTO names.
 - Calendar: the old defect report lacks a reproduction; reproduce before changing encoding.
 - Preserve frontend wire-role names rather than copying backend value-object suffixes.
