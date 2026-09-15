@@ -11,24 +11,24 @@ public sealed record ScanRecord
     /// <summary>Gets the moment the scan was resolved.</summary>
     public required DateTimeOffset ScannedAt { get; init; }
 
-    /// <summary>Gets the resolved device class of the scan.</summary>
+    /// <summary>Gets the device class.</summary>
     public DeviceType Device { get; init; }
 
-    /// <summary>Gets the ISO country code of the scan, or null when unresolved.</summary>
+    /// <summary>Gets the ISO country code, or null when unknown.</summary>
     public string? CountryCode { get; init; }
 
-    /// <summary>Gets the coarse OS string of the scan, parsed from the User-Agent.</summary>
+    /// <summary>Gets the operating-system family, or null when unknown.</summary>
     public string? Os { get; init; }
 
-    /// <summary>Gets the HTTP referrer of the scan, when present.</summary>
+    /// <summary>Gets the HTTP referrer, or null when absent.</summary>
     public string? Referrer { get; init; }
 
-    /// <summary>Gets a salted hash of the scan's User-Agent.</summary>
+    /// <summary>Gets the hash of the scan's User-Agent.</summary>
     public string? UserAgentHash { get; init; }
 
-    /// <summary>Gets the order of the routing rule that matched the scan, or null when none did.</summary>
+    /// <summary>Gets the matched routing rule's order, or null when no rule matched.</summary>
     public int? MatchedRuleOrder { get; init; }
 
-    /// <summary>Gets the destination URL the scan was sent to.</summary>
+    /// <summary>Gets the resolved destination.</summary>
     public required string DestinationUrl { get; init; }
 }

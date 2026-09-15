@@ -30,6 +30,8 @@ This document explains ordering and evidence, not a second checklist.
 
 - Completed: content/rule shapes, persistence, type renames, and the completed summary pass.
 - Reviewed: the four backend entity types and their member summaries; comment-only changes preserve declarations.
+- Compacted: product source comments, including models, requests, services, UI controls, tests, and Vite configuration.
+- Checked: C# executable text and TypeScript syntax trees are unchanged; XML docs and frontend typecheck pass.
 - Remaining: other type/member summaries, backend/frontend member names, and consistent frontend DTO names.
 - Calendar: the old defect report lacks a reproduction; reproduce before changing encoding.
 - Preserve frontend wire-role names rather than copying backend value-object suffixes.

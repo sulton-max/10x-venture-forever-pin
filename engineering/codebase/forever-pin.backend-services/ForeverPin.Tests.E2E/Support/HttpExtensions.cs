@@ -1,7 +1,6 @@
 namespace ForeverPin.Tests.E2E.Support;
 
-// The JSON request/response plumbing (AsJson / PostJsonAsync / PutJsonAsync / PatchJsonAsync /
-// ReadEnvelopeAsync) lives in the SDK testing package — WoW.Two.Sdk.Backend.Beta.Testing.Web.HttpExtensions.
+// Request-body builders complement the SDK HTTP test helpers.
 
 /// <summary>Provides builders for the JSON request bodies the codes endpoints accept.</summary>
 public static class CodeRequests

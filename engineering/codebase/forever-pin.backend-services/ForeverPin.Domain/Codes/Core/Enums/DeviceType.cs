@@ -1,6 +1,6 @@
 namespace ForeverPin.Domain.Codes.Core.Enums;
 
-/// <summary>Defines the scanner device class, derived from the request User-Agent.</summary>
+/// <summary>Defines the scanner device class.</summary>
 public enum DeviceType
 {
     /// <summary>Represents an unrecognized / undetermined device.</summary>

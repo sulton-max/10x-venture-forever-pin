@@ -1,7 +1,7 @@
 import { ContentType } from "../enums/ContentType";
 import { WifiEncryption } from "../enums/WifiEncryption";
 
-/** Represents the static Wi-Fi join content — network credentials plus a hidden-SSID flag. */
+/** Represents Wi-Fi network credentials. */
 export interface WifiContent {
   /** The content-type discriminator. */
   type: typeof ContentType.Wifi;

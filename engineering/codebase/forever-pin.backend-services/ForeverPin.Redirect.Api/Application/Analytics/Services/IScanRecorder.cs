@@ -2,7 +2,7 @@ using ForeverPin.Redirect.Api.Application.Analytics.Models;
 
 namespace ForeverPin.Redirect.Api.Application.Analytics.Services;
 
-/// <summary>Defines the contract for accepting scan events for later persistence.</summary>
+/// <summary>Defines accepting scan events for later persistence.</summary>
 /// <remarks>Implement without blocking the caller.</remarks>
 public interface IScanRecorder
 {

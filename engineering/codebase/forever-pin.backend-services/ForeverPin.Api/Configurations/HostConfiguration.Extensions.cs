@@ -56,8 +56,7 @@ public static partial class HostConfiguration
     {
         builder.Services.AddMediator(typeof(ForeverPin.Infrastructure.InfrastructureAssembly).Assembly);
 
-        // Validators run in the pipeline before each handler; a failure throws ValidationException (400 via
-        // ValidationExceptionFilter).
+        // Validate before handlers; the exception filter maps failures to HTTP 400.
         builder.Services.AddMediatorValidationBehavior();
 
         builder.Services.AddScoped<ICodeRepository, CodeRepository>();
@@ -113,9 +112,7 @@ public static partial class HostConfiguration
             .AddJsonStringEnums()
             .AddJsonOptions(options =>
             {
-                // Content and rule polymorphism is enum-driven (no attributes), so the endpoint serializer
-                // needs
-                // the same resolvers the persistence options use — otherwise the API can't (de)serialize either union.
+                // Bind both polymorphic unions in the endpoint serializer.
                 var resolver = options.JsonSerializerOptions.TypeInfoResolver ?? new DefaultJsonTypeInfoResolver();
                 options.JsonSerializerOptions.TypeInfoResolver = resolver
                     .WithAddedModifier(CodeContentValueObject.Subtypes.ToJsonModifier())

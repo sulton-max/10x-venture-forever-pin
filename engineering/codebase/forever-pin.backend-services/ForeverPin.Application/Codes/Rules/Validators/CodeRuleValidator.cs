@@ -3,8 +3,8 @@ using ForeverPin.Domain.Codes.Rules.Models;
 
 namespace ForeverPin.Application.Codes.Rules.Validators;
 
-/// <summary>Validates one rule, dispatching to the validator for its role.</summary>
-/// <remarks>Register a new rule role here and in its own validator.</remarks>
+// Register each rule role with its validator.
+/// <summary>Validates a routing rule.</summary>
 public sealed class CodeRuleValidator : AbstractValidator<CodeRuleValueObject>
 {
     /// <summary>Builds the per-role rule dispatch.</summary>

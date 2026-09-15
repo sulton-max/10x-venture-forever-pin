@@ -3,6 +3,6 @@ namespace ForeverPin.Application.Billing.Core.Models;
 /// <summary>Represents a hosted Checkout session.</summary>
 public sealed record CheckoutSessionDto
 {
-    /// <summary>Gets the hosted Checkout URL (<c>https://checkout.stripe.com/c/pay/cs_test_…</c>).</summary>
+    /// <summary>Gets the hosted checkout URL.</summary>
     public required string Url { get; init; }
 }

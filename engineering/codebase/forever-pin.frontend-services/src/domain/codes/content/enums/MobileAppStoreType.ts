@@ -1,12 +1,12 @@
 /** Defines which app store a mobile-app link points at. */
 export const MobileAppStoreType = {
-  /** Apple App Store. */
+  /** Refers to the Apple App Store. */
   AppStore: "appStore",
 
-  /** Google Play. */
+  /** Refers to Google Play. */
   PlayStore: "playStore",
 
-  /** Any other store or a direct download page. */
+  /** Refers to another store or a direct download page. */
   Other: "other",
 } as const;
 

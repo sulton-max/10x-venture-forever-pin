@@ -17,11 +17,7 @@ export interface DesignViewProps {
   readonly form: AppForm<CodeCreateUpdateApiRequest>;
 }
 
-/**
- * Renders the Design tab: the code-type select plus a single-open accordion (colors & fill · shape & eyes ·
- * center). The design settings are one `style` field — each accordion pane binds through `form.Field name="style"`
- * and merges its slice back with a spread (the same whole-object idiom the content controls use).
- */
+/** Renders symbology and visual-style controls. */
 export function DesignView({ form }: DesignViewProps) {
   return (
     <>

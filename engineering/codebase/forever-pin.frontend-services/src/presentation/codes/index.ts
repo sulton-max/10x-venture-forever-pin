@@ -1,3 +1,2 @@
-// presentation/codes — public surface. Sub-domains (`core/*`, `content/*`) are internal;
-// `common/` holds cross-sub-domain role-groups (the routed `screens/`).
+// Public code-management screens.
 export * from "./common";

@@ -30,7 +30,7 @@ export interface ShapeControlsProps {
   readonly onFinderDotShapeChange: (shape: FinderShape) => void;
 }
 
-/** Renders the code-styling shape controls — a body-module grid above the paired external / internal eyes. */
+/** Renders controls for data-module and finder shapes. */
 export function ShapeControls({
   moduleShape,
   finderShape,

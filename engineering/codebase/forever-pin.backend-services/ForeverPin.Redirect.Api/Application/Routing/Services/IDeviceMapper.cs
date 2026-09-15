@@ -2,7 +2,7 @@ using ForeverPin.Domain.Codes.Core.Enums;
 
 namespace ForeverPin.Redirect.Api.Application.Routing.Services;
 
-/// <summary>Defines the contract for resolving a device class from the User-Agent.</summary>
+/// <summary>Defines resolving a device class from the User-Agent.</summary>
 /// <remarks>Resolve without an external call.</remarks>
 public interface IDeviceMapper
 {

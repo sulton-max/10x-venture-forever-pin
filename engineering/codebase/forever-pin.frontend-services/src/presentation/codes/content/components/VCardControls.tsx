@@ -2,7 +2,7 @@ import { EmailInput, Field, TelInput, TextInput, TextAreaInput, UrlInput } from 
 import type { VCardContent } from "@/domain/codes/content";
 import type { ContentControlsProps } from "./fields";
 
-/** Renders contact-card (vCard) content — only the first name is required. */
+/** Renders contact-card fields. */
 export function VCardControls({ value, onChange }: ContentControlsProps<VCardContent>) {
   return (
     <>

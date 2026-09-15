@@ -2,9 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace ForeverPin.Tests.E2E.Support;
 
-// Local mirrors of the API response shapes for E2E assertions — independent of the extern-aliased
-// production types, so only the wire contract is asserted. The JSON options + success envelope live in
-// the SDK testing package (WoW.Two.Sdk.Backend.Beta.Testing.Web: TestJson, ApiEnvelope<T>).
+// Independent response models keep E2E assertions focused on the wire contract.
 
 /// <summary>Represents the wire shape of <c>MeResponse</c>.</summary>
 public sealed record MeResponseDto

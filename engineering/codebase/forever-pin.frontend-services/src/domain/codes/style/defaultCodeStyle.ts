@@ -5,7 +5,7 @@ import { FinderShape } from "./enums/FinderShape";
 import { ModuleShape } from "./enums/ModuleShape";
 import type { CodeStyleDto } from "./models";
 
-/** Defines the default style seeding every new code — rounded body + eyes, a black→violet radial gradient, no overlay. */
+/** Defines the initial style for a new code. */
 export const defaultCodeStyle: CodeStyleDto = {
   foregroundColor: "#000000",
   backgroundColor: "#ffffff",

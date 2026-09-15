@@ -33,11 +33,7 @@ export interface QrPreviewProps {
   readonly debounceMs?: number;
 }
 
-/**
- * Renders the live builder preview from the **backend-emitted SVG** (server-authoritative
- * parity with the downloadable asset) via `POST /api/codes/preview`. The request is
- * debounced so it isn't fired per-keystroke, and superseded requests are aborted.
- */
+/** Renders a debounced server preview, aborting superseded requests. */
 export function QrPreview({
   mode,
   rules,

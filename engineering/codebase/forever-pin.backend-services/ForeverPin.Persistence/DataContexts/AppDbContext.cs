@@ -8,11 +8,11 @@ using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Sqlite;
 
 namespace ForeverPin.Persistence.DataContexts;
 
-/// <summary>The ForeverPin application database context.</summary>
+/// <summary>Provides access to the ForeverPin database.</summary>
 /// <remarks>Author schema changes in <c>Migrations/NNN-name/Apply.sql</c>, never through EF.</remarks>
 public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : AppDbContextBase(options)
 {
-    /// <summary>Gets the codes (QR / barcode / link) set.</summary>
+    /// <summary>Gets the code set.</summary>
     public DbSet<CodeEntity> Codes => Set<CodeEntity>();
 
 
@@ -22,7 +22,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : AppDb
     /// <summary>Gets the Stripe subscriptions set.</summary>
     public DbSet<SubscriptionEntity> Subscriptions => Set<SubscriptionEntity>();
 
-    /// <summary>Gets the registered accounts (Google sign-in) set.</summary>
+    /// <summary>Gets the registered-account set.</summary>
     public DbSet<UserEntity> Users => Set<UserEntity>();
 
     /// <inheritdoc />
@@ -34,8 +34,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : AppDb
         // Store every enum property (nullable and non-nullable) as snake_case text — bulk via the SDK helper.
         modelBuilder.ApplyEnumStringConversions();
 
-        // SQLite (tests) has no native DateTimeOffset — store as binary long so ORDER BY / range reads match Postgres.
-        // Npgsql maps it natively, so this is SQLite-only.
+        // Use the binary timestamp conversion only for SQLite, which lacks native DateTimeOffset support.
         if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
             modelBuilder.ApplyDateTimeOffsetToBinaryConversion();
     }

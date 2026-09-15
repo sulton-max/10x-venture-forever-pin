@@ -1,9 +1,6 @@
 import type { BarcodeFormat, ContentMode, ContentType, CodeRuleDto, CodeStyleDto } from "@/domain/codes";
 
-/**
- * Defines the create/update code request body — shared for POST create and PUT replace (the id rides the URL).
- * Every member is always present; `toUpdateCodeRequest` drops `mode` at the wire, where the contract omits it.
- */
+/** Defines the builder request; omit `mode` when submitting an update. */
 export interface CodeCreateUpdateApiRequest {
   /** The code's display name. */
   name: string;
@@ -11,7 +8,7 @@ export interface CodeCreateUpdateApiRequest {
   /** The symbology the code renders as. */
   barcodeFormat: BarcodeFormat;
 
-  /** How the symbol resolves. Fixed at create — an edit can never change what the symbol bakes, so the update body omits it. */
+  /** The content resolution mode; omit it from updates. */
   mode: ContentMode;
 
   /** The kind of content every rule carries. */
@@ -24,5 +21,5 @@ export interface CodeCreateUpdateApiRequest {
   style: CodeStyleDto;
 }
 
-/** Defines the update code request body — the create body without `mode`, which is fixed at create (CM3). */
+/** Defines an update request without the immutable content mode. */
 export type CodeUpdateApiRequest = Omit<CodeCreateUpdateApiRequest, "mode">;

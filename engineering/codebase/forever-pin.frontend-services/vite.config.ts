@@ -4,12 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 
-// ForeverPin web — Vite + React 19 + Tailwind v4, consuming @wow-two-beta/ui.
+// ForeverPin frontend build and development server.
 export default defineConfig(({ command, mode }) => ({
-  // mkcert → HTTPS dev server (locally-trusted cert). Keeps `Secure` auth cookies + secure-context
-  // working; convention: frontend/project-structure.md §Dev server.
-  // Set `VITE_HTTPS=false` to skip mkcert and serve plain HTTP (e.g. headless preview tools whose
-  // browser doesn't trust the local mkcert CA). Normal dev stays HTTPS.
+  // Use HTTPS for secure cookies in development; VITE_HTTPS=false opts into HTTP.
   plugins: [
     react(),
     tailwindcss(),
@@ -17,8 +14,7 @@ export default defineConfig(({ command, mode }) => ({
   ],
   server: {
     port: 7024,
-    // Proxy /api to the backend's HTTPS (even) port with secure:false (self-signed .NET dev cert) — per
-    // frontend/state-and-data.md. changeOrigin:false preserves the dev origin end-to-end.
+    // Proxy to the local HTTPS API, accepting its dev certificate and preserving the browser origin.
     proxy: {
       "/api": { target: "https://localhost:7020", changeOrigin: false, secure: false },
       "/health": { target: "https://localhost:7020", changeOrigin: false, secure: false },
@@ -34,7 +30,7 @@ export default defineConfig(({ command, mode }) => ({
       "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
-  // Unit tests mirror src/ under tests/ (frontend/architecture.md § Tests).
+  // Unit tests mirror the source tree.
   test: {
     include: ["tests/**/*.test.{ts,tsx}"],
   },

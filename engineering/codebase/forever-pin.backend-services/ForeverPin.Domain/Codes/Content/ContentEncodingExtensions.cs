@@ -4,11 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace ForeverPin.Domain.Codes.Content;
 
-/// <summary>Shared payload-encoding primitives for the static <see cref="CodeContentValueObject"/> types.</summary>
-/// <remarks>Keep in lockstep with the frontend's <c>contentTypes.ts</c>.</remarks>
+/// <summary>Provides content-payload encoding primitives.</summary>
 public static partial class ContentEncodingExtensions
 {
-    /// <summary>Trims a value and null-normalizes it to empty — mirrors the frontend's <c>t()</c> helper.</summary>
+    /// <summary>Trims a value, returning an empty string for null.</summary>
     public static string Clean(string? value) => (value ?? string.Empty).Trim();
 
     /// <summary>Escapes the reserved characters in a <c>WIFI:</c> payload segment (<c>\ ; , : "</c>).</summary>

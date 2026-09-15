@@ -8,10 +8,10 @@ public sealed record GeoContentValueObject : CodeContentValueObject
     /// <summary>Holds the payload shape — the scheme, then the pair a comma separates.</summary>
     private const string Payload = "geo:{0},{1}";
 
-    /// <summary>Gets the latitude, which runs from -90 at the south pole to 90 at the north.</summary>
+    /// <summary>Gets the latitude in degrees, from -90 to 90.</summary>
     public required double Latitude { get; init; }
 
-    /// <summary>Gets the longitude, which runs from -180 to 180 either side of the prime meridian.</summary>
+    /// <summary>Gets the longitude in degrees, from -180 to 180.</summary>
     public required double Longitude { get; init; }
 
     /// <inheritdoc />

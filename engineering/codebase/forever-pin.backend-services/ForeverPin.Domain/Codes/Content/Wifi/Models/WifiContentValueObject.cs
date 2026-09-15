@@ -6,13 +6,13 @@ namespace ForeverPin.Domain.Codes.Content.Wifi.Models;
 /// <summary>Represents the credentials of a Wi-Fi network.</summary>
 public sealed record WifiContentValueObject : CodeContentValueObject
 {
-    /// <summary>Gets the name of the network.</summary>
+    /// <summary>Gets the network name.</summary>
     public required string Ssid { get; init; }
 
-    /// <summary>Gets the pre-shared key of the network.</summary>
+    /// <summary>Gets the pre-shared key.</summary>
     public string? Password { get; init; }
 
-    /// <summary>Gets the authentication scheme of the network, which decides how a joining device negotiates.</summary>
+    /// <summary>Gets the authentication scheme.</summary>
     public required WifiEncryption Encryption { get; init; }
 
     /// <summary>Gets whether the network withholds its name from beacon frames.</summary>

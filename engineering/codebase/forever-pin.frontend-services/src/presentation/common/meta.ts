@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-// Client-side `<title>` + description/OG tags per route; swap to prerender/SSG when SEO depth matters.
+// Client-side page titles and description and Open Graph tags.
 export function usePageMeta(title: string, description?: string): void {
   useEffect(() => {
     if (title) {

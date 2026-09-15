@@ -31,10 +31,7 @@ public sealed class CodeCreateCommandHandler(
     {
         try
         {
-            // ── Plan gate (the single 402 enforcement point) ──
-            // Resolve the caller's plan (Free when no subscription row), then reject before allocating a slug
-            // if they're already at their cap. Agency's int.MaxValue cap never trips. No Stripe call here —
-            // a plain count vs cap. The redirect hot path stays plan-agnostic (never-deactivate-on-downgrade).
+            // Enforce the owner's plan cap before allocating a slug.
             var subscription = await subscriptions.GetByUserAsync(request.UserId, ct);
             var plan = subscription?.Plan ?? Plan.Free;
             var cap = PlanLimitsConstants.MaxCodes(plan);
@@ -67,7 +64,7 @@ public sealed class CodeCreateCommandHandler(
                 StyleJson = StyleSpecJson.Serialize(request.Style),
                 Mode = request.Mode,
                 ContentType = request.ContentType,
-                // The rules carry the code's content; persisted as one jsonb document via the EF value converter.
+                // Persist content-bearing rules with the code.
                 Rules = [.. request.Rules],
             };
 

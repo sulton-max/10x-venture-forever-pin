@@ -34,8 +34,7 @@ public static partial class HostConfiguration
         builder.Services.AddSingleton<IDeviceMapper, UserAgentDeviceMapper>();
         builder.Services.AddSingleton<IGeoBroker, NoopGeoBroker>();
 
-        // Hot code store: read the code (with its rules) from the DB per scan — an edit takes effect on the next
-        // scan with no invalidation. Front it with a cache (CachedRedirectCodeRepository) when the caching item lands.
+        // Read each scan from the database so edits apply without cache invalidation.
         builder.Services.AddSingleton<IRedirectCodeRepository, DbRedirectCodeRepository>();
 
         // Async analytics: one recorder (producer) and one hosted flusher (consumer).

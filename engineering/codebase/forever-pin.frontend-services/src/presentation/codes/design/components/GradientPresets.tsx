@@ -44,7 +44,7 @@ export const LinearPresets: PresetRow = {
   ],
 };
 
-/** The radial (radius) projection presets — extent `0..1`, frontend-only until the backend wires it. */
+/** The radial-gradient radius presets, as a fraction from 0 to 1. */
 export const RadialPresets: PresetRow = {
   type: GradientType.Radial,
   ariaLabel: "Gradient radius",

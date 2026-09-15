@@ -1,9 +1,6 @@
-// Billing — mirrors ForeverPin.Api Billing DTOs + ForeverPin.Common.Domain.Billing.Enums.
+// Billing plans and API data shapes.
 
-/**
- * Defines a subscription plan (mirrors backend `ForeverPin.Common.Domain.Billing.Enums.Plan`).
- * Wire form is camelCase; the DB stores PascalCase via EF `HaveConversion<string>` — a separate storage concern.
- */
+/** Defines the subscription tiers. */
 export const Plan = {
   /** Refers to the free tier. */
   Free: "free",

@@ -2,15 +2,15 @@ using WoW.Two.Sdk.Backend.Beta.Foundation.Configuration;
 
 namespace ForeverPin.Application.Settings;
 
-/// <summary>Configuration for Stripe billing, bound from the <c>Billing</c> section.</summary>
+/// <summary>Represents the Stripe billing settings.</summary>
 public class BillingSettings
 {
-    /// <summary>Gets or sets the Stripe secret API key (<c>sk_test_…</c>).</summary>
+    /// <summary>Gets or sets the Stripe secret API key.</summary>
     /// <remarks>Set via environment variable or user-secrets, never in appsettings.</remarks>
     [EnvironmentVariable("BILLING_SECRET_KEY")]
     public string SecretKey { get; set; } = "";
 
-    /// <summary>Gets or sets the Stripe webhook signing secret (<c>whsec_…</c>).</summary>
+    /// <summary>Gets or sets the Stripe webhook signing secret.</summary>
     [EnvironmentVariable("BILLING_WEBHOOK_SECRET")]
     public string WebhookSecret { get; set; } = "";
 
@@ -26,15 +26,15 @@ public class BillingSettings
     public string CancelUrl { get; set; } = "http://localhost:7020/billing/cancel";
 }
 
-/// <summary>Configuration for the Stripe price ids of the paid plans.</summary>
+/// <summary>Represents the paid plans' Stripe price ids.</summary>
 public class BillingPricesSettings
 {
-    /// <summary>Gets or sets the price id (<c>price_…</c>) for the Solo plan.</summary>
+    /// <summary>Gets or sets the Stripe price id for the Solo plan.</summary>
     public string Solo { get; set; } = "";
 
-    /// <summary>Gets or sets the price id (<c>price_…</c>) for the Pro plan.</summary>
+    /// <summary>Gets or sets the Stripe price id for the Pro plan.</summary>
     public string Pro { get; set; } = "";
 
-    /// <summary>Gets or sets the price id (<c>price_…</c>) for the Agency plan.</summary>
+    /// <summary>Gets or sets the Stripe price id for the Agency plan.</summary>
     public string Agency { get; set; } = "";
 }

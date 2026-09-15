@@ -3,7 +3,7 @@ using ForeverPin.Redirect.Api.Application.Routing.Models;
 
 namespace ForeverPin.Redirect.Api.Application.Routing.Services;
 
-/// <summary>Defines the contract for deciding where a scan resolves.</summary>
+/// <summary>Defines deciding where a scan resolves.</summary>
 public interface IRoutingService
 {
     /// <summary>Evaluates the code's rules in order, taking the first match.</summary>

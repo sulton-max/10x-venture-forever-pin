@@ -32,8 +32,7 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
 
         if (!string.IsNullOrWhiteSpace(q))
         {
-            // Lower-case both sides → SQL lower() — reliably case-insensitive on PG and SQLite (raw LIKE is
-            // case-sensitive on PG).
+            // Normalize both operands for case-insensitive matching on Postgres and SQLite.
             var term = q.Trim().ToLowerInvariant();
             query = query.Where(c => c.Name.ToLower().Contains(term));
         }
@@ -46,8 +45,7 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
     /// <inheritdoc />
     public async Task<CodeEntity> UpdateAsync(CodeEntity code, CancellationToken ct)
     {
-        // Replace the whole rule set: delete existing rows, insert the new (fresh-id) ones in one SaveChanges.
-        // The rules are a jsonb column on the code, so the whole set saves with the row.
+        // The replacement rule set is saved in the code's jsonb column.
         await db.SaveChangesAsync(ct);
         return code;
     }

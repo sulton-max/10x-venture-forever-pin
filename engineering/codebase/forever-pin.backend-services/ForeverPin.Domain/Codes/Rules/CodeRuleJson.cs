@@ -5,7 +5,7 @@ using ForeverPin.Domain.Codes.Rules.Models;
 
 namespace ForeverPin.Domain.Codes.Rules;
 
-/// <summary>(De)serializes a code's rule list to and from its <c>rules</c> jsonb document.</summary>
+/// <summary>Serializes and deserializes a code's routing-rule JSON.</summary>
 public static class CodeRuleJson
 {
     /// <summary>Holds the serializer options for a code's rule document.</summary>

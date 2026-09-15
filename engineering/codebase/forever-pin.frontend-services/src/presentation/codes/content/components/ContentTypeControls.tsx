@@ -31,8 +31,7 @@ export function ContentTypeControls({ content, onChange }: ContentTypeControlsPr
   );
 }
 
-// Each content type has a dedicated typed control so its controls can diverge; the switch narrows the union to
-// the matching model. `onChange` (over the full union) is passed as-is — a wider handler satisfies a narrower one.
+// Narrow the content union to its dedicated controls.
 function renderControls(content: CodeContent, onChange: (next: CodeContent) => void) {
   switch (content.type) {
     case ContentType.Url:

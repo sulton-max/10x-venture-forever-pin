@@ -21,8 +21,7 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
     /// <inheritdoc />
     public async Task<SubscriptionEntity> UpsertByUserAsync(SubscriptionEntity entity, CancellationToken ct)
     {
-        // Single live row per user (unique index on user_id) — overwrite the existing row's billing fields, or insert
-        // when there's none.
+        // Upsert the single subscription row identified by user_id.
         var existing = await db.Subscriptions.FirstOrDefaultAsync(s => s.UserId == entity.UserId, ct);
 
         if (existing is null)

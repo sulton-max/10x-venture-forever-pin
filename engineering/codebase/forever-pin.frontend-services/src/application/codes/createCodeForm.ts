@@ -1,5 +1,4 @@
-// The code builder's form module — the whole-form `CreateCodeSchema`, the blank/prefill request factories,
-// and the submit normalizer. The form binds `CodeCreateUpdateApiRequest` directly (no separate `*Values` type).
+// Code-builder schema, initial values, and request mapping.
 
 import { z } from "zod";
 import { Temporal } from "temporal-polyfill";
@@ -28,15 +27,14 @@ import {
 } from "@/domain/codes";
 import type { CodeCreateUpdateApiRequest } from "@/integration/codes";
 
-/** A zod schema over a const-object enum's values, typed as the exact string-literal union it produces. */
+/** Builds a schema accepting the enum's string values. */
 function enumOf<T extends Record<string, string>>(source: T) {
   const values = Object.values(source);
   return z.custom<T[keyof T]>((value) => typeof value === "string" && values.includes(value));
 }
 
 // ── Schema ──────────────────────────────────────────────────────────────────────
-// `content` is a discriminated union over `type`, each member mirroring its domain interface — payload
-// validation is the backend's; the form only shapes what the controls bind to.
+// Shape the control values; the backend validates content semantics.
 
 const contentSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal(ContentType.Url), url: z.string() }),
@@ -112,7 +110,7 @@ const codeStyleSchema = z.object({
   emoji: z.custom<CodeEmojiDto>().optional(),
 });
 
-/** Whole-form validator — the code's identity plus the rules carrying its content. */
+/** Defines the code-builder form schema. */
 export const CreateCodeSchema = z.object({
   name: z.string(),
   barcodeFormat: enumOf(BarcodeFormat),
@@ -124,7 +122,7 @@ export const CreateCodeSchema = z.object({
 
 // ── Factories + mappers ─────────────────────────────────────────────────────────
 
-/** The blank builder request for create mode — a static `url` code carrying one default rule. */
+/** Creates a static URL request with one default rule. */
 export function emptyCodeCreateUpdateApiRequest(): CodeCreateUpdateApiRequest {
   return {
     name: "",
@@ -136,7 +134,7 @@ export function emptyCodeCreateUpdateApiRequest(): CodeCreateUpdateApiRequest {
   };
 }
 
-/** A fresh conditional rule for `useFieldArray('rules').push` — `order` is reassigned by row index at submit. */
+/** Creates an empty conditional rule; assign its order before submission. */
 export function emptyConditionalRule(contentType: ContentType): ConditionalRuleDto {
   return {
     type: CodeRuleType.Conditional,
@@ -147,21 +145,17 @@ export function emptyConditionalRule(contentType: ContentType): ConditionalRuleD
   };
 }
 
-/** A fresh catch-all rule — serves whatever the conditional rules did not match. At most one per code. */
+/** Creates an empty catch-all rule; allow at most one per code. */
 export function emptyDefaultRule(contentType: ContentType): DefaultRuleDto {
   return { type: CodeRuleType.Default, content: emptyContent(contentType) };
 }
 
-/** The other side of the mode axis — what an opposite-mode copy is created as (CM5). */
+/** Returns the opposite content mode. */
 export function oppositeMode(mode: ContentMode): ContentMode {
   return mode === ContentMode.Static ? ContentMode.Dynamic : ContentMode.Static;
 }
 
-/**
- * Maps a loaded code to the builder request for edit-mode prefill — feed to `form.reset(...)`.
- * Carries the persisted `mode` even though the update body drops it: the builder needs it to know what the
- * symbol bakes, and mode is locked after create (CM3), so it is the code's mode or nothing.
- */
+/** Maps a saved code to edit-form values, preserving its mode. */
 export function toCodeCreateUpdateApiRequest(code: CodeDto): CodeCreateUpdateApiRequest {
   return {
     name: code.name,
@@ -173,10 +167,7 @@ export function toCodeCreateUpdateApiRequest(code: CodeDto): CodeCreateUpdateApi
   };
 }
 
-/**
- * Maps a loaded code to the builder request for an opposite-mode copy (CM5) — same content and style, a new
- * symbol. The two modes bake different bytes, so a copy is the only way across the axis; the original is untouched.
- */
+/** Maps a saved code to copy-form values in the selected mode. */
 export function toCopyCodeCreateUpdateApiRequest(code: CodeDto, mode: ContentMode): CodeCreateUpdateApiRequest {
   return {
     name: `${code.name} copy`,
@@ -188,20 +179,15 @@ export function toCopyCodeCreateUpdateApiRequest(code: CodeDto, mode: ContentMod
   };
 }
 
-// A rule's content binds as one object (`rules[0].content`) because the per-type `*Controls` are dumb
-// value/onChange groups, so no form field exists at `rules[0].content.url`. The server validates the leaf
-// and reports the leaf path, which would otherwise be filed at a path nothing subscribes to and never render.
+// Content errors bind to the whole content group, not individual leaf fields.
 const ContentLeafPath = /^(rules\[\d+]\.content)\..+$/;
 
-/**
- * Rewrites a server error path onto a bound form path — camelCase per segment, then collapses a content
- * leaf onto the object the controls actually bind. The message lands on the right rule's content group.
- */
+/** Normalizes server error paths and maps content leaves to their bound content group. */
 export function mapCodeFieldPath(serverPath: string): string {
   return defaultMapFieldPath(serverPath).replace(ContentLeafPath, "$1");
 }
 
-/** Normalizes the builder request for a create submit — trims the name, renumbers the conditional rules, applies CM2. */
+/** Normalizes the name and rule order, forcing dynamic mode for multiple rules. */
 export function toCreateCodeRequest(values: CodeCreateUpdateApiRequest): CodeCreateUpdateApiRequest {
   let order = 0;
   const rules: CodeRuleDto[] = values.rules.map((rule) =>
@@ -211,16 +197,13 @@ export function toCreateCodeRequest(values: CodeCreateUpdateApiRequest): CodeCre
   return {
     ...values,
     name: values.name.trim() || "Untitled code",
-    // CM2 — two destinations can't be baked into one symbol, so 2+ rules force dynamic. Mirrors the server's check.
+    // Multiple rules require resolution at scan time.
     mode: rules.length > 1 ? ContentMode.Dynamic : values.mode,
     rules,
   };
 }
 
-/**
- * Normalizes the builder request for an update submit — the create body minus `mode`, which the update contract
- * does not carry (CM3). The form holds the persisted mode so the builder can reason about it; the wire never sees it.
- */
+/** Normalizes an update request and omits the immutable mode. */
 export function toUpdateCodeRequest(values: CodeCreateUpdateApiRequest): Omit<CodeCreateUpdateApiRequest, "mode"> {
   const { mode: _mode, ...request } = toCreateCodeRequest(values);
   return request;

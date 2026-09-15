@@ -45,7 +45,7 @@ public sealed class RoutingService : IRoutingService
             : Resolve(target.Content, target.Order);
     }
 
-    // Only content that encodes to a URL can be redirected to; anything else needs the resolve page (not built yet).
+    // Nonempty payloads become redirect destinations; this path does not check URL schemes.
     private static RoutingResult Resolve(CodeContentValueObject content, int? matchedRuleOrder)
     {
         var destination = content.Encode();

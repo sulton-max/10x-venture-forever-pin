@@ -1,4 +1,4 @@
-/** Defines the signal a routing rule matches on (mirrors backend `condition`). The catch-all is a rule role, not a condition. */
+/** Defines the signal a routing rule matches. */
 export const RuleConditionType = {
   /** Refers to the scanning device kind (iOS · Android · Desktop). */
   Device: "device",
@@ -9,7 +9,7 @@ export const RuleConditionType = {
   /** Refers to the visitor's preferred language. */
   Language: "language",
 
-  /** Refers to the local time of day at scan. */
+  /** Refers to the UTC time of day at scan. */
   TimeOfDay: "timeOfDay",
 } as const;
 

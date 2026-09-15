@@ -2,7 +2,7 @@ using ForeverPin.Domain.Codes.Core.Entities;
 
 namespace ForeverPin.Application.Codes.Core.Services;
 
-/// <summary>Defines the contract for reading and persisting codes with their rules.</summary>
+/// <summary>Defines reading and persisting codes with their rules.</summary>
 public interface ICodeRepository
 {
     /// <summary>Inserts a code (with its rules) and returns it.</summary>

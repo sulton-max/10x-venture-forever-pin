@@ -67,8 +67,7 @@ public class CodeRenderingTests
     [Fact]
     public void Default_style_svg_is_byte_for_byte_identical_to_qrcoder()
     {
-        // The regression gate: the emitter under StyleSpec.Default must reproduce the retired QRCoder SvgQRCode output
-        // exactly.
+        // The default renderer must match the QRCoder reference output exactly.
         const string payload = "https://foreverpin.com/abc1234";
 
         var emitted = _renderer.Render(new CodeRenderRequest

@@ -2,8 +2,7 @@ using ForeverPin.Application.Billing.Core.Models;
 
 namespace ForeverPin.Application.Billing.Core.Services;
 
-/// <summary>Defines the contract for the Stripe hosted billing flows.</summary>
-/// <remarks>Keep Stripe SDK types out of the signatures.</remarks>
+/// <summary>Defines the Stripe hosted billing flows.</summary>
 public interface IBillingBroker
 {
     /// <summary>Creates a hosted Checkout session for <paramref name="userId"/> and returns its URL.</summary>

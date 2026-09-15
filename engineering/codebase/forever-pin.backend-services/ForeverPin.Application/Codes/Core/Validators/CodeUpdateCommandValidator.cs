@@ -5,8 +5,8 @@ using ForeverPin.Application.Codes.Rules.Validators;
 
 namespace ForeverPin.Application.Codes.Core.Validators;
 
+// Update has no mode field, so it cannot reuse the create validator.
 /// <summary>Validates update-code input.</summary>
-/// <remarks>Do not merge with <see cref="CodeCreateCommandValidator"/>: update carries no mode (CM3).</remarks>
 /// <seealso cref="CodeRuleValidator"/>
 /// <seealso cref="CodeRuleSetValidator"/>
 public sealed class CodeUpdateCommandValidator : AbstractValidator<CodeUpdateCommand>

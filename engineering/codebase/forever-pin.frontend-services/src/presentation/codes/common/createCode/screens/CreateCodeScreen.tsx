@@ -28,11 +28,11 @@ import { useAppForm } from "@/form";
 import { ContentModeDisplays } from "@/presentation/codes/content/components/ContentModeDisplays";
 import { ContentView, DesignView, PreviewView } from "../views";
 
-/** Defines the code builder's grouped sections — Content · Design. Rules live under Content: a rule carries content. */
+/** Defines the code-builder sections. */
 const CodeTab = {
-  /** Refers to the identity + content section (name, type, mode, the rules carrying the content). */
+  /** Refers to the code identity and content section. */
   Content: "content",
-  /** Refers to the styling section (colors / shape / center). */
+  /** Refers to the code styling section. */
   Design: "design",
 } as const;
 
@@ -43,7 +43,7 @@ export interface CreateCodeScreenProps {
   /** The id of the code to edit (PUT); unset → create (POST). */
   readonly codeId?: string;
 
-  /** The id of a code to copy into a fresh builder — stays create (POST), prefilled from that code (CM5). */
+  /** The source code id for a new copy. */
   readonly copyFromId?: string;
 
   /** The mode the copy is created in; defaults to the opposite of the source code's. */
@@ -56,7 +56,7 @@ export interface CreateCodeScreenProps {
   readonly onSaved?: () => void;
 }
 
-/** Renders the code builder — create, or edit when `codeId` set. Edit submits a full replace; slug is read-only (printed, immutable). */
+/** Renders the code builder for creation, copying, or editing. */
 export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved }: CreateCodeScreenProps) {
   const isEdit = Boolean(codeId);
   // A copy loads the source code the same way an edit does, then submits as a create.
@@ -64,9 +64,9 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
 
   // The active builder section.
   const [tab, setTab] = useState<CodeTab>(CodeTab.Content);
-  // The loaded / just-saved server record — backs the read-only short link + the preview value. Not form data.
+  // Saved server record for the short link and preview.
   const [existingCode, setExistingCode] = useState<CodeDto | null>(null);
-  // The saved code after a successful create/update — drives the post-save panel. Not form data.
+  // Saved result for the confirmation panel.
   const [saved, setSaved] = useState<CodeDto | null>(null);
   // The mode a copy is being created in — set once the source loads, so the header can name it.
   const [copiedInto, setCopiedInto] = useState<ContentMode | null>(null);
@@ -90,8 +90,7 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
     },
   });
 
-  // Edit / copy: load once, then reseed the form values + dirty baseline via reset(data). A copy never sets
-  // `existingCode` — that backs the source's short link and preview mode, and the copy is a different symbol.
+  // Reset values and the dirty baseline; a copy must not retain the source's saved-code state.
   useEffect(() => {
     if (!sourceId) return;
     let cancelled = false;
@@ -208,8 +207,7 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
           </Card>
         </form>
 
-        {/* ── Preview ── driven by stable value slices (style / content / barcodeFormat); re-renders only when
-            a design/content/format change lands, never on name or rule-row keystrokes. */}
+        {/* Live preview */}
         <form.Subscribe selector={(s) => s.values.style}>
           {(style) => (
             <form.Subscribe selector={(s) => s.values.rules}>

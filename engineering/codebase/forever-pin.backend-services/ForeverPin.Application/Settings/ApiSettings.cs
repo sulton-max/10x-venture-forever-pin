@@ -2,7 +2,7 @@ using WoW.Two.Sdk.Backend.Beta.Foundation.Configuration;
 
 namespace ForeverPin.Application.Settings;
 
-/// <summary>Configuration for the management API service.</summary>
+/// <summary>Represents the management API settings.</summary>
 public class ApiSettings
 {
     /// <summary>Gets or sets the base URL of the redirect service.</summary>

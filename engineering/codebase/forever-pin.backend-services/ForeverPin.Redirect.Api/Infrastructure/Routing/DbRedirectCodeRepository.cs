@@ -7,7 +7,7 @@ using ForeverPin.Redirect.Api.Application.Routing.Services;
 namespace ForeverPin.Redirect.Api.Infrastructure.Routing;
 
 /// <summary>Fetches the scanned code and its rules from Postgres.</summary>
-/// <remarks>Front it with <see cref="CachedRedirectCodeRepository"/> when the caching item lands.</remarks>
+/// <remarks>Wrap with <see cref="CachedRedirectCodeRepository"/> when cached reads are required.</remarks>
 public sealed class DbRedirectCodeRepository(IServiceScopeFactory scopeFactory) : IRedirectCodeRepository
 {
     /// <inheritdoc />

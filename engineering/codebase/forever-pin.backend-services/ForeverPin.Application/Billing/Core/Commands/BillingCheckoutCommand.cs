@@ -5,7 +5,7 @@ using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
 
 namespace ForeverPin.Application.Billing.Core.Commands;
 
-/// <summary>Represents a command to start a hosted Checkout session for the caller's chosen paid plan.</summary>
+/// <summary>Represents a command to start a paid-plan checkout.</summary>
 public sealed record BillingCheckoutCommand
     : ICommand<AppResult<BillingCheckoutResult.Success>>
 {

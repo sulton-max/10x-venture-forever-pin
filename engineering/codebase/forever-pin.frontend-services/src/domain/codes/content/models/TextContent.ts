@@ -1,10 +1,10 @@
 import { ContentType } from "../enums/ContentType";
 
-/** Represents the static free-text content encoded directly in the QR. */
+/** Represents free-form text. */
 export interface TextContent {
   /** The content-type discriminator. */
   type: typeof ContentType.Text;
 
-  /** The free-text payload encoded in the QR. */
+  /** The literal text. */
   text: string;
 }

@@ -7,7 +7,7 @@ import { ContentType } from "./enums/ContentType";
 import { MobileAppStoreType } from "./enums/MobileAppStoreType";
 import { WifiEncryption } from "./enums/WifiEncryption";
 
-/** Builds the minimal typed content for a type — the discriminator plus its required fields blank. Used to seed a fresh content type. */
+/** Builds empty content with the selected type's required fields. */
 export function emptyContent(id: ContentType): CodeContent {
   switch (id) {
     case ContentType.Url:

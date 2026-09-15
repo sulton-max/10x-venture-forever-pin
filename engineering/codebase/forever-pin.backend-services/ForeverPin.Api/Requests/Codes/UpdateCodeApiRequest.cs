@@ -16,7 +16,7 @@ public sealed record UpdateCodeApiRequest
     /// <summary>Gets the kind of content every rule carries.</summary>
     public required CodeContentType ContentType { get; init; }
 
-    /// <summary>Gets the replacement routing rules, each carrying the content it serves.</summary>
+    /// <summary>Gets the code's replacement routing-rule collection.</summary>
     public required IReadOnlyList<CodeRuleValueObject> Rules { get; init; }
 
     /// <summary>Gets the replacement style the code renders with.</summary>

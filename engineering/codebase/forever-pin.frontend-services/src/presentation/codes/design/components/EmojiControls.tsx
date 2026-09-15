@@ -40,19 +40,14 @@ export interface EmojiControlsProps {
   /** Open on the first category when there are no recents yet. Default `true`. */
   readonly showFirstCategoryWhenRecentsEmpty?: boolean;
 
-  /** The persistence contract for recents — defaults to `localStorageStorageBroker`; swap for a Redux-backed broker, etc. */
+  /** The recent-emoji storage broker; defaults to local storage. */
   readonly recentsStorageBroker?: StorageBroker;
 }
 
 /** @internal The largest preview glyph, in px, that still fits an `OptionTile` without clipping its frame. */
 const MaxPreviewGlyph = 24;
 
-/**
- * Center-emoji picker — the app's thin adapter over the SDK `EmojiPicker` + `EmojiSizeControl`. Bridges the
- * builder's `CodeEmojiDto { glyph, sizeRatio }` to the picker's `EmojiCatalogEntry` (resolved via the
- * catalog) and adds the per-emoji size row (size is an app concern the picker deliberately leaves out).
- * Rides the live preview `style.emoji`; the backend bumps ECC to H so the code still scans.
- */
+/** Renders the center-emoji picker and size control. */
 export function EmojiControls({
   emoji,
   onChange,

@@ -1,5 +1,4 @@
-// codes/style domain — the visual model: module/finder shapes, fill type, ECC level, gradient, and the
-// CodeStyleDto aggregate (incl. logo + emoji overlays). Gradient is re-exported from the UI color domain.
+// Code styles and visual value sets.
 export * from "./enums";
 export * from "./models";
 export * from "./defaultCodeStyle";

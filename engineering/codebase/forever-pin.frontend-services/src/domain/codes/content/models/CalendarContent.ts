@@ -2,7 +2,7 @@ import { Temporal } from "temporal-polyfill";
 
 import { ContentType } from "../enums/ContentType";
 
-/** Represents iCalendar event content — the scanner adds the event to their calendar. */
+/** Represents a calendar event. */
 export interface CalendarContent {
   /** The content-type discriminator. */
   type: typeof ContentType.Calendar;

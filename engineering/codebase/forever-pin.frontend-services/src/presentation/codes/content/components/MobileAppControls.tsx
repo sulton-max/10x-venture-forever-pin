@@ -9,7 +9,7 @@ const StoreDisplays: Record<MobileAppStoreType, { label: string; placeholder: st
   [MobileAppStoreType.Other]: { label: "Other", placeholder: "https://yourapp.com or another store" },
 };
 
-/** Renders one app-store link — the store it points at plus its URL. The rule carrying it supplies the device condition. */
+/** Renders the app-store selector and URL field. */
 export function MobileAppControls({ value, onChange }: ContentControlsProps<MobileAppLinkContent>) {
   return (
     <>

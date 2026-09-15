@@ -269,8 +269,7 @@ public class CodeRepositoryTests(ForeverPinTestDb db) : RepositoryTestBase(db)
             NamedCode(user, "nm33333", "Business Card", "https://card.example"),
             default);
 
-        // Name-only match: the fallback_url column is retired, so "Promo Flyer" (whose destination contains
-        // "menu") no longer matches — the destination now lives in the typed content / rules.
+        // Search matches code names, not URLs in rule content.
         var filtered = await new CodeRepository(NewContext()).ListByUserAsync(user, "MENU", default);
         Assert.Single(filtered);
         Assert.Equal("Spring Menu", filtered[0].Name);
@@ -290,7 +289,7 @@ public class CodeRepositoryTests(ForeverPinTestDb db) : RepositoryTestBase(db)
         Mode = ContentMode.Dynamic,
         ContentType = CodeContentType.Url,
         IsActive = true,
-        // The destination now lives in the typed content of a catch-all rule, not a fallback_url column.
+        // Store the destination in the catch-all rule's content.
         Rules = [new DefaultRuleValueObject { Content = new UrlContentValueObject { Url = destination } }],
     };
 }

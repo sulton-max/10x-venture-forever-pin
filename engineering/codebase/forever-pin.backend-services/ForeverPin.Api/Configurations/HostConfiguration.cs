@@ -20,8 +20,7 @@ public static partial class HostConfiguration
             o.EnableOutputCache = false;
             o.EnableRateLimiting = false;
 
-            // Scan the Application assembly's FluentValidation validators so AddApiDefaults registers them behind the
-            // SDK adapter.
+            // Register application validators through the SDK adapter.
             o.ValidatorAssemblies.Add(typeof(ForeverPin.Application.ApplicationAssembly).Assembly);
         });
 
@@ -46,12 +45,8 @@ public static partial class HostConfiguration
         // Apply pending migrations before serving — advisory-locked, blocks once at startup.
         app.Services.MigrateBespokeOnStartupAsync().GetAwaiter().GetResult();
 
-        // Relax cross-origin isolation on SPA HTML so Google Identity Services can post back to its opener.
-        // The SDK secure-headers floor (inside UseApiDefaults) hard-codes COOP=same-origin + COEP=require-corp,
-        // which nulls window.opener and breaks the GIS popup (TypeError: ...reading 'postMessage'). Registered
-        // FIRST — before the static-file and SDK middleware — so its OnStarting callback is attached to EVERY
-        // response (incl. static index.html and the MapFallbackToFile document the SPA actually loads) and,
-        // being registered first, fires last in the LIFO OnStarting chain, winning over the SDK headers.
+        // Google sign-in popups need their opener, so SPA HTML overrides the SDK isolation headers.
+        // Register before static files and SDK middleware: OnStarting runs in reverse registration order.
         app.UseGisFriendlyOpenerPolicy();
 
         // Serve the built React SPA before the SDK pipeline so static assets short-circuit.

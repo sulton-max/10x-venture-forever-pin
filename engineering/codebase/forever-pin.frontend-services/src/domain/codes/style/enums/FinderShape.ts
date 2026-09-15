@@ -1,4 +1,4 @@
-/** Defines a finder (eye) marker shape — the outer frame or the inner pupil (mirrors the backend). */
+/** Defines a finder-frame or finder-pupil shape. */
 export const FinderShape = {
   /** Refers to a square eye. */
   Square: "square",

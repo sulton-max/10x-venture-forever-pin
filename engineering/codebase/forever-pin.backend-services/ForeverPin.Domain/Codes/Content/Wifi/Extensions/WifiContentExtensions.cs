@@ -3,7 +3,7 @@ using ForeverPin.Domain.Codes.Content.Wifi.Models;
 
 namespace ForeverPin.Domain.Codes.Content.Wifi.Extensions;
 
-/// <summary>Extends <see cref="WifiContentValueObject"/> to the WIFI payload, which no RFC registers.</summary>
+/// <summary>Extends <see cref="WifiContentValueObject"/> for WIFI payload encoding.</summary>
 public static class WifiContentExtensions
 {
     /// <summary>Holds the token covering WPA, WPA2 and WPA3 alike.</summary>
@@ -12,7 +12,7 @@ public static class WifiContentExtensions
     /// <summary>Holds the token for legacy WEP.</summary>
     private const string WepToken = "WEP";
 
-    /// <summary>Holds the token an open network carries — a word, not an empty value.</summary>
+    /// <summary>Holds the open-network authentication token.</summary>
     private const string OpenToken = "nopass";
 
     /// <summary>Holds the payload shape — scheme, SSID, then the two conditional segments.</summary>

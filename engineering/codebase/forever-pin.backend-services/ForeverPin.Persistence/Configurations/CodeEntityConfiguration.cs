@@ -18,8 +18,7 @@ public class CodeEntityConfiguration : IEntityTypeConfiguration<CodeEntity>
 
         builder.HasKey(e => e.Id);
 
-        // Only a dynamic code has a slug — a static symbol carries its payload and never reaches the redirect.
-        // Postgres treats NULLs as distinct, so the unique index admits every static code.
+        // Null slugs remain distinct, so static codes can share this unique index.
         builder
             .HasIndex(e => e.Slug)
             .IsUnique();
@@ -29,14 +28,12 @@ public class CodeEntityConfiguration : IEntityTypeConfiguration<CodeEntity>
             .HasColumnType(PostgresColumnTypes.Jsonb)
             .IsRequired();
 
-        // The rules — each carrying the content it serves — persist as one jsonb document rather than a table:
-        // they are only ever read with their code, and a relational shape would need a nullable column per
-        // variant-specific member. Serialized through the same options the wire uses (CodeRuleJson).
+        // Persist the polymorphic rule collection as one jsonb document.
         var rulesConverter = new ValueConverter<List<CodeRuleValueObject>, string>(
             rules => CodeRuleJson.Serialize(rules),
             json => CodeRuleJson.Deserialize(json));
 
-        // Records give structural equality; the comparer lets EF change-track the reference-typed jsonb graph.
+        // Compare rule values and snapshot list membership for EF change tracking.
         var rulesComparer = new ValueComparer<List<CodeRuleValueObject>>(
             (left, right) => left!.SequenceEqual(right!),
             rules => rules.Aggregate(0, (hash, rule) => HashCode.Combine(hash, rule.GetHashCode())),

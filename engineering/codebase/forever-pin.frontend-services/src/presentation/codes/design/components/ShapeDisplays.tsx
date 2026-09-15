@@ -10,7 +10,7 @@ interface ModuleShapeDisplay {
   readonly icon: ReactNode;
 }
 
-/** Maps each module shape to its label + preview glyph (square-family corner radius folded in). */
+/** Maps each module shape to its label and preview. */
 export const ModuleShapeDisplays: Record<ModuleShape, ModuleShapeDisplay> = {
   [ModuleShape.Square]: {
     label: "Square",
@@ -42,14 +42,14 @@ export const ModuleShapeDisplays: Record<ModuleShape, ModuleShapeDisplay> = {
   },
 };
 
-/** Defines the display for a finder-eye shape option — label + outer-frame / inner-pupil glyphs. */
+/** Defines a finder-shape option's label and previews. */
 interface FinderShapeDisplay {
   readonly label: string;
   readonly icon: ReactNode;
   readonly dotIcon: ReactNode;
 }
 
-/** Maps each finder shape to its label + outer / inner preview glyphs (frame radius + pupil roundness folded in). */
+/** Maps each finder shape to its label and frame and pupil previews. */
 export const FinderShapeDisplays: Record<FinderShape, FinderShapeDisplay> = {
   [FinderShape.Square]: {
     label: "Square",

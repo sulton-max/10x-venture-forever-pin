@@ -30,12 +30,12 @@ interface CodesListScreenProps {
   /** Fires when the user opens the builder in edit mode. */
   readonly onEdit: (id: string) => void;
 
-  /** Fires when the user copies a code across the mode axis — opens the builder prefilled, in `mode` (CM5). */
+  /** Fires when the user copies a code into the selected mode. */
   readonly onCopy: (id: string, mode: ContentMode) => void;
 }
 
-/** Renders the codes dashboard — searchable list, per-row Edit / Enable-Disable / Delete. Fetches and mutations are owner-scoped via the credentials cookie. */
-/** The URL a code sends scanners to — the first url-typed rule content, when it has one. */
+/** Renders the owner's searchable code dashboard. */
+/** Finds the first URL content in the code's rules. */
 function destinationOf(code: CodeDto): string | undefined {
   for (const rule of code.rules) {
     if (rule.type === CodeRuleType.DefaultPointer) continue;
@@ -45,7 +45,7 @@ function destinationOf(code: CodeDto): string | undefined {
   return undefined;
 }
 
-/** Whether the opposite-mode copy is legal — a static copy needs a single rule, since two destinations can't bake (CM2). */
+/** Checks whether an opposite-mode copy satisfies the single-rule static constraint. */
 function canCopyToOppositeMode(code: CodeDto): boolean {
   return oppositeMode(code.mode) === ContentMode.Dynamic || code.rules.length === 1;
 }
@@ -163,7 +163,7 @@ export function CodesListScreen({ onCreate, onEdit, onCopy }: CodesListScreenPro
                   <span className="truncate font-medium" title={code.name}>
                     {code.name}
                   </span>
-                  {/* CM7 — mode is its own axis, so it reads as a chip here, never folded into the type. */}
+                  {/* Content mode */}
                   <Badge variant={ContentModeDisplays[code.mode].badge} size={SizePreset.Xs} className="shrink-0">
                     {ContentModeDisplays[code.mode].label}
                   </Badge>
@@ -200,7 +200,7 @@ export function CodesListScreen({ onCreate, onEdit, onCopy }: CodesListScreenPro
                 </div>
 
                 <div className="flex flex-wrap items-center justify-end gap-1">
-                  {/* CM4/CM5 — no in-place flip exists, so crossing the axis mints a new code from this one's content. */}
+                  {/* Copy into another mode */}
                   {canCopyToOppositeMode(code) && (
                     <Button
                       size={SizePreset.Sm}

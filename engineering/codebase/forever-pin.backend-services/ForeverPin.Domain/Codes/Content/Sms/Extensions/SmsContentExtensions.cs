@@ -2,7 +2,7 @@ using ForeverPin.Domain.Codes.Content.Sms.Models;
 
 namespace ForeverPin.Domain.Codes.Content.Sms.Extensions;
 
-/// <summary>Extends <see cref="SmsContentValueObject"/> to the SMSTO payload, which no RFC registers.</summary>
+/// <summary>Extends <see cref="SmsContentValueObject"/> for SMSTO payload encoding.</summary>
 public static class SmsContentExtensions
 {
     /// <summary>Holds the payload shape carrying a recipient alone.</summary>
@@ -14,7 +14,7 @@ public static class SmsContentExtensions
     /// <summary>Builds the SMSTO payload.</summary>
     /// <param name="content">The recipient and body to encode.</param>
     /// <returns>The SMSTO URI.</returns>
-    /// <remarks>Trims both parts — neither a number nor a body carries meaningful surrounding space.</remarks>
+    /// <remarks>Trims surrounding whitespace from the recipient and message.</remarks>
     public static string ToPayload(this SmsContentValueObject content)
     {
         var recipient = ContentEncodingExtensions.Clean(content.Phone);

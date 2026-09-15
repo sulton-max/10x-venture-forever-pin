@@ -63,11 +63,7 @@ function extractForegroundColors(foreground: string, gradient: Gradient | null):
   return gradient ? gradient.stops.map((s) => s.color) : [foreground];
 }
 
-/**
- * Renders a calm, passive scannability guardrail — warns when the foreground↔background contrast is
- * too low to scan reliably, or when the code is inverted (light-on-dark). Never blocks; stays silent unless
- * there's a real risk.
- */
+/** Renders advisory warnings for low contrast or inverted colors. */
 export function ContrastCallout({ foreground, background, transparent, gradient }: ContrastCalloutProps) {
   if (transparent) {
     return (

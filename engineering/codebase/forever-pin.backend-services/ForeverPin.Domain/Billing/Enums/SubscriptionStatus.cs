@@ -1,6 +1,6 @@
 namespace ForeverPin.Domain.Billing.Enums;
 
-/// <summary>Defines the lifecycle state of a Stripe subscription, mirrored from <c>subscription.status</c>.</summary>
+/// <summary>Defines a Stripe subscription's lifecycle state.</summary>
 public enum SubscriptionStatus
 {
     /// <summary>Represents a subscription in good standing with an active plan.</summary>

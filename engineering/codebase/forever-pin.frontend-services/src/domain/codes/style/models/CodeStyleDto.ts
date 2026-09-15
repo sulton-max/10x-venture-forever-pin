@@ -22,7 +22,7 @@ export interface CodeEmojiDto {
   sizeRatio: number;
 }
 
-/** Represents a code's visual style — colors, shapes, ECC, and the center overlays. */
+/** Represents a code's visual style. */
 export interface CodeStyleDto {
   /** The foreground color (#RRGGBB). */
   foregroundColor: string;

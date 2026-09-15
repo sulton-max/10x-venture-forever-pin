@@ -8,10 +8,10 @@ namespace ForeverPin.Api.Requests.Codes;
 /// <summary>Represents the preview request body.</summary>
 public sealed record PreviewCodeApiRequest
 {
-    /// <summary>Gets how the previewed symbol resolves.</summary>
+    /// <summary>Gets the preview's content resolution mode.</summary>
     public required ContentMode Mode { get; init; }
 
-    /// <summary>Gets the routing rules, each carrying the content it serves.</summary>
+    /// <summary>Gets the code's collection of content-bearing routing rules.</summary>
     public required IReadOnlyList<CodeRuleValueObject> Rules { get; init; }
 
     /// <summary>Gets the symbology to render.</summary>

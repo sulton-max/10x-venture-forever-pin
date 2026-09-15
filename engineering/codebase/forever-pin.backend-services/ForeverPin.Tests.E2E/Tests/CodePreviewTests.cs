@@ -88,8 +88,7 @@ public sealed class CodePreviewTests(AppFixture fixture) : E2EBase(fixture)
     [Fact]
     public async Task Preview_DefaultShapeStyle_StaysByteParityWithSquare()
     {
-        // The square geometry is the default render: the baseline default style and an explicitly square style
-        // (same other fields) must be byte-identical — guards against a square-shape regression.
+        // Default and explicitly square styles must produce identical SVG.
         var defaultStyle = await AnonymousClient.PostAsJsonAsync("/api/codes/preview", new
         {
             mode = "static",
@@ -130,10 +129,7 @@ public sealed class CodePreviewTests(AppFixture fixture) : E2EBase(fixture)
     [Fact]
     public async Task Preview_HonoursEachBarcodeFormat_NotOnlyCode128()
     {
-        // Regression: the request used to carry a coarse `codeType`, and any non-QR kind resolved to
-        // `BarcodeFormat ?? Code128` — the builder never sent a format, so every 1D/2D symbology
-        // previewed as Code128 while the saved asset rendered the real one. `barcodeFormat` is the
-        // sole symbology now; distinct formats must produce distinct symbols.
+        // Distinct requested barcode formats must produce distinct preview symbols.
         async Task<string> RenderAsync(string barcodeFormat)
         {
             var response = await AnonymousClient.PostAsJsonAsync("/api/codes/preview", new
@@ -234,8 +230,7 @@ public sealed class CodePreviewTests(AppFixture fixture) : E2EBase(fixture)
     [Fact]
     public async Task Preview_MatchesSavedImage_ForStyledCode()
     {
-        // Persistence + parity: a code created WITH a non-default style renders that style on its saved image,
-        // and that image equals the preview of the same payload + style (style round-trips; one render source).
+        // A non-default style must persist and match the preview of the same payload and style.
         var style = StyleWith(
             ("foregroundColor", "#FF8800"),
             ("moduleShape", "dots"),
@@ -348,8 +343,7 @@ public sealed class CodePreviewTests(AppFixture fixture) : E2EBase(fixture)
     [Fact]
     public async Task Preview_MatchesSavedImage_ForStaticContent()
     {
-        // Server-preview parity for STATIC content: the preview encodes the typed content with the SAME encoder as
-        // the saved asset (backend owns encoding), so a default-style preview of the content equals the saved image.
+        // Static previews and saved images must match for the same typed content and style.
         var owner = await CreateGuestClientAsync();
         var wifi = new { type = "wifi", ssid = "Cafe", password = "beans123", encryption = "wpa" };
 

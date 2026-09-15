@@ -40,17 +40,13 @@ export interface ContentViewProps {
 /** Explains why the mode picker is locked — two destinations cannot be baked into one symbol. */
 const ModeLockedNote = "More than one rule means the destination is decided at scan time — only a dynamic code can do that.";
 
-/**
- * Renders the Content tab — the code's identity (name, content type, how it resolves) and the rules carrying
- * its content. Content and rules share one tab because a rule *is* where content lives.
- */
+/** Renders code identity, content mode, and routing rules. */
 export function ContentView({ form, isEdit, existingCode }: ContentViewProps) {
   const rules = form.useFormState((s) => s.values.rules);
   const selectedMode = form.useFormState((s) => s.values.mode);
   const selectedContentType = form.useFormState((s) => s.values.contentType);
 
-  // CM2: `rules.Count > 1` implies dynamic — so the picker locks rather than letting an unbakeable pair through.
-  // The reverse doesn't hold: one rule stays a free choice. `toCreateCodeRequest` normalizes the sent value.
+  // Multiple rules lock the picker to dynamic mode; one rule permits either mode.
   const isModeLocked = rules.length > 1;
   const mode = isModeLocked ? ContentMode.Dynamic : selectedMode;
 
@@ -127,7 +123,7 @@ export function ContentView({ form, isEdit, existingCode }: ContentViewProps) {
         </form.Field>
       )}
 
-      {/* CM6 — the print decision is being made right here, so state the cost before it is irreversible. */}
+      {/* Mode guidance */}
       {!isEdit && mode === ContentMode.Static && (
         <Alert
           severity="info"

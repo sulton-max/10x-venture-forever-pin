@@ -19,7 +19,7 @@ export function CodesListRoute() {
 export function CreateCodeRoute() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  // `?copyOf` prefills a fresh builder from another code (CM5); `?mode` names the side of the axis to copy into.
+  // Prefill a new code from copyOf using the selected mode.
   const raw = searchParams.get("mode");
   const copyMode = raw === ContentMode.Static || raw === ContentMode.Dynamic ? raw : undefined;
   return (

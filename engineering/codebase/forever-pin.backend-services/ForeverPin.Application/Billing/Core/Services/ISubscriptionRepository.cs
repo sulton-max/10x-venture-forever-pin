@@ -2,7 +2,7 @@ using ForeverPin.Domain.Billing.Entities;
 
 namespace ForeverPin.Application.Billing.Core.Services;
 
-/// <summary>Defines the contract for reading and persisting subscriptions.</summary>
+/// <summary>Defines reading and persisting subscriptions.</summary>
 public interface ISubscriptionRepository
 {
     /// <summary>Loads the user's subscription, or null when there is none.</summary>

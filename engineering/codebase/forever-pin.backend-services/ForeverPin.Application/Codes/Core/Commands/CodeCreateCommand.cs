@@ -24,10 +24,10 @@ public sealed record CodeCreateCommand
     /// <summary>Gets the kind of content every rule carries.</summary>
     public required CodeContentType ContentType { get; init; }
 
-    /// <summary>Gets how the code's symbol resolves.</summary>
+    /// <summary>Gets the code's content resolution mode.</summary>
     public required ContentMode Mode { get; init; }
 
-    /// <summary>Gets the routing rules, each carrying its content; conditional rules match in order.</summary>
+    /// <summary>Gets the code's collection of content-bearing routing rules.</summary>
     public required IReadOnlyList<CodeRuleValueObject> Rules { get; init; }
 
     /// <summary>Gets the style the code renders with.</summary>

@@ -22,11 +22,7 @@ const AddRuleLabel = "Add a routing rule";
 /** Add-catch-all footer button label — only offered when the code has no catch-all. */
 const AddDefaultLabel = "Add a catch-all";
 
-/**
- * Renders the whole-set failures the server reports against `rules` — at most one catch-all, unique orders, a
- * live pointer target, non-empty. They belong to the list, not to any row, and `rules` is an array with no input
- * of its own, so without this they would be filed on a known path that nothing draws and vanish.
- */
+/** Renders validation errors attached to the whole rule collection. */
 function RuleSetErrors({ form }: { readonly form: AppForm<CodeCreateUpdateApiRequest> }) {
   return (
     <form.Field name="rules">
@@ -55,16 +51,11 @@ export interface RuleControlsProps {
   readonly contentType: ContentType;
 }
 
-/**
- * Renders the content the code serves. One catch-all rule and nothing else — the common case — shows its content
- * bare. Add a rule and it becomes the rule list: conditionals matched in order (first match wins) then the
- * catch-all, each row carrying the content it serves. A scan matching no rule does not resolve.
- */
+/** Renders content directly for a lone catch-all, or a routing-rule editor for multiple rules. */
 export function RuleControls({ form, contentType }: RuleControlsProps) {
   const rules = useFieldArray<CodeRuleDto>(form, "rules");
 
-  // `FieldArray<TItem>` keys off `keyof TItem`, which collapses to the shared `type` on a union — so rows bind
-  // through a second view typed as the widest variant. Same path, same state; only the field typing differs.
+  // Bind the same array through the conditional shape to expose variant-specific field keys.
   const rows = useFieldArray<ConditionalRuleDto>(form, "rules");
 
   const values = form.useFormState((s) => s.values.rules);
@@ -83,7 +74,7 @@ export function RuleControls({ form, contentType }: RuleControlsProps) {
     if (clamped !== from) rules.move(from, clamped);
   };
 
-  // The plain code: no conditions to show, so no rule chrome either — just the content, plus the way out of it.
+  // A lone catch-all needs content controls without condition fields.
   if (isSingleDefault) {
     return (
       <div className="flex flex-col gap-4">

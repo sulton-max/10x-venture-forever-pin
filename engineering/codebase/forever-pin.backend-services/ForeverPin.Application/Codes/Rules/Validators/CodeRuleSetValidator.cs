@@ -6,8 +6,8 @@ using ForeverPin.Domain.Codes.Rules.Models;
 
 namespace ForeverPin.Application.Codes.Rules.Validators;
 
+// Keep explicit validation paths aligned with CodeValidationPathTests.
 /// <summary>Validates a code's rule set as a whole.</summary>
-/// <remarks>Give each rule an explicit <c>OverridePropertyName</c>; <c>CodeValidationPathTests</c> locks it.</remarks>
 public sealed class CodeRuleSetValidator : AbstractValidator<CodeRuleSet>
 {
     /// <summary>Builds the whole-set rules.</summary>
@@ -37,16 +37,14 @@ public sealed class CodeRuleSetValidator : AbstractValidator<CodeRuleSet>
             .WithMessage("The default rule must point at an existing rule.")
             .OverridePropertyName(nameof(CodeRuleSet.Rules));
 
-        // A code is "a WiFi code" — every rule carries the same kind of content. Names ContentType: that is the
-        // member the caller picked, and the rules were seeded from it.
+        // Attribute mixed-content failures to the code's selected content type.
         RuleFor(set => set)
             .Must(set => Contents(set.Rules)
                 .All(content => CodeContentValueObject.Subtypes.KindOf(content) == set.ContentType))
             .WithMessage("Every rule must carry the code's content type.")
             .OverridePropertyName(nameof(CodeRuleSet.ContentType));
 
-        // A static symbol bakes one payload, so it cannot hold a set that resolves differently per scan.
-        // Names Mode: switching to dynamic is the fix the caller reaches for, and removing rules is the other.
+        // Attribute multiple-rule failures to Mode so the caller can choose dynamic resolution.
         RuleFor(set => set.Rules)
             .Must(rules => rules.Count == 1)
             .WithMessage("A static code carries exactly one rule — its symbol bakes a single payload.")

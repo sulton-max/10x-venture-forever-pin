@@ -7,9 +7,9 @@ import type {
   CodeUpdateApiRequest,
 } from "./models";
 
-/** The codes API client — code CRUD, image URLs, and the server-rendered live preview. */
+/** Provides code management and image rendering. */
 export const codesApiClient = {
-  /** Creates a code; the guest owner cookie ties it to this visitor. */
+  /** Creates a code for the current owner. */
   async create(request: CodeCreateUpdateApiRequest): Promise<CodeDto> {
     const res = await fetch(`${API_BASE}/api/codes`, {
       method: "POST",
@@ -22,7 +22,7 @@ export const codesApiClient = {
     return readData<CodeDto>(res);
   },
 
-  /** Lists the owner's codes; `q` case-insensitively filters name (server-side `contains`). */
+  /** Lists the owner's codes, filtering names case-insensitively by `q`. */
   async list(q?: string): Promise<CodeDto[]> {
     const query = q && q.trim() ? `?q=${encodeURIComponent(q.trim())}` : "";
     const res = await fetch(`${API_BASE}/api/codes${query}`, {
@@ -43,7 +43,7 @@ export const codesApiClient = {
     return readData<CodeDto>(res);
   },
 
-  /** Replaces a code in full; slug, scan count, creation time — and `mode` (CM3) — are server-preserved. */
+  /** Replaces editable fields; the server preserves the slug, scan count, creation time, and mode. */
   async update(id: string, request: CodeUpdateApiRequest): Promise<CodeDto> {
     const res = await fetch(`${API_BASE}/api/codes/${id}`, {
       method: "PUT",
@@ -70,7 +70,7 @@ export const codesApiClient = {
     return readData<CodeDto>(res);
   },
 
-  /** Hard-deletes a code; cascades its rules. */
+  /** Deletes a code and its stored rules. */
   async delete(id: string): Promise<void> {
     const res = await fetch(`${API_BASE}/api/codes/${id}`, {
       method: "DELETE",

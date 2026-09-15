@@ -1,12 +1,12 @@
-/** Defines the Wi-Fi encryption scheme a network uses — the `T:` field of the WIFI payload. */
+/** Defines the Wi-Fi authentication scheme. */
 export const WifiEncryption = {
-  /** WPA / WPA2 / WPA3 personal. */
+  /** Refers to WPA, WPA2, or WPA3 personal. */
   Wpa: "wpa",
 
-  /** Legacy WEP. */
+  /** Refers to legacy WEP. */
   Wep: "wep",
 
-  /** An open network, carrying no password. */
+  /** Refers to an open network without a password. */
   None: "none",
 } as const;
 

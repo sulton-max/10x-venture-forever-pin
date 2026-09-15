@@ -17,7 +17,7 @@ const DefaultAngle = 45;
 /** @internal Default radial-gradient radius (0..1 extent). */
 const DefaultRadius = 0.8;
 
-/** @internal Default gradient end stop — the brand violet (matches `--color-primary`). A stored data value, so a concrete hex, not a CSS token. */
+/** @internal Default gradient end-stop color stored in the code style. */
 const DefaultGradientEnd = "#7c3aed";
 
 /** Resolves the gradient's current projection value — its angle (linear) or radius (radial). */
@@ -45,7 +45,7 @@ export interface FillControlsProps {
   readonly onGradientChange: (gradient: Gradient | null) => void;
 }
 
-/** Renders the foreground and background fill controls. */
+/** Renders the solid and gradient foreground controls. */
 export function FillControls({ foreground, onForegroundChange, gradient, onGradientChange }: FillControlsProps) {
   // Toggle between a solid foreground and a default two-stop gradient.
   function setFill(next: FillType | null) {

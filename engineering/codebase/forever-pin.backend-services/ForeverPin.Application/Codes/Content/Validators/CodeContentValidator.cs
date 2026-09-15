@@ -13,8 +13,8 @@ using ForeverPin.Domain.Codes.Content;
 
 namespace ForeverPin.Application.Codes.Content.Validators;
 
-/// <summary>Validates the content a rule carries, dispatching to the matching per-type validator.</summary>
-/// <remarks>Register a new content type here and in its own validator.</remarks>
+// Register each content variant with its validator.
+/// <summary>Validates typed code content.</summary>
 public sealed class CodeContentValidator : AbstractValidator<CodeContentValueObject>
 {
     /// <summary>Builds the per-type content dispatch.</summary>

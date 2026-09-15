@@ -53,7 +53,7 @@ public class RedirectResolutionTests(ForeverPinTestDb db) : RepositoryTestBase(d
                     ConditionValue = "Ios",
                     Content = new PhoneContentValueObject { Phone = "+15551111" }
                 },
-                // The catch-all is a trailing Default rule — it replaces the retired fallback_url column.
+                // The trailing default rule supplies catch-all content.
                 new DefaultRuleValueObject { Content = new PhoneContentValueObject { Phone = "+15559999" } },
             ],
         });

@@ -21,10 +21,11 @@ public abstract record CodeContentValueObject
         (CodeContentType.VCard, typeof(VCard.Models.VCardContentValueObject)),
         (CodeContentType.Calendar, typeof(Calendar.Models.CalendarContentValueObject)));
 
-    /// <summary>Gets whether the symbol bakes the payload rather than a redirect short link.</summary>
+    /// <summary>Gets whether the content has an encoded payload.</summary>
+    /// <remarks>Encodes the content on each read.</remarks>
     [JsonIgnore]
     public bool IsStatic => Encode() is not null;
 
-    /// <summary>Encodes the payload, or returns null when the symbol carries a short link instead.</summary>
+    /// <summary>Encodes the content payload, or returns null when no payload encoder is available.</summary>
     public abstract string? Encode();
 }

@@ -7,12 +7,12 @@ import { codesApiClient } from "@/integration/codes";
 import { ContrastCallout } from "@/presentation/codes/design/components/ContrastCallout";
 import { QrPreview } from "../components/QrPreview";
 
-/** Defines props for the persistent preview column — the live render, scannability note, and post-save actions. */
+/** Defines props for the preview column. */
 export interface PreviewViewProps {
-  /** The value the preview encodes (short link on edit, sample URL on create). */
+  /** The preview's content resolution mode. */
   readonly previewMode: ContentMode;
 
-  /** The typed content the server bakes into the preview (static types), or the dynamic fallback. */
+  /** The content-bearing rules sent to the preview renderer. */
   readonly previewRules: readonly CodeRuleDto[];
 
   /** The symbology driving the render — `QrCode` renders the styled path, any other format a plain barcode. */
@@ -21,22 +21,22 @@ export interface PreviewViewProps {
   /** The visual style driving the render. */
   readonly previewStyle: CodeStyleDto;
 
-  /** The solid foreground color — feeds the contrast check. */
+  /** The solid foreground color for the contrast check. */
   readonly foreground: string;
 
-  /** The background color — feeds the contrast check. */
+  /** The background color for the contrast check. */
   readonly background: string;
 
-  /** Whether the background is transparent — feeds the contrast check. */
+  /** Whether the contrast check uses a transparent background. */
   readonly transparentBackground: boolean;
 
-  /** The foreground gradient (or null) — feeds the contrast check. */
+  /** The foreground gradient for the contrast check, or null. */
   readonly gradient: Gradient | null;
 
   /** The saved code after a successful create/update; null before the first save. */
   readonly saved: CodeDto | null;
 
-  /** True in edit mode (switches the confirmation copy + the trailing action). */
+  /** Whether the builder is editing a saved code. */
   readonly isEdit: boolean;
 
   /** Fires when the user is done editing (edit mode only). */
@@ -46,7 +46,7 @@ export interface PreviewViewProps {
   readonly onCreateAnother: () => void;
 }
 
-/** Renders the builder's right column: the live server-rendered preview, the scannability callout, and — once saved — the short link + downloads. */
+/** Renders the live preview, scan guidance, and saved-code actions. */
 export function PreviewView({
   previewMode,
   previewRules,

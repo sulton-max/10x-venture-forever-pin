@@ -1,4 +1,4 @@
-/** Defines the QR error-correction level (mirrors backend `EccLevel`; camelCase wire). */
+/** Defines the QR error-correction level. */
 export const EccLevel = {
   /** Refers to ~7% recovery (Low). */
   L: "l",

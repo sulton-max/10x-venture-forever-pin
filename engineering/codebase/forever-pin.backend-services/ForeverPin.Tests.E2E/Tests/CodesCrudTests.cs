@@ -67,8 +67,7 @@ public sealed class CodesCrudTests(AppFixture fixture) : E2EBase(fixture)
         var filtered = await (await owner.Client.GetAsync("/api/codes?q=download"))
             .ReadEnvelopeAsync<List<CodeDtoModel>>();
 
-        // Name-only match: the fallback_url column is retired, so "Menu" (whose destination contains "download")
-        // no longer matches — the destination now lives in the typed content / rules.
+        // Search matches code names, not URLs in rule content.
         filtered.Select(c => c.Name).Should().BeEquivalentTo(["App download"]);
     }
 
@@ -272,8 +271,7 @@ public sealed class CodesCrudTests(AppFixture fixture) : E2EBase(fixture)
         var withGradient = await owner.Client.GetStringAsync($"/api/codes/{created.Id}/image?format=svg");
         withGradient.Should().Contain("<linearGradient");
 
-        // Edit to a solid style → the saved image must no longer carry the gradient (style round-trips on update, no
-        // clobber-to-default).
+        // Replacing the gradient with a solid style must update the saved image.
         // The update body carries no mode — it is fixed at create.
         await owner.Client.PutJsonAsync($"/api/codes/{created.Id}", new
         {

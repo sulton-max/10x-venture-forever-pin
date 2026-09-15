@@ -4,24 +4,24 @@ import type { BarcodeFormat, ContentMode, ContentType } from "../../content";
 import type { CodeRuleDto } from "../../rules";
 import type { CodeStyleDto } from "../../style";
 
-/** Represents an issued code — its identity, wire settings, style, and the rules carrying its content. */
+/** Represents an issued code. */
 export interface CodeDto {
-  /** The code's unique id. */
+  /** The unique id. */
   id: string;
 
-  /** The short slug printed on a dynamic code; absent on a static code. */
+  /** The URL-safe short-link slug; absent on a static code. */
   slug?: string;
 
   /** The short URL a dynamic code encodes; absent on a static code. */
   shortUrl?: string;
 
-  /** The code's display name. */
+  /** The display name. */
   name: string;
 
-  /** The symbology the code renders as. */
+  /** The rendering symbology. */
   barcodeFormat: BarcodeFormat;
 
-  /** How the symbol resolves — baked payload (static) or short link (dynamic). Fixed at create. */
+  /** The content resolution mode, fixed at creation. */
   mode: ContentMode;
 
   /** The kind of content every rule of this code carries. */
@@ -30,13 +30,13 @@ export interface CodeDto {
   /** Whether the code is active. */
   isActive: boolean;
 
-  /** The lifetime scan count; always zero on a static code, which never reaches the server. */
+  /** The recorded scan count. */
   scanCount: number;
 
-  /** When the code was created. */
+  /** The creation timestamp. */
   createdAt: Temporal.Instant;
 
-  /** The routing rules, each carrying the content it serves. */
+  /** The content-bearing routing rules. */
   rules: CodeRuleDto[];
 
   /** The persisted visual style. */

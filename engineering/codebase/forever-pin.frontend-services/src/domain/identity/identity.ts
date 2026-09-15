@@ -1,4 +1,4 @@
-// Identity — mirrors the backend `ForeverPin.Api` identity DTOs.
+// Identity API data shapes.
 import type { UserKind } from "./enums/UserKind";
 
 export interface UserSummary {

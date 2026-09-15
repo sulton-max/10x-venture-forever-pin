@@ -320,9 +320,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         // Owner subscribes (Pro) then prints a code while subscribed.
         await SeedSubscriptionAsync(owner, Plan.Pro, "sub_cancel", "cus_c");
         const string destination = "https://still-works.example";
-        // A dynamic code that resolves to the destination on scan: url content encodes to null (redirect types don't
-        // resolve on the hot path yet), so the destination rides a text rule, whose payload encodes to the string
-        // verbatim.
+        // Text content supplies a redirect payload; the URL content encoder returns null.
         var code = await (await owner.Client.PostJsonAsync("/api/codes", new
         {
             name = "keeper",
@@ -349,8 +347,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         };
         (await AppFixture.PostWebhookAsync(owner.Client)).StatusCode.Should().Be(HttpStatusCode.OK);
 
-        // /me reflects the downgrade, but the printed code STILL resolves — the redirect hot path is plan-agnostic
-        // (the never-expire promise). This is the core never-deactivate-on-downgrade guarantee.
+        // Downgrading the plan must not disable an existing code's redirect.
         (await GetMeAsync(owner)).Status.Should().Be("canceled");
 
         var after = await RedirectClient.GetAsync($"/{code.Slug}");

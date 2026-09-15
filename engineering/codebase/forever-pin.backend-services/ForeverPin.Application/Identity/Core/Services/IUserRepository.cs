@@ -2,7 +2,7 @@ using ForeverPin.Domain.Identity.Entities;
 
 namespace ForeverPin.Application.Identity.Core.Services;
 
-/// <summary>Defines the contract for reading and persisting user accounts.</summary>
+/// <summary>Defines reading and persisting user accounts.</summary>
 public interface IUserRepository
 {
     /// <summary>Loads the account for a Google subject, or null when none is registered.</summary>

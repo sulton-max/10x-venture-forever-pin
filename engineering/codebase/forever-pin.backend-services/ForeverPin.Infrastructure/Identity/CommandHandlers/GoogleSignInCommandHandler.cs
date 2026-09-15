@@ -42,8 +42,7 @@ public sealed class GoogleSignInCommandHandler(
                 return Ok(existing);
             }
 
-            // New account: reuse the guest id as the account id when it's free, so the guest's existing codes are
-            // owned with zero reassignment. Otherwise mint a fresh id and reassign the guest's codes onto it.
+            // Reuse an available guest id to retain code ownership; otherwise reassign codes to a new account id.
             var accountId = request.GuestId is { } guestId && await users.FindByIdAsync(guestId, ct) is null
                 ? guestId
                 : Guid.NewGuid();

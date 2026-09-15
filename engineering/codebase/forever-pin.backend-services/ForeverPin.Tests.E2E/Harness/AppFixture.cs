@@ -70,10 +70,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
 
         ApiHost = AddHost(new WebApiTestHost<ApiProgram>
         {
-            // The SDK host has no connection-string knob — inject it the way the app reads it
-            // (DatabaseOptions:ConnectionString).
-            // The hook runs at build time (after the container has started), so the connection string is available; it
-            // mirrors the DB_CONNECTION env seam.
+            // Inject the started container's connection string through DatabaseOptions at host build time.
             ConfigureHostHook = builder => builder.ConfigureAppConfiguration((_, config) =>
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
@@ -89,8 +86,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
                 services.RemoveAll<IBillingBroker>();
                 services.AddSingleton<IBillingBroker>(Gateway);
 
-                // Fake Stripe settings with known price ids — the host loads the real (empty) Billing singleton
-                // from config before this hook, so replace it. Webhook plan resolution reads Billing:Prices.
+                // Replace the configured billing singleton with deterministic Stripe price ids.
                 services.RemoveAll<BillingSettings>();
                 services.AddSingleton(new BillingSettings
                 {

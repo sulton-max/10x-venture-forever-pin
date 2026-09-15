@@ -1,33 +1,33 @@
-/** Defines the content type a code carries — the discriminator on the wire's `CodeContent`. */
+/** Defines the kind of content a code carries. */
 export const ContentType = {
-  /** Refers to a dynamic forwarder to a single destination URL. */
+  /** Refers to a destination URL. */
   Url: "url",
 
-  /** Refers to a device-routed link — App Store / Google Play / other-device fallback. */
+  /** Refers to an app-store link. */
   MobileApp: "mobileApp",
 
-  /** Refers to a static free-text payload. */
+  /** Refers to free-form text. */
   Text: "text",
 
-  /** Refers to a static mailto payload — recipient, subject, body. */
+  /** Refers to an email recipient and draft. */
   Email: "email",
 
-  /** Refers to a static SMS payload — recipient plus a prefilled message. */
+  /** Refers to an SMS recipient and message. */
   Sms: "sms",
 
-  /** Refers to a static tel payload — a dial number. */
+  /** Refers to a telephone number. */
   Phone: "phone",
 
-  /** Refers to a static geo payload — a latitude / longitude pair. */
+  /** Refers to a geographic location. */
   Geo: "geo",
 
-  /** Refers to a static WiFi-join payload — SSID, password, security, hidden flag. */
+  /** Refers to Wi-Fi network credentials. */
   Wifi: "wifi",
 
-  /** Refers to a static contact-card (vCard) payload. */
+  /** Refers to a contact card. */
   VCard: "vCard",
 
-  /** Refers to a static calendar-event payload. */
+  /** Refers to a calendar event. */
   Calendar: "calendar",
 } as const;
 

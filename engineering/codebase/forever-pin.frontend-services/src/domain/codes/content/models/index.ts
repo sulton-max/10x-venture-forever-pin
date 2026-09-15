@@ -23,7 +23,7 @@ import type { CalendarContent } from "./CalendarContent";
 
 export * from "./ContentTypeDescriptor";
 
-/** Represents the wire's polymorphic content — a discriminated union over `type` of every content shape. */
+/** Represents typed code content. */
 export type CodeContent =
   | UrlContent
   | MobileAppLinkContent

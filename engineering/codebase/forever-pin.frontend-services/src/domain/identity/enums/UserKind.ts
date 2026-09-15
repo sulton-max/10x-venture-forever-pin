@@ -1,4 +1,4 @@
-/** Defines the current user's kind (mirrors backend `UserKind`; camelCase wire). */
+/** Defines the current identity kind. */
 export const UserKind = {
   /** Refers to an unidentified visitor (no session). */
   Anonymous: "anonymous",

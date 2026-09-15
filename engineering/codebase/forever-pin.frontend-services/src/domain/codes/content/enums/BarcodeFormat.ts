@@ -1,4 +1,4 @@
-/** Defines the symbology a code is rendered as (mirrors backend `barcodeFormat`). */
+/** Defines the code-rendering symbology. */
 export const BarcodeFormat = {
   /** Refers to a 2D QR code. */
   QrCode: "qrCode",

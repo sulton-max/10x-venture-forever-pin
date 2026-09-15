@@ -27,7 +27,7 @@ public sealed class CodesController(
     ICurrentUser currentUser,
     ApiSettings settings) : ControllerBase
 {
-    // A dynamic preview has no slug yet; a same-length stand-in renders an identically sized symbol.
+    // Placeholder slug for an unsaved dynamic preview.
     private const string SlugPlaceholder = "preview";
 
 
@@ -39,8 +39,7 @@ public sealed class CodesController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Preview([FromBody] PreviewCodeApiRequest request)
     {
-        // The same resolver the saved asset uses, so the preview is byte-identical; a dynamic preview stands in a
-        // sample slug of the real length, which renders an identically sized symbol.
+        // Use the saved-image resolver with a placeholder short URL for dynamic previews.
         var rendered = renderer.Render(new CodeRenderRequest
         {
             Payload = CodePayloadMapper.Resolve(

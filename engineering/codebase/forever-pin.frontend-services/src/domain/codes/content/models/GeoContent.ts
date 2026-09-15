@@ -1,6 +1,6 @@
 import { ContentType } from "../enums/ContentType";
 
-/** Represents the static geo-coordinate content — a latitude / longitude pair. */
+/** Represents a geographic location. */
 export interface GeoContent {
   /** The content-type discriminator. */
   type: typeof ContentType.Geo;

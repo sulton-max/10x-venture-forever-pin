@@ -13,7 +13,7 @@ const HIDDEN_OPTIONS: readonly SelectOption[] = [
   { value: "true", label: "Yes" },
 ];
 
-/** Renders WiFi content — SSID, optional password, security type, and a hidden-network toggle (`hidden` is a real bool). */
+/** Renders Wi-Fi credentials and network settings. */
 export function WifiControls({ value, onChange }: ContentControlsProps<WifiContent>) {
   return (
     <>

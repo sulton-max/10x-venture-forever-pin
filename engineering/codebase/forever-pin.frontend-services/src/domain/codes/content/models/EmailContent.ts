@@ -1,6 +1,6 @@
 import { ContentType } from "../enums/ContentType";
 
-/** Represents mailto content — opens the scanner's mail client with the message prefilled. */
+/** Represents an email recipient and draft. */
 export interface EmailContent {
   /** The content-type discriminator. */
   type: typeof ContentType.Email;

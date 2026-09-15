@@ -1,6 +1,6 @@
 import { ContentType } from "../enums/ContentType";
 
-/** Represents the static tel dial-link content. */
+/** Represents a telephone number to dial. */
 export interface PhoneContent {
   /** The content-type discriminator. */
   type: typeof ContentType.Phone;

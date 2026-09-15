@@ -4,7 +4,7 @@ using ForeverPin.Domain.Codes.Core.Enums;
 
 namespace ForeverPin.Application.Codes.Core.Services;
 
-/// <summary>Defines the contract for rendering a code's printable image.</summary>
+/// <summary>Defines rendering a code's printable image.</summary>
 public interface ICodeImageService
 {
     /// <summary>Renders the code's image in the requested format.</summary>

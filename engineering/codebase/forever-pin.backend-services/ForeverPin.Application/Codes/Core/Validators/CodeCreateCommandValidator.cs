@@ -6,7 +6,6 @@ using ForeverPin.Application.Codes.Rules.Validators;
 namespace ForeverPin.Application.Codes.Core.Validators;
 
 /// <summary>Validates create-code input.</summary>
-/// <remarks>A new rule or rule-set member gets its rule there, not here.</remarks>
 /// <seealso cref="CodeRuleValidator"/>
 /// <seealso cref="CodeRuleSetValidator"/>
 public sealed class CodeCreateCommandValidator : AbstractValidator<CodeCreateCommand>
