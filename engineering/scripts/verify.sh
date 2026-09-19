@@ -28,7 +28,7 @@ fi
 
 if [[ "$suite" != frontend ]]; then
   cd "$repo_root/engineering/codebase/forever-pin.backend-services"
-  target="forever-pin.backend-services.slnx"
+  target="ForeverPin.BackendServices.slnx"
   if [[ "$suite" == unit ]]; then target="ForeverPin.Tests.Unit"; fi
   # Serial builds avoid shared MSBuild/compiler servers. Test sockets and
   # Docker still require native execution approval in a restricted sandbox.

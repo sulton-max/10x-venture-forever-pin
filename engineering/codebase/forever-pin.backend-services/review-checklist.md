@@ -5,7 +5,7 @@
 
 *Last updated: 2026-07-28*
 
-> The backend half of the content-model **v2** (CM15) sweep. In Rider it sits under the **`docs`** solution folder (registered as a `<File>` in `forever-pin.backend-services.slnx`, since the Solution view only lists what the solution declares). Every path below is relative to the solution root, so the links resolve in-IDE.
+> The backend half of the content-model **v2** (CM15) sweep. In Rider it sits under the **`docs`** solution folder (registered as a `<File>` in `ForeverPin.BackendServices.slnx`, since the Solution view only lists what the solution declares). Every path below is relative to the solution root, so the links resolve in-IDE.
 > Frontend half: `../forever-pin.frontend-services/review-checklist.md`. Plan of record: `../../planning/version-track/v0.9/v0.9.md`.
 >
 > Range: `8477648` (*re-designed rule models and serialization*) → working tree, from `git diff --name-status`.
