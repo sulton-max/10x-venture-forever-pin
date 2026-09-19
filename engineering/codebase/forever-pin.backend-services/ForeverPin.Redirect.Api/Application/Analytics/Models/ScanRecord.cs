@@ -2,7 +2,7 @@ using ForeverPin.Domain.Codes.Core.Enums;
 
 namespace ForeverPin.Redirect.Api.Application.Analytics.Models;
 
-/// <summary>Represents a single scan to record.</summary>
+/// <summary>Represents a resolved scan.</summary>
 public sealed record ScanRecord
 {
     /// <summary>Gets the id of the code that was scanned.</summary>

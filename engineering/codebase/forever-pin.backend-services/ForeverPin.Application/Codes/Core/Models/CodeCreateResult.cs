@@ -5,6 +5,7 @@ public abstract record CodeCreateResult
 {
     private CodeCreateResult() { }
 
-    /// <summary>Created successfully.</summary>
+    /// <summary>Represents a created code.</summary>
+    /// <param name="Code">The created code.</param>
     public sealed record Success(CodeDto Code) : CodeCreateResult;
 }

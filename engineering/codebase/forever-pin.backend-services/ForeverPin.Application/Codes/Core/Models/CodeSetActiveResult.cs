@@ -5,6 +5,7 @@ public abstract record CodeSetActiveResult
 {
     private CodeSetActiveResult() { }
 
-    /// <summary>Toggled successfully.</summary>
+    /// <summary>Represents a code with its updated active state.</summary>
+    /// <param name="Code">The updated code.</param>
     public sealed record Success(CodeDto Code) : CodeSetActiveResult;
 }

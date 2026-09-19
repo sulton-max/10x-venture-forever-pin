@@ -5,6 +5,7 @@ public abstract record CodeGetByIdResult
 {
     private CodeGetByIdResult() { }
 
-    /// <summary>Found.</summary>
+    /// <summary>Represents a fetched code.</summary>
+    /// <param name="Code">The fetched code.</param>
     public sealed record Success(CodeDto Code) : CodeGetByIdResult;
 }

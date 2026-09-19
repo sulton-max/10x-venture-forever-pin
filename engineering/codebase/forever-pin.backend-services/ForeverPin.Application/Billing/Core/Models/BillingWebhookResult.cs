@@ -5,6 +5,6 @@ public abstract record BillingWebhookResult
 {
     private BillingWebhookResult() { }
 
-    /// <summary>Event verified and handled, or safely ignored.</summary>
+    /// <summary>Represents a processed or ignored webhook event.</summary>
     public sealed record Success : BillingWebhookResult;
 }

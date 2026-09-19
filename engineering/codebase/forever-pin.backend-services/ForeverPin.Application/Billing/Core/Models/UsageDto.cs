@@ -1,8 +1,8 @@
 namespace ForeverPin.Application.Billing.Core.Models;
 
-/// <summary>Represents the caller's current usage.</summary>
+/// <summary>Represents an account's code usage.</summary>
 public sealed record UsageDto
 {
-    /// <summary>Gets how many codes the caller currently owns.</summary>
+    /// <summary>Gets the number of owned codes.</summary>
     public required int CodeCount { get; init; }
 }

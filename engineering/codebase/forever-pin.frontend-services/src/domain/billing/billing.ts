@@ -1,5 +1,3 @@
-// Billing plans and API data shapes.
-
 /** Defines the subscription tiers. */
 export const Plan = {
   /** Refers to the free tier. */
@@ -14,31 +12,44 @@ export const Plan = {
 
 export type Plan = (typeof Plan)[keyof typeof Plan];
 
-// Paid plans in upgrade order; the only ones `/api/billing/checkout` accepts (`Free` rejected).
+/** Lists the paid plans in upgrade order. */
 export const PAID_PLANS: ReadonlyArray<Plan> = [Plan.Solo, Plan.Pro, Plan.Agency];
 
+/** Defines a billing checkout request. */
 export interface CheckoutRequest {
+  /** The paid plan to subscribe to. */
   plan: Plan;
 }
 
-// `CheckoutSessionDto` / `PortalSessionDto` — a single hosted Stripe URL.
+/** Represents a hosted billing-session URL. */
 export interface SessionUrlDto {
+  /** The hosted session URL. */
   url: string;
 }
 
-// `maxCodes === -1` is the Agency unlimited sentinel (render as ∞).
+/** Represents a billing plan's usage limits. */
 export interface LimitsDto {
+  /** The maximum number of owned codes; `-1` means unlimited. */
   maxCodes: number;
 }
 
+/** Represents an account's code usage. */
 export interface UsageDto {
+  /** The number of owned codes. */
   codeCount: number;
 }
 
-// `GET /api/billing/me`; a guest with no subscription row resolves to `{ plan: Free, status: "active" }`.
+/** Represents an account's billing snapshot. */
 export interface BillingStatus {
+  /** The billing plan; `Free` when there is no subscription. */
   plan: Plan;
+
+  /** The lowercase subscription status; `active` for the free plan. */
   status: string;
+
+  /** The billing plan's usage limits. */
   limits: LimitsDto;
+
+  /** The account's code usage. */
   usage: UsageDto;
 }

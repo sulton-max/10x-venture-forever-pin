@@ -1,6 +1,6 @@
 namespace ForeverPin.Application.Billing.Core.Models;
 
-/// <summary>Defines the Stripe webhook event kinds the app reacts to.</summary>
+/// <summary>Defines the supported Stripe webhook event kinds.</summary>
 public enum BillingWebhookEventType
 {
     /// <summary>Represents an event outside the handled set.</summary>

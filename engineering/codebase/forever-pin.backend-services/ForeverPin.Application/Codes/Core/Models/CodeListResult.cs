@@ -5,6 +5,7 @@ public abstract record CodeListResult
 {
     private CodeListResult() { }
 
-    /// <summary>Listed successfully.</summary>
+    /// <summary>Represents the listed codes.</summary>
+    /// <param name="Codes">The listed codes.</param>
     public sealed record Success(IReadOnlyList<CodeDto> Codes) : CodeListResult;
 }

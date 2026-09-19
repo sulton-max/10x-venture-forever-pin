@@ -1,6 +1,6 @@
 namespace ForeverPin.Domain.Billing.Enums;
 
-/// <summary>Defines the subscription tier a user is on.</summary>
+/// <summary>Defines the available subscription tiers.</summary>
 public enum Plan
 {
     /// <summary>Represents the free tier.</summary>

@@ -3,7 +3,7 @@ namespace ForeverPin.Domain.Codes.Content.Text.Models;
 /// <summary>Represents free-form text.</summary>
 public sealed record TextContentValueObject : CodeContentValueObject
 {
-    /// <summary>Gets the literal text to encode.</summary>
+    /// <summary>Gets the free-form text.</summary>
     public required string Text { get; init; }
 
     /// <inheritdoc />

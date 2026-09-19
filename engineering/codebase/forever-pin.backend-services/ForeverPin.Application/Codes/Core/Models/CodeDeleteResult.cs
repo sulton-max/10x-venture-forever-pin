@@ -5,6 +5,6 @@ public abstract record CodeDeleteResult
 {
     private CodeDeleteResult() { }
 
-    /// <summary>Deleted successfully.</summary>
+    /// <summary>Represents a deleted code.</summary>
     public sealed record Success : CodeDeleteResult;
 }
