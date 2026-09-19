@@ -7,10 +7,21 @@ export { ApiError };
 // Empty = same-origin; serves the SPA in prod. Override via VITE_API_BASE for split deployment.
 export const API_BASE: string = import.meta.env.VITE_API_BASE ?? "";
 
-export const REDIRECT_BASE: string = import.meta.env.VITE_REDIRECT_BASE ?? "http://localhost:7022";
+export let REDIRECT_BASE: string = import.meta.env.VITE_REDIRECT_BASE ?? "http://localhost:7022";
 
 // Public; also the backend's token audience. Empty leaves sign-in inert.
-export const GOOGLE_CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
+export let GOOGLE_CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
+
+// Load before rendering so Google sign-in and generated links use this environment.
+export async function loadRuntimeConfig(): Promise<void> {
+  const response = await fetch(`${API_BASE}/api/runtime-config`, { cache: "no-store" });
+  if (!response.ok) throw new Error("Runtime configuration unavailable");
+  const config = await response.json();
+  if (typeof config.googleClientId !== "string" || typeof config.redirectBaseUrl !== "string")
+    throw new Error("Invalid runtime configuration");
+  GOOGLE_CLIENT_ID = config.googleClientId;
+  REDIRECT_BASE = config.redirectBaseUrl;
+}
 
 // Parse Temporal values and unwrap the success envelope.
 export async function readData<T>(res: Response): Promise<T> {

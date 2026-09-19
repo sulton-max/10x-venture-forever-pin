@@ -15,6 +15,7 @@ public static partial class HostConfiguration
     /// <summary>Loads and registers the redirect settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
     {
+        builder.AddDeploymentHosting();
         builder.Services.AddSingleton(ConfigurationLoader.Load<RedirectSettings>(builder.Configuration));
         return builder;
     }

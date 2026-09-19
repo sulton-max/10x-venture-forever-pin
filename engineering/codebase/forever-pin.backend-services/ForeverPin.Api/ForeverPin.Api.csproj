@@ -20,16 +20,18 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <SpaRoot>$(MSBuildProjectDirectory)\..\..\forever-pin.frontend-services\</SpaRoot>
+        <SpaRoot>$(MSBuildProjectDirectory)/../../forever-pin.frontend-services/</SpaRoot>
     </PropertyGroup>
+  <Target Name="BuildSpa" BeforeTargets="PrepareForBuild;ResolveProjectStaticWebAssets"
+          Condition="'$(BuildSpa)' != 'false' and '$(DesignTimeBuild)' != 'true' and '$(NoBuild)' != 'true'">
+    <Error Condition="!Exists('$(SpaRoot)package.json')"
+           Text="SpaRoot must point to the frontend package directory." />
+    <Exec Command="pnpm install --frozen-lockfile" WorkingDirectory="$(SpaRoot)" />
+    <Exec Command="pnpm build" WorkingDirectory="$(SpaRoot)" />
     <ItemGroup>
-        <SpaInputs Include="$(SpaRoot)src\**\*;$(SpaRoot)index.html;$(SpaRoot)package.json;$(SpaRoot)vite.config.ts" />
+      <Content Remove="@(Content)" Condition="$([System.String]::Copy('%(Content.Identity)').Replace('\', '/').StartsWith('wwwroot/'))" />
+      <Content Include="wwwroot/**/*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
-    <!-- Rebuild the SPA into wwwroot on backend build; incremental via Inputs/Outputs (no-op when SPA unchanged). -->
-    <Target Name="BuildSpa" BeforeTargets="Build"
-            Inputs="@(SpaInputs)" Outputs="$(MSBuildProjectDirectory)\wwwroot\index.html">
-        <Exec Command="pnpm install --frozen-lockfile" WorkingDirectory="$(SpaRoot)" Condition="!Exists('$(SpaRoot)node_modules')" />
-        <Exec Command="pnpm build" WorkingDirectory="$(SpaRoot)" />
-    </Target>
+  </Target>
 
 </Project>

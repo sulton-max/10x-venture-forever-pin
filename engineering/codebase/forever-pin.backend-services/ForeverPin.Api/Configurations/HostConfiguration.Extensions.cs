@@ -30,6 +30,7 @@ public static partial class HostConfiguration
     /// <summary>Loads and registers the application settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
     {
+        builder.AddDeploymentHosting();
         builder.Services.AddSingleton(ConfigurationLoader.Load<ApiSettings>(builder.Configuration));
         builder.Services.AddSingleton(ConfigurationLoader.Load<BillingSettings>(builder.Configuration, "Billing"));
         builder.Services.AddSingleton(ConfigurationLoader.Load<AuthSettings>(builder.Configuration, "Auth"));

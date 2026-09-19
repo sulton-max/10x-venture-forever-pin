@@ -1,0 +1,50 @@
+# Disposable local acceptance stack; never use these defaults on a public host.
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: foreverpin
+      POSTGRES_USER: foreverpin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U foreverpin -d foreverpin"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  management:
+    image: foreverpin-management:local
+    build:
+      context: ../codebase
+      dockerfile: ../deployment/Dockerfile
+      target: management
+    environment:
+      DB_CONNECTION: "Host=database;Database=foreverpin;Username=foreverpin;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}"
+      REDIRECT_BASE_URL: "http://localhost:${REDIRECT_PORT:-17023}"
+    ports:
+      - "127.0.0.1:${MANAGEMENT_PORT:-17021}:8080"
+    volumes:
+      - keys:/data/keys
+    depends_on:
+      database:
+        condition: service_healthy
+    mem_limit: 768m
+  redirect:
+    image: foreverpin-redirect:local
+    build:
+      context: ../codebase
+      dockerfile: ../deployment/Dockerfile
+      target: redirect
+    environment:
+      DB_CONNECTION: "Host=database;Database=foreverpin;Username=foreverpin;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}"
+    ports:
+      - "127.0.0.1:${REDIRECT_PORT:-17023}:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    mem_limit: 384m
+    stop_grace_period: 45s
+volumes:
+  database:
+  keys:

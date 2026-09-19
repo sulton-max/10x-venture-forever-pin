@@ -1,0 +1,14 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/wwwroot
+**/logs
+**/.git
+**/.env*
+**/appsettings.Local.json
+**/appsettings.Development.json
+**/*.pfx
+**/*.pem
+**/*.key
+**/*.db

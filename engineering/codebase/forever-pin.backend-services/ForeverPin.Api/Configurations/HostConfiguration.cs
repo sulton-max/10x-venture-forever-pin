@@ -60,8 +60,11 @@ public static partial class HostConfiguration
 
         app.MapControllers();
 
-        // Fall back to index.html for non-API, non-file GETs so client-side routing works.
-        app.MapFallbackToFile("index.html");
+        // Keep unknown API requests as JSON errors; use the SPA shell only for client routes.
+        app.MapFallback("/api/{**slug}", () => Results.Problem(
+            statusCode: StatusCodes.Status404NotFound,
+            title: "Not Found")).AllowAnonymous();
+        app.MapFallbackToFile("index.html").AllowAnonymous();
 
         return app;
     }

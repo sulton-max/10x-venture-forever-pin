@@ -1,6 +1,6 @@
 # Verification
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-09-19*
 
 ## Executed
 
@@ -21,10 +21,26 @@ Integration and HTTP tests used disposable PostgreSQL containers.
 
 ---
 
+## Local deployment
+
+- `docker compose config` passed with an explicit test password.
+- Management and redirect images built from the final source tree.
+- PostgreSQL, management, and redirect reached healthy state.
+- Both `/health` endpoints returned HTTP `200` after database checks.
+- The SPA returned HTML; an unknown `/api/*` route returned problem JSON.
+- `/api/runtime-config` returned the configured public redirect origin.
+- The database and data-protection key survived management-container replacement.
+- The release generator produced valid JSON and a valid Compose model.
+- The disposable containers, network, database, and key volumes were removed.
+
+---
+
 ## Warnings and boundaries
 
 - Dependency restore reports vulnerability warnings, including transitive SDK dependencies.
 - The frontend bundle reports a large-chunk warning.
+- Container publishing reports the same dependency vulnerability warnings.
+- The GitHub release workflow is source-reviewed but has not run remotely.
 - Google and Stripe are faked in automated E2E.
 - Real OAuth, real Stripe test mode, production deployment, and physical print/scanner checks remain unverified.
 - Automated results do not close the owner's manual release checks.
