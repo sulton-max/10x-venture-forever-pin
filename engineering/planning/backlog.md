@@ -109,5 +109,5 @@ Minimal dynamic-content delivery belongs to v0.9; a designed hosted-page editor 
 - [ ] Establish product CI/CD and a repeatable deployment configuration
 - [ ] Verify the reserved SDK-adoption scope before assigning a release
 
-Vue SDK readiness and application migration stay in [their handoff](../../vue-port-handoff.md).
-No SDK publication or migration completion is inferred from its old snapshots.
+Vue SDK readiness and application migration remain separate work.
+Verify the published SDK before marking either complete.

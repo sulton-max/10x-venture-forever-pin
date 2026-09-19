@@ -36,9 +36,6 @@ Lazy document index. Paths below are relative to the repository root.
 - `engineering/planning/validation.md`: validation design and unresolved seams.
 - `engineering/planning/validation-patterns.md`: validation taxonomy research.
 - `engineering/research/`: design, error-ordering, and persistence experiments.
-- `vue-port-handoff.md`: migration deltas; SDK readiness must be rechecked.
-- `be-sweep-handoff.md`: backend convention adoption.
-- `model-sweep-handoff.md`: model-review history; active tasks live in v0.9.
 - `engineering/operations/documentation-audit.md`: documentation sweep inventory.
 
 Source is navigated directly under `engineering/codebase/`; this index does not duplicate its files.

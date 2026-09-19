@@ -35,6 +35,6 @@
 
 ## Vue lane
 
-The application is still React. [Vue handoff](../../vue-port-handoff.md) retains migration API deltas.
+The application is still React.
 Another chat owns the SDK update; the current lane excludes application migration.
 Verify the published SDK before consuming it.

@@ -39,8 +39,6 @@ Vue migration and SDK publication remain separate work; readiness is not assumed
 ## Parallel records
 
 - [Polish](polish-track/p0.1/p0.1.md): presentation cleanup and test naming.
-- [Backend conventions](../../be-sweep-handoff.md): product adoption of settled conventions.
-- [Vue handoff](../../vue-port-handoff.md): separate framework migration.
 - [Backlog](backlog.md): launch gates and later capabilities.
 - [Product context](../../product/context.md): business state and pricing decisions.
 
