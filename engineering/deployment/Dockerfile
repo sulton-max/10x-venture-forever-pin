@@ -2,7 +2,8 @@
 FROM node:24.11.0-alpine AS spa
 RUN npm install --global pnpm@10.33.2
 WORKDIR /src/forever-pin.frontend-services
-COPY forever-pin.frontend-services/package.json forever-pin.frontend-services/pnpm-lock.yaml ./
+COPY forever-pin.frontend-services/package.json forever-pin.frontend-services/pnpm-lock.yaml forever-pin.frontend-services/pnpm-workspace.yaml ./
+COPY forever-pin.frontend-services/apps/web/package.json ./apps/web/package.json
 RUN pnpm install --frozen-lockfile
 COPY forever-pin.frontend-services/ ./
 RUN pnpm build
@@ -13,7 +14,7 @@ COPY forever-pin.backend-services/ ./
 
 FROM source AS management-build
 ARG TARGETARCH
-COPY --from=spa /src/forever-pin.backend-services/ForeverPin.Api/wwwroot ./ForeverPin.Api/wwwroot
+COPY --from=spa /src/forever-pin.frontend-services/apps/web/dist ./ForeverPin.Api/wwwroot
 RUN case "$TARGETARCH" in amd64) rid=linux-x64 ;; arm64) rid=linux-arm64 ;; *) exit 1 ;; esac \
     && dotnet publish ForeverPin.Api/ForeverPin.Api.csproj -c Release -o /app -r "$rid" --self-contained false -p:BuildSpa=false
 

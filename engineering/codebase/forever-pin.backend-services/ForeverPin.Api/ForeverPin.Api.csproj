@@ -25,9 +25,9 @@
   <Target Name="BuildSpa" BeforeTargets="PrepareForBuild;ResolveProjectStaticWebAssets"
           Condition="'$(BuildSpa)' != 'false' and '$(DesignTimeBuild)' != 'true' and '$(NoBuild)' != 'true'">
     <Error Condition="!Exists('$(SpaRoot)package.json')"
-           Text="SpaRoot must point to the frontend package directory." />
+           Text="SpaRoot must point to the frontend workspace directory." />
     <Exec Command="pnpm install --frozen-lockfile" WorkingDirectory="$(SpaRoot)" />
-    <Exec Command="pnpm build" WorkingDirectory="$(SpaRoot)" />
+    <Exec Command="pnpm run deploy" WorkingDirectory="$(SpaRoot)" />
     <ItemGroup>
       <Content Remove="@(Content)" Condition="$([System.String]::Copy('%(Content.Identity)').Replace('\', '/').StartsWith('wwwroot/'))" />
       <Content Include="wwwroot/**/*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

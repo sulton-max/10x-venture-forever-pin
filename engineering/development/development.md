@@ -44,3 +44,14 @@ Normal browser auth development uses HTTPS and the existing trusted development 
 
 Fresh results belong in [verification](../operations/verification.md).
 Manual version checks remain unticked until the owner verifies the corresponding user flow.
+
+## Frontend workspace
+
+The private pnpm root is `engineering/codebase/forever-pin.frontend-services/`.
+The shipped app owns its source, configuration, tests, and `dist/` under `apps/web/`.
+`pnpm dev`, `pnpm typecheck`, `pnpm test`, and `pnpm build` run from the workspace root.
+`pnpm run deploy` builds the web app and copies its output into the API host's generated `wwwroot/`.
+Docker copies the same app-local output into the management image.
+The backend `BuildSpa` target calls `pnpm run deploy`; ordinary frontend builds leave backend output untouched.
+Local Vite overrides live in `apps/web/.env.local`; use `apps/web/.env.example` as the starting point.
+Peer apps belong under `apps/`; introduce `packages/` only for code shared by multiple apps.

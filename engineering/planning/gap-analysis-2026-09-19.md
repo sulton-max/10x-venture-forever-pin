@@ -108,7 +108,7 @@ Reference: [update validator](/Users/max/Projects/10x-ws/workbench/career/engine
 
 **Acceptance:** Preserve pointer identity through reorder, insertion, deletion, edit and copy. Remap existing references explicitly; require a choice when deleting their target. Test the mapper as well as the UI.
 
-References: [request normalization](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/src/application/codes/createCodeForm.ts:191), [rule reorder](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/src/presentation/codes/routing/components/RuleControls.tsx:72).
+References: [request normalization](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/apps/web/src/application/codes/createCodeForm.ts:191), [rule reorder](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/routing/components/RuleControls.tsx:72).
 
 ### F07 — P1: concurrent creation exceeds the plan cap
 
@@ -146,7 +146,7 @@ Stripe documents duplicate delivery and lack of guaranteed event ordering in its
 
 **Acceptance:** Bound renderer inputs and raster allocation, reject invalid enum/geometry values, escape all SVG attributes, and verify PNG signature/MIME/output agreement. Test the product's anonymous preview and saved-image entry points against the published package. Close the DOM trust assumption explicitly.
 
-References: [SDK rendering audit](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/wow-two-sdk-beta/wow-two-sdk.backend.beta/engineering/planning/foreverpin-adoption/foreverpin-adoption.md:136), [preview HTML sink](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/src/presentation/codes/common/createCode/components/QrPreview.tsx:103).
+References: [SDK rendering audit](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/wow-two-sdk-beta/wow-two-sdk.backend.beta/engineering/planning/foreverpin-adoption/foreverpin-adoption.md:136), [preview HTML sink](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/common/createCode/components/QrPreview.tsx:103).
 
 ### F10 — P2: scan events and counters can diverge
 
@@ -206,7 +206,7 @@ References: [image publication](/Users/max/Projects/10x-ws/workbench/career/engi
 
 **Acceptance:** Render a bounded loading/error state, time out the request and offer retry. Preserve the distinction between optional settings and settings required to start safely.
 
-References: [bootstrap gate](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/src/bootstrap/main.tsx:12), [config fetch](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/src/integration/common/client.ts:17).
+References: [bootstrap gate](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/apps/web/src/bootstrap/main.tsx:12), [config fetch](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/codebase/forever-pin.frontend-services/apps/web/src/integration/common/client.ts:17).
 
 ## Remaining release gates and planned work
 

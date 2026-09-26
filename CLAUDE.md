@@ -12,7 +12,8 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 ## Codebase
 
 - Backend: `engineering/codebase/forever-pin.backend-services/` — .NET 10.
-- Frontend: `engineering/codebase/forever-pin.frontend-services/` — React 19, Vite, Tailwind 4, `@wow-two-beta/ui`.
+- Frontend workspace: `engineering/codebase/forever-pin.frontend-services/`; product source lives in `apps/web/`.
+- Current app: React 19, Vite, Tailwind 4, `@wow-two-beta/ui`; Vue adoption is active in `v0.10`.
 - Namespace: `ForeverPin`; product folder: `10x-venture-forever-pin`.
 - Management host: `ForeverPin.Api`, HTTPS/HTTP `7020`/`7021`.
 - Redirect host: `ForeverPin.Redirect.Api`, HTTPS/HTTP `7022`/`7023`.

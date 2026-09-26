@@ -3,7 +3,7 @@ bin/
 obj/
 *.user
 
-# Frontend build output served by the Api (regenerate via `pnpm -C engineering/codebase/forever-pin.frontend-services build`)
+# Frontend output served by the Api (`pnpm -C engineering/codebase/forever-pin.frontend-services run deploy`)
 engineering/codebase/forever-pin.backend-services/ForeverPin.Api/wwwroot/
 
 # Local config overrides (loaded by HostConfiguration; never committed)

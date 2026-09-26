@@ -20,9 +20,9 @@ export default defineConfig(({ command, mode }) => ({
       "/health": { target: "https://localhost:7020", changeOrigin: false, secure: false },
     },
   },
-  // Prod-ish: build straight into the Api's wwwroot so the backend serves the SPA.
+  // App-local artifact; workspace deployment copies it into the API host.
   build: {
-    outDir: "../forever-pin.backend-services/ForeverPin.Api/wwwroot",
+    outDir: "dist",
     emptyOutDir: true,
   },
   resolve: {
