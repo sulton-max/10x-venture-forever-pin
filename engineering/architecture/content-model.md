@@ -102,4 +102,4 @@ The current content base retains polymorphic encoding; one code-level payload re
 - Control explanations and the union-aware field-array contract remain open.
 
 Validation ordering and persistence probes: [validation analysis](../planning/validation.md).
-Implementation tasks: [v0.9](../planning/version-track/v0.9/v0.9.md).
+Implementation tasks: [v0.11](../planning/version-track/v0.11/v0.11.md).

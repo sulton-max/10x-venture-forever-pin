@@ -6,7 +6,8 @@ Lazy document index. Paths below are relative to the repository root.
 
 - `engineering/planning/current-work.md`: current analysis and dependencies.
 - `engineering/planning/planning.md`: release state and continuation order.
-- `engineering/planning/version-track/v0.9/v0.9.md`: active task checkboxes.
+- `engineering/planning/version-track/v0.10/v0.10.md`: active adoption checkboxes.
+- `engineering/planning/version-track/v0.11/v0.11.md`: planned feature checkboxes.
 - `engineering/planning/backlog.md`: launch and deferred capabilities.
 - `engineering/operations/verification.md`: current executed checks.
 - `engineering/operations/rebrand.md`: names and compatibility exceptions.

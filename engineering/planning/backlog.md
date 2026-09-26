@@ -1,9 +1,10 @@
 # Backlog
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-09-26*
 
-Active-release tasks live in [v0.9](version-track/v0.9/v0.9.md).
-This list holds unshipped work outside that release; order is pull priority.
+Active adoption tasks live in [v0.10](version-track/v0.10/v0.10.md).
+Planned feature tasks live in [v0.11](version-track/v0.11/v0.11.md).
+This list holds work outside those tracks; order is pull priority.
 
 ## Launch and product alignment
 
@@ -82,13 +83,12 @@ SVG/PNG download, module/finder shapes, gradients, and emoji already exist.
 - [ ] Integrate hosted editable content pages as a separate product
 - [ ] Evaluate NFC pairing and a self-host edition
 
-Minimal dynamic-content delivery belongs to v0.9; a designed hosted-page editor does not.
+Minimal dynamic-content delivery belongs to `v0.11`; a designed hosted-page editor does not.
 
 ---
 
 ## Marketing
 
-- [ ] Finish the parked hero experiment and mobile review
 - [ ] Verify branded promo exports visually
 - [ ] Build the free-generator entry page
 - [ ] Add content-type and comparison landing pages
@@ -96,6 +96,37 @@ Minimal dynamic-content delivery belongs to v0.9; a designed hosted-page editor 
 - [ ] Prepare short-form launch content
 - [ ] Add a privacy-first acquisition funnel
 - [ ] Evaluate creator integrations and wedding/event channels
+
+---
+
+## Parked hero experiment
+
+Parked outside the release sequence. Concept and specification:
+[interactive landing hero](../../product/marketing/landing-hero-concept.md).
+The recorded implementation state is retained; the remaining work is not part of SDK adoption.
+
+- [x] Add a `<HeroSim>` canvas behind the landing hero.
+- [x] Bake real scannable QR card sprites from `qrcode`.
+- [x] Add a scrim that keeps the hero headline legible.
+- [x] Keep clash detection on so codes never overlap.
+- [x] Add a drift mode with wall bounce and click push-away.
+- [x] Add a bump mode with weight-based ramming and rests.
+- [x] Add a mouse-chase mode that packs around the cursor.
+- [x] Cap DPR and frame rate.
+- [x] Pause the sim off-screen and on a hidden tab.
+- [x] Auto-reduce the sprite count on narrow viewports.
+- [x] Add the temporary dev control bar with live sliders.
+- [x] Encode the daily theme and app links into the sprites.
+- [x] Fall back to a static scatter on `prefers-reduced-motion`.
+- [x] Cap the sprite count.
+- [ ] Run the deferred mobile responsive pass.
+- [ ] Polish each mode with the sliders.
+- [ ] Bake the chosen slider values as defaults.
+- [ ] Remove the whole dev bar.
+- [ ] Add random-mode-per-refresh.
+- [ ] Add swarm, route, and assemble modes.
+- [ ] Add scannable Easter-egg codes.
+- [ ] Wire real ForeverPin short links into the sprites.
 
 ---
 
@@ -107,7 +138,6 @@ Minimal dynamic-content delivery belongs to v0.9; a designed hosted-page editor 
 - [ ] Simplify E2E DTO mirrors while retaining raw-JSON assertions
 - [ ] Review dependency vulnerability warnings with the SDK lane
 - [ ] Establish product CI/CD and a repeatable deployment configuration
-- [ ] Verify the reserved SDK-adoption scope before assigning a release
 
-Vue SDK readiness and application migration remain separate work.
-Verify the published SDK before marking either complete.
+The active SDK-adoption scope is tracked in `v0.10`; implementation and verification remain open.
+Backend convention work beyond that migration stays in this backlog.

@@ -1,89 +1,68 @@
 # Current work
 
-*Last updated: 2026-09-19*
+*Last updated: 2026-09-26*
 
 ## Position
 
-The product is in v0.9. Its models, storage, forms, and basic copy flow are implemented.
-Automated verification is green; the delivery and correctness gaps below remain real.
-Vue application migration is excluded from this lane.
-Promo and marketing work, including the promo source's repository placement, is parked by the owner.
+`v0.10` is the active SDK adoption release. `v0.11` is the owner's planned feature track.
+The owner accepted `v0.9`'s implemented models, storage, authoring, and basic copy milestone.
+That scope acceptance is not a claim that unresolved product correctness or manual checks passed.
+Promo and marketing remain parked, including the [hero experiment](backlog.md#parked-hero-experiment).
 
 ---
 
-## Execution order
+## Ownership
 
-| Order | Work | Dependency |
+| Lane | Owns | Completion evidence |
 |---|---|---|
-| 1 | Model review remainder | Ready; separate name and comment batches |
-| 2 | Static edit and copy UX | Model review; existing SDK controls |
-| 3 | Validation and write guarantees | Settled read/service seam and concurrency contract |
-| 4 | Dynamic-content delivery | Resolve-page host and per-type delivery decisions |
-| 5 | Print guidance and manual flow checks | Final rendering/delivery behavior |
+| Frontend migration | Private pnpm root, `apps/web`, Vue SDK, product contracts | Automated checks, live runtime smoke, visual comparison |
+| Backend migration | Backend SDK and its required product integration | Separate chat's verified migration and regression results |
+| Owner | Product acceptance and release completion | Explicit acceptance of both lanes and manual checks |
 
-The [v0.9 checklist](version-track/v0.9/v0.9.md) is the task source.
-This document explains ordering and evidence, not a second checklist.
+The [v0.10 checklist](version-track/v0.10/v0.10.md) remains open while backend adoption is unfinished.
+Frontend work does not change backend implementation or infer the other chat's progress.
 
 ---
 
-## Model review
+## Adoption order
 
-- Completed: content/rule shapes, persistence, type renames, and the model summary review.
-- Reviewed: backend model summaries and frontend billing/identity contracts; documentation-only changes preserve declarations.
-- Compacted: product source comments, including models, requests, services, UI controls, tests, and Vite configuration.
-- Checked: the full backend build and frontend typecheck pass under Node 24.
-- Remaining: backend/frontend member names and consistent frontend DTO names.
-- Calendar: the old defect report lacks a reproduction; reproduce before changing encoding.
-- Preserve frontend wire-role names rather than copying backend value-object suffixes.
+1. Adopt a private pnpm root at `forever-pin.frontend-services/`, with the product in `apps/web`.
+2. Adopt `@wow-two-beta/ui-vue@0.0.7` and the SDK API, form, session, and query contracts.
+3. Preserve product routes, content editing, preview, downloads, and existing ownership behavior.
+4. Run frontend automated checks and product runtimes; compare existing flows and visuals.
+5. Integrate backend migration evidence and obtain owner acceptance for the combined result.
 
----
-
-## Mode and copy correctness
-
-- Current copy flow prefills a new code; it does not mutate the source's mode.
-- The approved single Copy dialog and target-mode explanations are unbuilt.
-- Static edit still offers an additional routing rule.
-- Update validation receives no mode, so it cannot enforce the static one-rule constraint.
-- Fix the UI guard and server guarantee together; a UI-only restriction is insufficient.
+SDK publication establishes availability; product adoption needs its own integration evidence.
+The migration preserves the accepted product scope without treating known defects as acceptance criteria.
+Optional `packages/` hold code shared by multiple apps; module federation remains outside this adoption.
 
 ---
 
-## Validation and writes
+## Planned feature scope
 
-- Creation has content, rule, and whole-set validation.
-- Update needs the loaded entity for mode-dependent invariants.
-- Existence and ownership must precede deeper input checks.
-- Check-then-write probes need concurrency guarantees.
-- Slug creation avoids existing values but still has a check/insert race.
-- Preserve load → attach → mutate when using a tracked write seam.
-- The product should consume the agreed SDK contract rather than duplicate it.
+The [v0.11 checklist](version-track/v0.11/v0.11.md) owns every unfinished content-model,
+mode/copy, validation, print, converter, delivery, and manual-verification task.
+The five manual flow checks remain unchecked and await the owner's actual pass.
+Known gaps and their evidence remain in the [gap analysis](gap-analysis-2026-09-19.md).
 
----
-
-## Delivery decisions
-
-- The resolver currently redirects any nonempty encoded payload.
-- Dynamic WiFi, vCard, calendar, phone, SMS, email, text, and geo require an explicit delivery policy.
-- The recorded preference is small HTML from the redirect host; the owner has not closed that choice.
-- Resolve the per-type map, including geo, before implementing the page path.
-- Keep the minimal page separate from a future hosted-page editor product.
-
-Full decision IDs and invariants: [content model](../architecture/content-model.md).
+Before exposing affected capabilities, verify payload correctness, static-mode invariants,
+pointer preservation, safe dynamic-content delivery, and concurrent-write guarantees.
+Version labels do not remove those release gates.
 
 ---
 
-## Independent work
+## Contracts and decisions
 
-- Backend convention adoption and small presentation polish can remain separate batches.
-- Pricing/marketing reconciliation is a product decision after mode behavior is stable.
-- Country lookup, analytics, custom domains, and launch operations remain outside the current core implementation.
-- SDK Vue readiness must be confirmed by its owning chat and actual release evidence.
+The [content model](../architecture/content-model.md) owns mode, wire, and delivery contracts.
+The [validation analysis](validation.md) owns validation ordering and persistence probes.
+Resolve-page hosting, per-type delivery, calendar reproduction, and print acceptance remain open.
+Backend adoption may satisfy individual feature tasks; reconcile their evidence with the owning chat
+before changing their checklist state.
 
 ---
 
-## Boundaries
+## Planning boundary
 
-- No current version or manual verification was marked complete by this sweep.
-- No SDK implementation or application migration was performed.
-- The user committed the rebrand and verification tooling; documentation is a separate batch.
-- GitHub rename and both local remote URLs are complete. See [rebrand](../operations/rebrand.md).
+The owner authorized `v0.11` as a future feature track while `v0.10` is active.
+This explicit scope overrides the default latest-folder and single-next-version planning rules.
+No `v0.11` implementation or manual pass is implied by creating its plan.

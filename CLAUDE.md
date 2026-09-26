@@ -7,7 +7,7 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 - Workspace conventions live in `wow-two-ws/conventions/`; repo-specific details follow here.
 - `.claude/rules/file-references.md` is a lazy document index.
 - Preserve existing edits; coordinate by disjoint file sets in the shared checkout.
-- Vue SDK work runs separately. Do not start the application migration in this lane.
+- Vue application adoption is active in `v0.10`; backend migration belongs to a separate chat.
 
 ## Codebase
 
@@ -28,7 +28,7 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 
 ## Planning
 
-- Active release: `engineering/planning/version-track/v0.9/v0.9.md`.
+- Active release: `engineering/planning/version-track/v0.10/v0.10.md`.
 - Remaining tasks: `engineering/planning/planning.md` and the active track.
 - Durable content decisions: `engineering/architecture/content-model.md`.
 - Rename compatibility: `engineering/operations/rebrand.md`.
