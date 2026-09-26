@@ -32,6 +32,8 @@ Frontend work does not change backend implementation or infer the other chat's p
 4. Run frontend automated checks and product runtimes; compare existing flows and visuals.
 5. Integrate backend migration evidence and obtain owner acceptance for the combined result.
 
+The [frontend adoption analysis](../architecture/frontend-adoption.md) records the full source audit,
+prioritized defects, migration boundaries, and visual candidate.
 SDK publication establishes availability; product adoption needs its own integration evidence.
 The migration preserves the accepted product scope without treating known defects as acceptance criteria.
 Optional `packages/` hold code shared by multiple apps; module federation remains outside this adoption.

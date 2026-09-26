@@ -1,6 +1,32 @@
 # Verification
 
-*Last updated: 2026-09-19*
+*Last updated: 2026-09-26*
+
+## Frontend workspace adoption — 2026-09-26
+
+Structural baseline: `132e14c`; the app remains React until the Vue adoption is implemented.
+All 134 source/test files moved byte-for-byte into `apps/web/`.
+The pnpm lockfile changed its importer path without changing resolved dependency versions.
+
+| Check | Result |
+|---|---|
+| Root frontend verifier under Node 24.11.0 | Typecheck, 4 tests, production build passed |
+| Frozen pnpm workspace installation | Passed |
+| App-local output and API host copy | All 14 file hashes matched |
+| API `BuildSpa` target | Passed through frozen install, build, and host copy |
+| Docker frontend stage | Passed |
+| API SPA fallback and linked production assets | HTTP 200 |
+| HTTPS app runtime | Guest creation, code creation, dashboard, edit, and server preview observed |
+| Planning and workspace commits | Personal GPG signatures verified |
+
+The browser used a disposable local PostgreSQL database. Real Google sign-in, Stripe,
+redirect-host runtime, hosted CI, and mobile-device/print scanning were not exercised in this pass.
+The full backend-suite counts below are prior September 19 evidence, not a new migration result.
+The existing frontend large-chunk warning remains; no dependency version changed in the relocation.
+
+Before/after visual acceptance and Vue/backend migration remain open in `v0.10`.
+
+---
 
 ## Executed
 
