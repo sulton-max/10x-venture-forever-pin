@@ -201,7 +201,8 @@ It preserves builder controls and behavior while improving contrast, shared gutt
 - These checks establish this visual candidate, not full frontend accessibility or Vue migration acceptance.
 - Before/after captures and evidence: [comparison](../../../../../system/sessions/frontend-conventions-sweep/foreverpin-visual-20260926/comparison.md).
 
-The owner accepted the visual candidate and delegated the subsequent palette refinement.
+The owner accepted the visual candidate and confirmed the subsequent after palette on September 26.
+Palette commit `6264a34` is the visual baseline for the Vue migration.
 The current palette and matched captures are recorded in the [design spec](../research/design-research/design-research.md).
 Existing `v0.11` feature tasks remain in that track;
 this analysis does not silently pull their implementation back into `v0.10`.

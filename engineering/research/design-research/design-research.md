@@ -7,7 +7,8 @@
 ## Current direction
 
 - The owner accepted the typography, wrapping navigation, aligned gutters, and restrained elevation on September 26.
-- The owner delegated palette selection and application, with matching before/after screenshots.
+- The owner confirmed the after palette on September 26; commit `6264a34` is the accepted visual baseline.
+- Vue adoption preserves this palette and the accepted frame, with matching screenshots for verification.
 - Light mode uses a cool neutral canvas, white navigation/cards, and violet primary actions.
 - Dark mode uses graphite canvas/cards, raised controls, and lighter violet actions with dark text.
 - Structural dividers stay quiet; input outlines and keyboard focus remain distinct.
