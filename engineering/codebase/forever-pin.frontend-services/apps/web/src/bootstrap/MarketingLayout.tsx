@@ -17,7 +17,7 @@ function navLinkClass({ isActive }: { isActive: boolean }) {
 export function MarketingLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
         <Container
           size={ContainerSize.Full}
           className="flex max-w-6xl items-center justify-between gap-4 px-6 py-3.5"

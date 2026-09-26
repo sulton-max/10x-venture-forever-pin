@@ -2,7 +2,17 @@ import { Fragment } from "react";
 import { ArrowLeftRight, ArrowRight } from "lucide-react";
 
 import { ColorTone, SizePreset } from "@wow-two-beta/ui/foundation/utils";
-import { Button, ButtonVariant, OptionTile, OptionTileGroup, ToggleButton, ToggleButtonGroup, ToggleButtonGroupVariant, ToggleMode } from "@wow-two-beta/ui/presentation/actions";
+import {
+  Button,
+  ButtonVariant,
+  OptionTile,
+  OptionTileGroup,
+  ToggleButton,
+  ToggleButtonGroup,
+  ToggleButtonGroupVariant,
+  ToggleButtonVariant,
+  ToggleMode,
+} from "@wow-two-beta/ui/presentation/actions";
 import { Separator } from "@wow-two-beta/ui/presentation/display";
 import { ColorPicker } from "@wow-two-beta/ui/presentation/forms";
 import { ControlGroup, Stack } from "@wow-two-beta/ui/presentation/layout";
@@ -70,8 +80,12 @@ export function FillControls({ foreground, onForegroundChange, gradient, onGradi
           onValueChange={setFill}
           aria-label="Foreground fill"
         >
-          <ToggleButton value={FillType.Solid} size={SizePreset.Sm}>Solid</ToggleButton>
-          <ToggleButton value={FillType.Gradient} size={SizePreset.Sm}>Gradient</ToggleButton>
+          <ToggleButton variant={ToggleButtonVariant.Soft} value={FillType.Solid} size={SizePreset.Sm}>
+            Solid
+          </ToggleButton>
+          <ToggleButton variant={ToggleButtonVariant.Soft} value={FillType.Gradient} size={SizePreset.Sm}>
+            Gradient
+          </ToggleButton>
         </ToggleButtonGroup>
       </ControlGroup>
 
@@ -125,10 +139,20 @@ export function FillControls({ foreground, onForegroundChange, gradient, onGradi
             aria-label="Gradient type"
             className="shrink-0 self-stretch"
           >
-            <ToggleButton value={GradientType.Linear} size={SizePreset.Sm} className="flex-1">
+            <ToggleButton
+              variant={ToggleButtonVariant.Soft}
+              value={GradientType.Linear}
+              size={SizePreset.Sm}
+              className="flex-1"
+            >
               Linear
             </ToggleButton>
-            <ToggleButton value={GradientType.Radial} size={SizePreset.Sm} className="flex-1">
+            <ToggleButton
+              variant={ToggleButtonVariant.Soft}
+              value={GradientType.Radial}
+              size={SizePreset.Sm}
+              className="flex-1"
+            >
               Radial
             </ToggleButton>
           </ToggleButtonGroup>

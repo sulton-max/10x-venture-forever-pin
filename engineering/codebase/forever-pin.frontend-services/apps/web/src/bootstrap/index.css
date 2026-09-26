@@ -5,62 +5,99 @@
    Path is relative to THIS file — from bootstrap/ that's ../../ (bootstrap → src → root). */
 @source "../../node_modules/@wow-two-beta/ui/dist";
 
-/* ForeverPin comparison candidate over @wow-two-beta/ui.
-   Preserve the lavender/violet identity with clearer text and quieter elevation.
-   Light @theme defaults + .dark overrides; screenshots compare this with the captured baseline. */
+/* ForeverPin palette over the SDK's semantic roles.
+   Source: engineering/research/design-research/design-research.md.
+   Dividers stay quiet; control borders remain distinct from their surrounding surfaces. */
 @theme {
-  /* surfaces — light (lavender canvas → soft tinted cards; tuned to the Visa ref) */
-  --color-background: #d9dde8;
-  --color-card: #ebeef4;
-  --color-card-foreground: #1c1d26;
-  --color-popover: #ebeef4;
-  --color-popover-foreground: #1c1d26;
-  --color-muted: #f1f2f8;
-  --color-foreground: #1c1d26;
-  --color-muted-foreground: #54596f;
-  --color-subtle-foreground: #5b5f73;
-  --color-border: #e4e6f0;
-  --color-border-strong: #c7cad9;
-  --color-input: #e4e6f0;
-  --color-ring: #8b5cf6;
+  /* surfaces — cool neutral canvas, white navigation and raised cards */
+  --color-background: #f4f5f8;
+  --color-card: #ffffff;
+  --color-card-foreground: #202331;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #202331;
+  --color-muted: #e9ebf1;
+  --color-foreground: #202331;
+  --color-muted-foreground: #586174;
+  --color-subtle-foreground: #626b7c;
+  --color-inverse: #202331;
+  --color-inverse-foreground: #f4f5f8;
+  --color-border: #dce0e8;
+  --color-border-strong: #737e93;
+  --color-input: #7b8597;
+  --color-ring: #7040d7;
   /* brand — violet */
-  --color-primary: #7c3aed;
-  --color-primary-foreground: #f5f3ff;
-  --color-primary-soft: #ede9fe;
-  --color-primary-soft-foreground: #5b21b6;
+  --color-primary: #7040d7;
+  --color-primary-foreground: #ffffff;
+  --color-primary-soft: #eee8fc;
+  --color-primary-soft-foreground: #5730af;
   /* accent — teal pop (rationed: active/success/highlights) */
   --color-accent: #0f766e;
   --color-accent-foreground: #ffffff;
   --color-accent-soft: #ccfbf1;
   --color-accent-soft-foreground: #115e59;
+  /* feedback — paired foregrounds keep solid and soft states readable */
+  --color-destructive: #b4233a;
+  --color-destructive-foreground: #ffffff;
+  --color-destructive-soft: #fff0f2;
+  --color-destructive-soft-foreground: #a21d33;
+  --color-success: #167153;
+  --color-success-foreground: #ffffff;
+  --color-success-soft: #e7f5ed;
+  --color-success-soft-foreground: #165c45;
+  --color-warning: #925500;
+  --color-warning-foreground: #ffffff;
+  --color-warning-soft: #fff3d6;
+  --color-warning-soft-foreground: #7a4900;
+  --color-info: #2666a1;
+  --color-info-foreground: #ffffff;
+  --color-info-soft: #eaf2fc;
+  --color-info-soft-foreground: #225782;
   /* type — Geist (self-hosted variable fonts) */
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", monospace;
 }
 
-/* Dark — neutral charcoal (no violet cast); chips neutral, teal as a status dot, violet on primary. */
+/* Dark — graphite surfaces, raised controls and lighter accent pairs. */
 .dark {
-  --color-background: #121214;
-  --color-card: #1c1c1f;
-  --color-card-foreground: #e7e7e9;
-  --color-popover: #1c1c1f;
-  --color-popover-foreground: #e7e7e9;
-  --color-muted: #18181b;
-  --color-foreground: #e7e7e9;
-  --color-muted-foreground: #a1a1aa;
-  --color-subtle-foreground: #858590;
-  --color-border: #2a2a2e;
-  --color-border-strong: #3a3a40;
-  --color-input: #2a2a2e;
-  --color-ring: #8b5cf6;
-  --color-primary: #9a71f8;
-  --color-primary-foreground: #171322;
-  --color-primary-soft: #2a2440;
-  --color-primary-soft-foreground: #c4b5fd;
+  --color-background: #14151a;
+  --color-card: #1d2028;
+  --color-card-foreground: #f1f3f8;
+  --color-popover: #232733;
+  --color-popover-foreground: #f1f3f8;
+  --color-muted: #2a2e3a;
+  --color-foreground: #f1f3f8;
+  --color-muted-foreground: #aab2c1;
+  --color-subtle-foreground: #9aa4b6;
+  --color-inverse: #f1f3f8;
+  --color-inverse-foreground: #202331;
+  --color-border: #363c49;
+  --color-border-strong: #8d98ad;
+  --color-input: #727b8e;
+  --color-ring: #aa8cff;
+  --color-primary: #aa8cff;
+  --color-primary-foreground: #1d1433;
+  --color-primary-soft: #302744;
+  --color-primary-soft-foreground: #d0bcff;
   --color-accent: #2dd4bf;
   --color-accent-foreground: #042f2e;
   --color-accent-soft: #103a35;
   --color-accent-soft-foreground: #5eead4;
+  --color-destructive: #fb8795;
+  --color-destructive-foreground: #380d18;
+  --color-destructive-soft: #3b222b;
+  --color-destructive-soft-foreground: #ffb0ba;
+  --color-success: #72d3ab;
+  --color-success-foreground: #0e2d22;
+  --color-success-soft: #1e352d;
+  --color-success-soft-foreground: #96dfbd;
+  --color-warning: #efc16c;
+  --color-warning-foreground: #32220c;
+  --color-warning-soft: #3b3120;
+  --color-warning-soft-foreground: #f4d195;
+  --color-info: #8dbff2;
+  --color-info-foreground: #122b42;
+  --color-info-soft: #223246;
+  --color-info-soft-foreground: #b0d3f6;
 }
 
 /* Ambient surface treatments (dark-leaning; apply via className until the SDK Card `ambient` prop ships). */

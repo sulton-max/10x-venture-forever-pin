@@ -1,5 +1,11 @@
 import { SizePreset } from "@wow-two-beta/ui/foundation/utils";
-import { ToggleButton, ToggleButtonGroup, ToggleButtonGroupVariant, ToggleMode } from "@wow-two-beta/ui/presentation/actions";
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+  ToggleButtonGroupVariant,
+  ToggleButtonVariant,
+  ToggleMode,
+} from "@wow-two-beta/ui/presentation/actions";
 import { ColorPicker, Field, Select } from "@wow-two-beta/ui/presentation/forms";
 import { Accordion, AccordionType } from "@wow-two-beta/ui/presentation/display";
 import { Stack } from "@wow-two-beta/ui/presentation/layout";
@@ -78,7 +84,13 @@ export function DesignView({ form }: DesignViewProps) {
                         }}
                         aria-label="Background fill"
                       >
-                        <ToggleButton value="color" size={SizePreset.Sm} as="div" className="gap-2">
+                        <ToggleButton
+                          variant={ToggleButtonVariant.Soft}
+                          value="color"
+                          size={SizePreset.Sm}
+                          as="div"
+                          className="gap-2"
+                        >
                           <span
                             className={`inline-flex items-center${f.value.transparentBackground ? " pointer-events-none opacity-40" : ""}`}
                           >
@@ -92,7 +104,9 @@ export function DesignView({ form }: DesignViewProps) {
                           </span>
                           Color
                         </ToggleButton>
-                        <ToggleButton value="transparent" size={SizePreset.Sm}>Transparent</ToggleButton>
+                        <ToggleButton variant={ToggleButtonVariant.Soft} value="transparent" size={SizePreset.Sm}>
+                          Transparent
+                        </ToggleButton>
                       </ToggleButtonGroup>
                     </div>
                   </Stack>

@@ -5,6 +5,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   ToggleButtonGroupVariant,
+  ToggleButtonVariant,
   ToggleMode,
 } from "@wow-two-beta/ui/presentation/actions";
 import { Alert } from "@wow-two-beta/ui/presentation/feedback";
@@ -110,6 +111,7 @@ export function ContentView({ form, isEdit, existingCode }: ContentViewProps) {
                 {Object.values(ContentMode).map((option) => (
                   <ToggleButton
                     key={option}
+                    variant={ToggleButtonVariant.Soft}
                     value={option}
                     size={SizePreset.Sm}
                     isDisabled={isModeLocked && option !== ContentMode.Dynamic}

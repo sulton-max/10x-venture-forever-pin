@@ -6,6 +6,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   ToggleButtonGroupVariant,
+  ToggleButtonVariant,
   ToggleMode,
 } from "@wow-two-beta/ui/presentation/actions";
 import { Card, Heading, HeadingSize, Text } from "@wow-two-beta/ui/presentation/display";
@@ -173,8 +174,12 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
               onValueChange={(v) => v && setTab(v as CodeTab)}
               aria-label="Builder section"
             >
-              <ToggleButton value={CodeTab.Content} className="flex-1">Content</ToggleButton>
-              <ToggleButton value={CodeTab.Design} className="flex-1">Design</ToggleButton>
+              <ToggleButton variant={ToggleButtonVariant.Soft} value={CodeTab.Content} className="flex-1">
+                Content
+              </ToggleButton>
+              <ToggleButton variant={ToggleButtonVariant.Soft} value={CodeTab.Design} className="flex-1">
+                Design
+              </ToggleButton>
             </ToggleButtonGroup>
 
             {/* key={tab} re-mounts on switch so the fade-through re-fires; motion-safe respects reduced-motion. */}

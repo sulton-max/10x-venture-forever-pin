@@ -59,7 +59,7 @@ export function AppLayout() {
 
   return (
     <div className="app-shell flex min-h-screen flex-col bg-background text-foreground">
-      <header className="border-b border-border bg-background">
+      <header className="border-b border-border bg-card">
         <Container
           size={ContainerSize.Lg}
           className="flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6"

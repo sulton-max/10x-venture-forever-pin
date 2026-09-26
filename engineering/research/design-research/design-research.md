@@ -1,114 +1,101 @@
-# ForeverPin — design system (locked v1)
+# ForeverPin — design system
 
-*Last updated: 2026-06-24*
+*Last updated: 2026-09-26*
 
-> Source of truth for the product UI. Light + dark. Apply via Tailwind v4 `@theme` + `@wow-two-beta/ui` semantic tokens (`engineering/codebase/forever-pin.frontend-services/apps/web/src/bootstrap/index.css`). Map to SDK after a few screen iterations.
+> Current palette and accepted product frame. Earlier layout explorations remain reference material below.
 
-## Concept
+## Current direction
 
-- **Canvas → floating cards.** Lavender-gray page canvas; white cards float on it. Depth from the tint contrast, not heavy borders/shadows. (Ref: Visa/Behance soft-lavender bg.)
-- **Violet = brand. Teal = rationed pop.** Violet for identity + primary actions + condition chips. Teal *only* for emphasis: active rule, success, "most-scanned". Red = destructive only.
-- **Type:** Geist (UI) + Geist Mono (every short-link / hex / destination URL).
-- **QR tile stays white in both themes** — mirrors the user's fg/bg + the printed asset; never inverted by theme.
+- The owner accepted the typography, wrapping navigation, aligned gutters, and restrained elevation on September 26.
+- The owner delegated palette selection and application, with matching before/after screenshots.
+- Light mode uses a cool neutral canvas, white navigation/cards, and violet primary actions.
+- Dark mode uses graphite canvas/cards, raised controls, and lighter violet actions with dark text.
+- Structural dividers stay quiet; input outlines and keyboard focus remain distinct.
+- Geist stays the UI font; Geist Mono remains available for literal values.
+- QR artwork follows the saved code design; application colors do not recolor the rendered asset.
 
-## Palette — light
+## Semantic palette
 
-| token | hex | role |
+Values map directly to `--color-{name}` in
+[the app stylesheet](../../codebase/forever-pin.frontend-services/apps/web/src/bootstrap/index.css).
+
+| Token | Light | Dark |
 |---|---|---|
-| `canvas` | `#D9DDE8` | page background (Visa-ref tuned) |
-| `surface` | `#EBEEF4` | cards, inputs (soft tint, not pure white) |
-| `surface-sunken` | `#F1F2F8` | read-only/disabled fields, short-link |
-| `surface-subtle` | `#F8F8FC` | nested / hover rows |
-| `border` | `#E4E6F0` | default border on white |
-| `border-strong` | `#C7CAD9` | hover, secondary button |
-| `field-border` | `#E4E6F0` | inputs/selects (lightened to match the shape tiles) |
-| `text` | `#1C1D26` | ink / headings / values |
-| `label` | `#3F4152` | field labels |
-| `text-muted` | `#6E7188` | helper-strong, meta |
-| `text-subtle` | `#9B9FB5` | hints, placeholder, section labels |
-| `brand` | `#7C3AED` | primary fill, links |
-| `brand-hover` | `#6D28D9` | button hover (= current `--color-primary`) |
-| `brand-active` | `#5B21B6` | pressed |
-| `brand-tint` | `#EDE9FE` | selected bg, condition chips |
-| `brand-on-tint` | `#5B21B6` | text on tint |
-| `on-brand` | `#F5F3FF` | text on violet/teal fill |
-| `pop` | `#0D9488` | active / success accent |
-| `pop-tint` | `#CCFBF1` | active / success bg |
-| `pop-on-tint` | `#115E59` | text on pop-tint |
-| `off-bg` / `off-text` | `#F1F2F8` / `#6E7188` | inactive rule pill |
-| `warning` / `danger` / `info` | `#F59E0B` / `#EF4444` / `#3B82F6` | semantic (success reuses `pop`) |
+| `background` | `#f4f5f8` | `#14151a` |
+| `card` | `#ffffff` | `#1d2028` |
+| `card-foreground` | `#202331` | `#f1f3f8` |
+| `popover` | `#ffffff` | `#232733` |
+| `popover-foreground` | `#202331` | `#f1f3f8` |
+| `muted` | `#e9ebf1` | `#2a2e3a` |
+| `foreground` | `#202331` | `#f1f3f8` |
+| `muted-foreground` | `#586174` | `#aab2c1` |
+| `subtle-foreground` | `#626b7c` | `#9aa4b6` |
+| `inverse` | `#202331` | `#f1f3f8` |
+| `inverse-foreground` | `#f4f5f8` | `#202331` |
+| `border` | `#dce0e8` | `#363c49` |
+| `border-strong` | `#737e93` | `#8d98ad` |
+| `input` | `#7b8597` | `#727b8e` |
+| `ring` | `#7040d7` | `#aa8cff` |
+| `primary` | `#7040d7` | `#aa8cff` |
+| `primary-foreground` | `#ffffff` | `#1d1433` |
+| `primary-soft` | `#eee8fc` | `#302744` |
+| `primary-soft-foreground` | `#5730af` | `#d0bcff` |
+| `accent` | `#0f766e` | `#2dd4bf` |
+| `accent-foreground` | `#ffffff` | `#042f2e` |
+| `accent-soft` | `#ccfbf1` | `#103a35` |
+| `accent-soft-foreground` | `#115e59` | `#5eead4` |
+| `destructive` | `#b4233a` | `#fb8795` |
+| `destructive-foreground` | `#ffffff` | `#380d18` |
+| `destructive-soft` | `#fff0f2` | `#3b222b` |
+| `destructive-soft-foreground` | `#a21d33` | `#ffb0ba` |
+| `success` | `#167153` | `#72d3ab` |
+| `success-foreground` | `#ffffff` | `#0e2d22` |
+| `success-soft` | `#e7f5ed` | `#1e352d` |
+| `success-soft-foreground` | `#165c45` | `#96dfbd` |
+| `warning` | `#925500` | `#efc16c` |
+| `warning-foreground` | `#ffffff` | `#32220c` |
+| `warning-soft` | `#fff3d6` | `#3b3120` |
+| `warning-soft-foreground` | `#7a4900` | `#f4d195` |
+| `info` | `#2666a1` | `#8dbff2` |
+| `info-foreground` | `#ffffff` | `#122b42` |
+| `info-soft` | `#eaf2fc` | `#223246` |
+| `info-soft-foreground` | `#225782` | `#b0d3f6` |
 
-- **soft card bevel (light)** — `.surface-soft`: top-light inset `#EDF1F8` + soft bottom shadow `#D7DBE6` (Visa-ref); dark cards use the sheen instead.
-- **color mode** — SDK `ColorModeProvider` / `useColorMode` (`primitives/colorModeProvider`) toggles `.dark` on `<html>` + persists + follows OS; app has a header toggle (local mirror until the SDK bump).
+## Component mapping
 
-## Palette — dark (tone T3 + T4 — neutral, calm)
+- Navigation uses `bg-card`; public navigation uses `bg-card/95` with its existing blur.
+- Cards use `bg-card`; popovers and text inputs use `bg-popover`.
+- `border` separates structure; `input` identifies controls; `border-strong` emphasizes hover/open controls.
+- `ring` identifies keyboard focus. Severity roles have explicit solid and soft foreground pairs.
+- Segmented controls use the SDK's selected `background` pill over a `muted` track.
+- Inactive segmented labels use the supported soft variant for readable text, preserving selected behavior.
+- The installed React SDK `0.0.97` applies `read-only:bg-muted` to Select buttons too;
+  input-border contrast therefore covers both popover and muted surfaces.
+- Google sign-in remains provider-rendered; no iframe style overrides are applied.
+- Token semantics must be rechecked against Vue `0.0.7` during the pending framework migration.
 
-> Cyberpunk-avoidance: neutral charcoal surfaces (no violet cast) · chips neutral · **violet on the primary action only** · teal reduced to a **status dot**.
-> Divergence from light is intentional — light keeps violet/teal chip tints (reads clean on the lavender canvas); dark goes neutral (saturated chips glow → neon on near-black).
+## Accepted typography and frame
 
-| token | value | role |
-|---|---|---|
-| `canvas` | `#121214` | page bg — neutral charcoal |
-| `surface` | `#1C1C1F` | card base |
-| `surface-sunken` | `#18181B` | inputs, read-only fields |
-| `surface-subtle` | `#26262A` | ghost button + neutral chips |
-| `border` | `#2A2A2E` | default border |
-| `border-strong` | `#3A3A40` | hover, secondary, swatch ring |
-| `text` | `#E7E7E9` | body/values (`#F4F4F5` headings) |
-| `label` | `#9C9CA3` | field labels |
-| `text-muted` | `#A1A1AA` | meta |
-| `text-subtle` | `#6E6E76` | hints, section labels |
-| `brand` | `#8B5CF6` | primary action only |
-| `brand-editor` | `#A78BFA` | rule-editor active border |
-| `on-brand` | `#F5F3FF` | text on violet |
-| `chip` | `#26262A` / `#B6B6BC` | neutral chip bg / text (condition + status) |
-| `status-dot` | `#2DD4BF` on · `#52525B` off | rule status (chip stays neutral) |
-| `danger` | `#EF4444` | destructive only |
+- Product heading: Geist, 24px, weight600, line-height1.25, letter-spacing-0.02em.
+- Header and main share responsive gutters; account navigation wraps on narrow screens.
+- Existing builder controls, card geometry, field spacing, and routing behavior are preserved.
+- `.surface-soft` retains the accepted neutral elevation; color changes do not introduce colored shadows.
 
-QR (both themes): modules `#18181B` on tile `#FFFFFF` (= user fg/bg defaults).
+## Evidence and scope
 
-**Gradients** (dark only; light stays flat — the lavender canvas gives depth):
+- [Palette comparison](../../../../../system/sessions/frontend-conventions-sweep/foreverpin-palette-20260926/comparison.md)
+  contains matched light/dark desktop and light phone captures, plus design/focus/menu checks.
+- [Accepted frame comparison](../../../../../system/sessions/frontend-conventions-sweep/foreverpin-visual-20260926/comparison.md)
+  preserves the earlier typography, elevation, and overflow baseline.
+- [Frontend audit](../../architecture/frontend-adoption.md) owns remaining behavior and Vue migration work.
+- These palette checks do not establish complete accessibility or completion of `v0.10`.
 
-- working surfaces (edit form · tables · settings) — neutral whisper sheen `linear-gradient(180deg,#202023,#1A1A1D 55%)` + `inset 0 1px 0 rgba(255,255,255,.04)`.
-- expressive surfaces (login · empty · upgrade · hero) — violet corner-glow `radial-gradient(135% 135% at 100% 112%, rgba(139,92,246,.16), transparent 52%)` over `#1B1A24`.
-- alpha ≤ 16%; dense lists/tables get the sheen at most. never stack the glow under saturated chips (that was the cyberpunk failure).
+---
 
-## Semantic mapping → `@wow-two-beta/ui` (Tailwind v4 `@theme`)
+## Historical exploration — June 2026
 
-Override in `index.css`. ✓ = var confirmed present in lib; ? = standard shadcn-style name, verify against `@wow-two-beta/ui@0.0.60` `styles.css` before applying.
-
-| lib var | light | dark | note |
-|---|---|---|---|
-| `--color-background` ? | `#DCDFEA` | `#141318` | the lavender canvas move |
-| `--color-card` ? | `#FFFFFF` | `#1E1D27` | floating surface |
-| `--color-muted` ✓ | `#F1F2F8` | `#191822` | sunken fields |
-| `--color-foreground` ✓ | `#1C1D26` | `#E8E8F0` | |
-| `--color-muted-foreground` ✓ | `#6E7188` | `#9A9BB0` | |
-| `--color-border` ✓ | `#E4E6F0` | `#2C2B38` | |
-| `--color-input` ? | `#DCDFEA` | `#2C2B38` | field border |
-| `--color-ring` ✓ | `#8B5CF6` | `#8B5CF6` | focus ring (already set) |
-| `--color-primary` ✓ | `#7C3AED` | `#8B5CF6` | **bump from current `#6D28D9` → `#7C3AED`; `#6D28D9` becomes hover** |
-| `--color-primary-foreground` ✓ | `#F5F3FF` | `#F5F3FF` | |
-| `--color-primary-soft` ✓ | `#EDE9FE` | `#2A2440` | already set (light) |
-| `--color-primary-soft-foreground` ✓ | `#5B21B6` | `#C4B5FD` | already set (light) |
-| `--color-pop` (add) | `#0D9488` | `#2DD4BF` | no native teal token — add custom |
-| `--color-pop-soft` (add) | `#CCFBF1` | `#103A35` | active/success bg |
-| `--color-pop-soft-foreground` (add) | `#115E59` | `#5EEAD4` | active/success text |
-| `--font-sans` / `--font-mono` | Geist / Geist Mono | — | |
-
-> **Dark mapping** — dark column above is pre-tone; for dark use *Palette — dark (T3+T4)*: `background #121214 · card #1C1C1F · input #18181B · border #2A2A2E · foreground #E7E7E9 · primary #8B5CF6` (action only). `--color-pop*` in dark = status-dot only, no tint fill.
-
-## Type
-
-- **Sans** Geist · **Mono** Geist Mono. Weights **400 / 500 only**.
-- Scale: `h1` 23 / 500 / `-0.015em` · section-label 11 / 500 / subtle · field-label 12 / 400 / label · helper 11 / subtle · body+value 13 · mono for all links/hex/URLs.
-
-## Layout & shape
-
-- Two-pane grid `1.5fr / 1fr`, gap `14`; **preview pane sticky** (`top:12`); **stacks single-column < 720px**.
-- Padding: canvas `20`, card `20`; field gap `13`; section divider `0.5px border` + `16` margin.
-- Radii: card `16` · input/select `9` · button `10` · condition chip `7` · state pill `999` · color swatch `5`.
-- Depth: hairline border + `box-shadow: 0 1px 2px rgba(28,29,38,.04)`. **No heavy/colored shadows.**
+The following records earlier layout ideas and SDK assumptions. It is not current implementation guidance.
+The current palette, accepted frame, frontend audit, and active version track above take precedence.
 
 ## Builder layout (v0.6 — grouped tabs + accordion)
 

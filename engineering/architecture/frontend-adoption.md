@@ -131,7 +131,7 @@ The first comparison is limited to `src/bootstrap/index.css` and `src/bootstrap/
 4. **Controls:** preserve current grouped design density; align label/value baselines and control heights. Show the selected shape name alongside glyph groups when needed. Use wrapping tile grids and a single-column Eyes fallback at narrow widths. Replace nested interactive toggle/swatch composition with independent accessible controls.
 5. **Product state:** header has a compact account menu on narrow screens, dashboard retains visible results during background refresh, and save/preview/error states occupy stable reserved space. This changes clarity, not the product's visual identity.
 
-Tradeoff: this candidate prioritizes predictable editing and readable contrast over the current extremely soft, low-contrast appearance. The baseline remains available for comparison; the user chooses before this becomes the locked design.
+Tradeoff: this candidate prioritizes predictable editing and readable contrast over the current extremely soft, low-contrast appearance. The baseline remains available for comparison; the owner accepted the captured frame on September 26.
 
 ## Port boundary
 
@@ -191,7 +191,7 @@ Only `tests/domain/codes/content/operations.test.ts` exists in the inspected fro
 ## Captured comparison — 2026-09-26
 
 The workspace relocation is committed as `132e14c`. The application is still React; Vue implementation is pending.
-The uncommitted two-file trial changes `AppLayout.tsx` and `index.css` only.
+The owner accepted the two-file trial in `AppLayout.tsx` and `index.css`; commit `59c708b` records it.
 It preserves builder controls and behavior while improving contrast, shared gutters, header wrapping, and elevation.
 
 - Root typecheck and production build pass.
@@ -201,5 +201,7 @@ It preserves builder controls and behavior while improving contrast, shared gutt
 - These checks establish this visual candidate, not full frontend accessibility or Vue migration acceptance.
 - Before/after captures and evidence: [comparison](../../../../../system/sessions/frontend-conventions-sweep/foreverpin-visual-20260926/comparison.md).
 
-The owner's visual choice remains open. Existing `v0.11` feature tasks remain in that track;
+The owner accepted the visual candidate and delegated the subsequent palette refinement.
+The current palette and matched captures are recorded in the [design spec](../research/design-research/design-research.md).
+Existing `v0.11` feature tasks remain in that track;
 this analysis does not silently pull their implementation back into `v0.10`.
