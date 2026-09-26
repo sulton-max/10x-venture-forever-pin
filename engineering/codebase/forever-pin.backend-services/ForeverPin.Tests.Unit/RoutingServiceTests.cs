@@ -1,5 +1,6 @@
 using ForeverPin.Common.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Content.Phone.Models;
+using ForeverPin.Domain.Codes.Content.Url.Models;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Rules.Models;
@@ -13,6 +14,22 @@ namespace ForeverPin.Tests.Unit;
 public class RoutingServiceTests
 {
     private readonly RoutingService _routingService = new();
+
+    [Theory]
+    [InlineData("https://example.com/path", true)]
+    [InlineData("http://example.com/path", true)]
+    [InlineData("javascript:alert(1)", false)]
+    [InlineData("/relative", false)]
+    [InlineData("", false)]
+    public void Dynamic_url_resolves_only_absolute_http_destinations(string destination, bool redirects)
+    {
+        var code = Code(new DefaultRuleValueObject { Content = new UrlContentValueObject { Url = destination } });
+        var result = _routingService.Evaluate(code, Context(DeviceType.Desktop));
+        if (redirects)
+            Assert.Equal(destination, Assert.IsType<RoutingResult.Redirect>(result).Destination);
+        else
+            Assert.IsType<RoutingResult.NotFound>(result);
+    }
 
     private static CodeEntity Code(params CodeRuleValueObject[] rules) => new()
     {

@@ -8,7 +8,6 @@ using WoW.Two.Sdk.Backend.Beta.Testing.Web;
 namespace ForeverPin.Tests.E2E.Tests;
 
 /// <summary>A code created or edited on the Api host resolves on the Redirect host's next scan.</summary>
-/// <remarks>Destinations ride <c>text</c> rules — <c>url</c> content encodes to null and would 404 on scan.</remarks>
 [Collection(AppCollection.Name)]
 public sealed class RedirectWedgeTests(AppFixture fixture) : E2EBase(fixture)
 {
@@ -27,11 +26,11 @@ public sealed class RedirectWedgeTests(AppFixture fixture) : E2EBase(fixture)
         name,
         barcodeFormat = "QrCode",
         mode = "dynamic",
-        contentType = "text",
+        contentType = "url",
         rules = new[]
         {
-            CodeRequests.ConditionalRule("Device", "Ios", new { type = "text", text = iosDestination }),
-            CodeRequests.DefaultRule(new { type = "text", text = fallback }),
+            CodeRequests.ConditionalRule("Device", "Ios", new { type = "url", url = iosDestination }),
+            CodeRequests.DefaultRule(new { type = "url", url = fallback }),
         },
         style = CodeRequests.Style(),
     };

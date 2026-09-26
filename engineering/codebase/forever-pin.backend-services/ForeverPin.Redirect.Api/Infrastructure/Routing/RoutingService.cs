@@ -1,4 +1,5 @@
 using ForeverPin.Domain.Codes.Content;
+using ForeverPin.Domain.Codes.Content.Url.Models;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Rules.Models;
@@ -45,10 +46,14 @@ public sealed class RoutingService : IRoutingService
             : Resolve(target.Content, target.Order);
     }
 
-    // Nonempty payloads become redirect destinations; this path does not check URL schemes.
+    // A dynamic URL has no static payload encoder; its destination is stored directly.
     private static RoutingResult Resolve(CodeContentValueObject content, int? matchedRuleOrder)
     {
-        var destination = content.Encode();
+        var destination = content is UrlContentValueObject url
+            ? Uri.TryCreate(url.Url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https"
+                ? url.Url
+                : null
+            : content.Encode();
 
         return string.IsNullOrWhiteSpace(destination)
             ? new RoutingResult.NotFound()
