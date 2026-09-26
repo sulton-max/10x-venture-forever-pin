@@ -22,6 +22,8 @@ services:
     environment:
       DB_CONNECTION: "Host=database;Database=foreverpin;Username=foreverpin;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}"
       REDIRECT_BASE_URL: "http://localhost:${REDIRECT_PORT:-17023}"
+      # Production-shaped host filtering: loopback probes need localhost; smoke calls use 127.0.0.1.
+      AllowedHosts: "localhost;127.0.0.1"
     ports:
       - "127.0.0.1:${MANAGEMENT_PORT:-17021}:8080"
     volumes:
@@ -38,6 +40,7 @@ services:
       target: redirect
     environment:
       DB_CONNECTION: "Host=database;Database=foreverpin;Username=foreverpin;Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}"
+      AllowedHosts: "localhost;127.0.0.1"
     ports:
       - "127.0.0.1:${REDIRECT_PORT:-17023}:8080"
     depends_on:

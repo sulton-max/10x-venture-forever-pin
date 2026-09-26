@@ -1,0 +1,116 @@
+name: Verify deployment images
+on:
+  workflow_call:
+    inputs:
+      publish:
+        type: boolean
+        default: false
+      release_tag:
+        type: string
+        default: ''
+    outputs:
+      management_digest:
+        value: ${{ jobs.verify.outputs.management_digest }}
+      redirect_digest:
+        value: ${{ jobs.verify.outputs.redirect_digest }}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      management_digest: ${{ steps.management.outputs.digest }}
+      redirect_digest: ${{ steps.redirect.outputs.digest }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Validate release source
+        if: inputs.publish
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$ ]]
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.11.0'
+      - run: npm install --global pnpm@10.33.2
+      - run: pnpm install --frozen-lockfile
+        working-directory: engineering/codebase/forever-pin.frontend-services
+      - run: pnpm test && pnpm build
+        working-directory: engineering/codebase/forever-pin.frontend-services
+      - run: dotnet test engineering/codebase/forever-pin.backend-services/ForeverPin.BackendServices.slnx -p:BuildSpa=false -m:1 --nologo
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        if: inputs.publish
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve image names
+        id: names
+        env:
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          echo "image=ghcr.io/${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+          echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        id: management
+        with:
+          context: engineering/codebase
+          file: engineering/deployment/Dockerfile
+          target: management
+          platforms: linux/amd64
+          load: true
+          push: ${{ inputs.publish }}
+          tags: ${{ inputs.publish && format('{0}:{1}', steps.names.outputs.image, steps.names.outputs.tag) || 'foreverpin-management:local' }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        id: redirect
+        with:
+          context: engineering/codebase
+          file: engineering/deployment/Dockerfile
+          target: redirect
+          platforms: linux/amd64
+          load: true
+          push: ${{ inputs.publish }}
+          tags: ${{ inputs.publish && format('{0}-redirect:{1}', steps.names.outputs.image, steps.names.outputs.tag) || 'foreverpin-redirect:local' }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+      - name: Alias published images for the local acceptance stack
+        if: inputs.publish
+        env:
+          IMAGE: ${{ steps.names.outputs.image }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          docker tag "$IMAGE:$RELEASE_TAG" foreverpin-management:local
+          docker tag "$IMAGE-redirect:$RELEASE_TAG" foreverpin-redirect:local
+      - name: Exercise images and persistence
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, pathlib, secrets
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'foreverpin.env'
+          path.write_text('POSTGRES_PASSWORD=' + secrets.token_hex(24) + '\n')
+          path.chmod(0o600)
+          PY
+          compose=(docker compose --env-file "$RUNNER_TEMP/foreverpin.env" -p foreverpin-ci -f engineering/deployment/compose.local.yml)
+          "${compose[@]}" up -d --no-build --wait --wait-timeout 180
+          smoke=(python3 engineering/deployment/smoke.py --management-url http://127.0.0.1:17021 --redirect-url http://127.0.0.1:17023 --state-file "$RUNNER_TEMP/foreverpin-smoke.json")
+          "${smoke[@]}" --create
+          "${compose[@]}" up -d --no-build --force-recreate --wait --wait-timeout 180 management redirect
+          "${smoke[@]}"
+      - name: Stop disposable stack
+        if: always()
+        run: |
+          if test -f "$RUNNER_TEMP/foreverpin.env"; then
+            docker compose --env-file "$RUNNER_TEMP/foreverpin.env" -p foreverpin-ci -f engineering/deployment/compose.local.yml down --volumes
+          fi

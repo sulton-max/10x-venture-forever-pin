@@ -12,11 +12,15 @@ WORKDIR /src
 COPY forever-pin.backend-services/ ./
 
 FROM source AS management-build
+ARG TARGETARCH
 COPY --from=spa /src/forever-pin.backend-services/ForeverPin.Api/wwwroot ./ForeverPin.Api/wwwroot
-RUN dotnet publish ForeverPin.Api/ForeverPin.Api.csproj -c Release -o /app -p:BuildSpa=false
+RUN case "$TARGETARCH" in amd64) rid=linux-x64 ;; arm64) rid=linux-arm64 ;; *) exit 1 ;; esac \
+    && dotnet publish ForeverPin.Api/ForeverPin.Api.csproj -c Release -o /app -r "$rid" --self-contained false -p:BuildSpa=false
 
 FROM source AS redirect-build
-RUN dotnet publish ForeverPin.Redirect.Api/ForeverPin.Redirect.Api.csproj -c Release -o /app
+ARG TARGETARCH
+RUN case "$TARGETARCH" in amd64) rid=linux-x64 ;; arm64) rid=linux-arm64 ;; *) exit 1 ;; esac \
+    && dotnet publish ForeverPin.Redirect.Api/ForeverPin.Redirect.Api.csproj -c Release -o /app -r "$rid" --self-contained false
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends curl libfontconfig1 \

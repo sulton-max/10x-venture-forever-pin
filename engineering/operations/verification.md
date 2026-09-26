@@ -4,19 +4,20 @@
 
 ## Executed
 
-Command: `bash engineering/scripts/verify.sh all` under native execution approval.
+Baseline: `bash engineering/scripts/verify.sh all` under native execution approval.
+The deployment lane reran all backend suites after adding five URL-routing cases; the table includes that result.
 
 | Check | Result |
 |---|---|
 | Frontend TypeScript | Passed |
 | Frontend unit tests | 4 passed |
 | Frontend production build | Passed |
-| Backend unit tests | 119 passed |
+| Backend unit tests | 124 passed |
 | Backend integration tests | 18 passed |
 | Backend migration tests | 10 passed |
 | Backend HTTP E2E tests | 61 passed |
 
-Backend total: 208 passed, zero failed or skipped. The suites used the renamed assemblies.
+Backend total: 213 passed, zero failed or skipped. The suites used the renamed assemblies.
 Integration and HTTP tests used disposable PostgreSQL containers.
 
 ---
@@ -31,7 +32,7 @@ Integration and HTTP tests used disposable PostgreSQL containers.
 - `/api/runtime-config` returned the configured public redirect origin.
 - The database and data-protection key survived management-container replacement.
 - The release generator produced valid JSON and a valid Compose model.
-- The disposable containers, network, database, and key volumes were removed.
+- Earlier verifier resources were removed; the separate DryDock pilot retains its named test volumes.
 
 ---
 
@@ -40,7 +41,8 @@ Integration and HTTP tests used disposable PostgreSQL containers.
 - Dependency restore reports vulnerability warnings, including transitive SDK dependencies.
 - The frontend bundle reports a large-chunk warning.
 - Container publishing reports the same dependency vulnerability warnings.
-- The GitHub release workflow is source-reviewed but has not run remotely.
+- The main/tag workflows pass `actionlint 1.7.12`; hosted execution remains unverified.
+- Linux-specific ARM images passed native SVG, redirect and persistence checks; hosted x64 remains unverified.
 - Google and Stripe are faked in automated E2E.
 - Real OAuth, real Stripe test mode, production deployment, and physical print/scanner checks remain unverified.
 - Automated results do not close the owner's manual release checks.
