@@ -5,7 +5,7 @@ import { ColorTone, SizePreset } from "@wow-two-beta/ui/foundation/utils";
 import { Button, ButtonVariant } from "@wow-two-beta/ui/presentation/actions";
 import { Text } from "@wow-two-beta/ui/presentation/display";
 import { Spinner } from "@wow-two-beta/ui/presentation/feedback";
-import { Container, ContainerSize, HStack, Navbar } from "@wow-two-beta/ui/presentation/layout";
+import { Container, ContainerSize, HStack } from "@wow-two-beta/ui/presentation/layout";
 
 import { UserKind, type Me } from "@/domain/identity";
 import { getMe, logout } from "@/integration/identity";
@@ -58,25 +58,28 @@ export function AppLayout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      {/* Navbar's inner Container is `px-4` vs `<main>`'s `px-6` — not overridable (see GAPS). */}
-      <Navbar
-        height="lg"
-        sticky={false}
-        bordered
-        className="bg-background"
-        start={
-          <Link to="/" aria-label="ForeverPin home">
+    <div className="app-shell flex min-h-screen flex-col bg-background text-foreground">
+      <header className="border-b border-border bg-background">
+        <Container
+          size={ContainerSize.Lg}
+          className="flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6"
+        >
+          <Link to="/" aria-label="ForeverPin home" className="shrink-0">
             <Logo />
           </Link>
-        }
-        end={
-          <HStack as="nav" align="center" gap="5" className="text-sm">
+          <HStack
+            as="nav"
+            aria-label="Account navigation"
+            align="center"
+            wrap="wrap"
+            gap="3"
+            className="min-w-0 flex-1 basis-full text-sm sm:basis-auto sm:justify-end"
+          >
             <ColorModeToggle />
             {status === Status.Ready && (
               <Link
                 to="/app/billing"
-                className="text-muted-foreground transition-colors hover:text-foreground"
+                className="whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground"
               >
                 Billing
               </Link>
@@ -94,7 +97,13 @@ export function AppLayout() {
             )}
             {me?.kind === UserKind.User && me.user && (
               <>
-                <Text as="span" size={SizePreset.Sm} color="muted">
+                <Text
+                  as="span"
+                  size={SizePreset.Sm}
+                  color="muted"
+                  className="min-w-0 max-w-full truncate sm:max-w-48"
+                  title={me.user.name}
+                >
                   {me.user.name}
                 </Text>
                 <Button tone={ColorTone.Neutral} variant={ButtonVariant.Outline} onClick={handleSignOut}>
@@ -102,14 +111,14 @@ export function AppLayout() {
                 </Button>
               </>
             )}
-            <Link to="/" className="text-muted-foreground transition-colors hover:text-foreground">
+            <Link to="/" className="whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground">
               ← Back to site
             </Link>
           </HStack>
-        }
-      />
+        </Container>
+      </header>
 
-      <Container as="main" size={ContainerSize.Lg} className="flex-1 px-6 py-8">
+      <Container as="main" size={ContainerSize.Lg} className="min-w-0 flex-1 px-4 py-6 sm:px-6 sm:py-8">
         {status === Status.Checking && (
           <div className="flex min-h-[60vh] items-center justify-center">
             <Spinner size={SizePreset.Lg} label="Loading" />

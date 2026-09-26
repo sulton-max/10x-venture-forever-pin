@@ -5,20 +5,20 @@
    Path is relative to THIS file — from bootstrap/ that's ../../ (bootstrap → src → root). */
 @source "../../node_modules/@wow-two-beta/ui/dist";
 
-/* ForeverPin theme — the locked design system over @wow-two-beta/ui.
-   Source of truth: engineering/research/design-research/design-research.md.
-   Light @theme defaults + .dark overrides. `accent` (teal "pop") is app-defined here until the
-   first-class SDK token ships in a published bump. */
+/* ForeverPin comparison candidate over @wow-two-beta/ui.
+   Preserve the lavender/violet identity with clearer text and quieter elevation.
+   Light @theme defaults + .dark overrides; screenshots compare this with the captured baseline. */
 @theme {
   /* surfaces — light (lavender canvas → soft tinted cards; tuned to the Visa ref) */
   --color-background: #d9dde8;
   --color-card: #ebeef4;
+  --color-card-foreground: #1c1d26;
   --color-popover: #ebeef4;
   --color-popover-foreground: #1c1d26;
   --color-muted: #f1f2f8;
   --color-foreground: #1c1d26;
-  --color-muted-foreground: #6e7188;
-  --color-subtle-foreground: #9b9fb5;
+  --color-muted-foreground: #54596f;
+  --color-subtle-foreground: #5b5f73;
   --color-border: #e4e6f0;
   --color-border-strong: #c7cad9;
   --color-input: #e4e6f0;
@@ -29,7 +29,7 @@
   --color-primary-soft: #ede9fe;
   --color-primary-soft-foreground: #5b21b6;
   /* accent — teal pop (rationed: active/success/highlights) */
-  --color-accent: #0d9488;
+  --color-accent: #0f766e;
   --color-accent-foreground: #ffffff;
   --color-accent-soft: #ccfbf1;
   --color-accent-soft-foreground: #115e59;
@@ -42,20 +42,23 @@
 .dark {
   --color-background: #121214;
   --color-card: #1c1c1f;
+  --color-card-foreground: #e7e7e9;
   --color-popover: #1c1c1f;
   --color-popover-foreground: #e7e7e9;
   --color-muted: #18181b;
   --color-foreground: #e7e7e9;
   --color-muted-foreground: #a1a1aa;
-  --color-subtle-foreground: #6e6e76;
+  --color-subtle-foreground: #858590;
   --color-border: #2a2a2e;
   --color-border-strong: #3a3a40;
   --color-input: #2a2a2e;
   --color-ring: #8b5cf6;
-  --color-primary: #8b5cf6;
+  --color-primary: #9a71f8;
+  --color-primary-foreground: #171322;
   --color-primary-soft: #2a2440;
   --color-primary-soft-foreground: #c4b5fd;
   --color-accent: #2dd4bf;
+  --color-accent-foreground: #042f2e;
   --color-accent-soft: #103a35;
   --color-accent-soft-foreground: #5eead4;
 }
@@ -67,10 +70,21 @@
 /* Geist as the app's default sans (mono available via the `font-mono` utility / --font-mono). */
 body { font-family: var(--font-sans); }
 
-/* Soft card bevel (light) — tinted top-light inset + soft bottom shadow, tuned to the Visa ref.
-   Pair with Card `variant="flat"` so the SDK border/shadow doesn't double up. Dark cards use the sheen. */
-.surface-soft { box-shadow: inset 0 1px 0 0 #edf1f8, 0 8px 22px -10px #d7dbe6, 0 2px 6px -3px #d7dbe6; }
-.dark .surface-soft { box-shadow: none; }
+/* Product surfaces use one neutral elevation treatment in each mode. */
+.surface-soft {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 1px 2px rgb(28 29 38 / 0.04), 0 6px 18px rgb(28 29 38 / 0.04);
+}
+.dark .surface-soft {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.035), 0 1px 2px rgb(0 0 0 / 0.12);
+}
+
+/* Keep the product's heading scale separate from marketing display typography. */
+.app-shell main h1 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
 
 /* Blog article typography. Authored posts wrap their body in <article class="prose"> and use plain
    HTML elements; these rules give them rhythm using the lib's semantic color tokens (so they track
