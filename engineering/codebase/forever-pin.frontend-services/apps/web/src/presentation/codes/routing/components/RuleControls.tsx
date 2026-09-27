@@ -160,6 +160,15 @@ export function RuleControls({ form, contentType }: RuleControlsProps) {
                             />
                           )}
                         </rows.Field>
+                        {rule.condition === RuleConditionType.Country && (
+                          <p className="text-xs text-muted-foreground sm:col-span-2">
+                            Scans are located with{" "}
+                            <a href="https://db-ip.com" className="underline hover:text-foreground">
+                              IP Geolocation by DB-IP
+                            </a>
+                            .
+                          </p>
+                        )}
                       </div>
                     )}
 

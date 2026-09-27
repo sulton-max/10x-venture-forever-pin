@@ -40,6 +40,10 @@ export function MarketingFooter() {
         <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
           <span>© {year} ForeverPin. Your codes, forever.</span>
           <span>Cancel, export, and delete everything — anytime.</span>
+          {/* DB-IP Lite data is licensed CC BY 4.0; country routing requires this attribution. */}
+          <a href="https://db-ip.com" className="transition-colors hover:text-foreground">
+            IP Geolocation by DB-IP
+          </a>
         </div>
       </Container>
     </footer>
