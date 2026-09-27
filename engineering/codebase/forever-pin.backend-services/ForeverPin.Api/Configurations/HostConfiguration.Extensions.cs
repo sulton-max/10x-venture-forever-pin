@@ -26,6 +26,9 @@ using WoW.Two.Sdk.Backend.Beta.Identity.Guest;
 using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google;
 using WoW.Two.Sdk.Backend.Beta.Mediator;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Validation;
+using WoW.Two.Sdk.Backend.Beta.Meta;
+using WoW.Two.Sdk.Backend.Beta.Observability.HealthChecks;
+using WoW.Two.Sdk.Backend.Beta.Web.DataProtection;
 using WoW.Two.Sdk.Backend.Beta.Web.ExceptionHandling;
 using WoW.Two.Sdk.Backend.Beta.Web.Json;
 
@@ -68,10 +71,25 @@ public static partial class HostConfiguration
     }
 
 
-    /// <summary>Loads and registers the application settings.</summary>
+    /// <summary>Trusts forwarded headers from the configured ingress addresses and networks, besides loopback.</summary>
+    private static void TrustDeploymentProxies(this ApiDefaultsOptions options, IConfiguration configuration)
+    {
+        foreach (var proxy in configuration.GetSection("Deployment:TrustedProxies").Get<string[]>() ?? [])
+            options.TrustedProxies.Add(proxy);
+        foreach (var network in configuration.GetSection("Deployment:TrustedNetworks").Get<string[]>() ?? [])
+            options.TrustedNetworks.Add(network);
+    }
+
+    /// <summary>Registers persistent cookie keys, the database readiness probe and the application settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
     {
-        builder.AddDeploymentHosting();
+        // Keys outlive container replacement, so guest capabilities and sign-ins stay valid; read lazily for test hosts.
+        builder.Services.AddPersistentDataProtection(options =>
+        {
+            options.ApplicationName = "ForeverPin";
+            options.KeyDirectory = builder.Configuration["DataProtection:KeyPath"];
+        });
+        builder.Services.AddHealthChecks().AddDatabaseReadinessCheck<AppDbContext>();
         builder.Services.AddValidatedSettings<ApiSettings>(builder.Configuration, nameof(ApiSettings),
             options => options.Validate(settings => IsHttpUrl(settings.RedirectBaseUrl),
                 "ApiSettings.RedirectBaseUrl must be an absolute HTTP(S) URL."));

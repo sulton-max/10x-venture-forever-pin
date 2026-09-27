@@ -2,6 +2,7 @@ using System.Net;
 using AwesomeAssertions;
 using ForeverPin.Tests.E2E.Harness;
 using ForeverPin.Tests.E2E.Support;
+using Microsoft.AspNetCore.Http;
 using WoW.Two.Sdk.Backend.Beta.Testing;
 using WoW.Two.Sdk.Backend.Beta.Testing.Web;
 
@@ -93,6 +94,38 @@ public sealed class RedirectWedgeTests(AppFixture fixture) : E2EBase(fixture)
         var second = await ScanAsync(code.Slug!, IosUserAgent);
         second.StatusCode.Should().Be(HttpStatusCode.Found);
         second.Headers.Location!.ToString().Should().Be(newDestination);
+    }
+
+    [Fact]
+    public async Task Scan_FromALocatedClient_RedirectsByCountry()
+    {
+        const string australia = "https://example.com.au/menu";
+        var owner = await CreateGuestClientAsync();
+        var code = await (await owner.Client.PostJsonAsync("/api/codes", new
+        {
+            name = "Country menu",
+            barcodeFormat = "QrCode",
+            mode = "dynamic",
+            contentType = "url",
+            rules = new[]
+            {
+                CodeRequests.ConditionalRule("Country", "AU", new { type = "url", url = australia }),
+                CodeRequests.DefaultRule(new { type = "url", url = FallbackUrl }),
+            },
+            style = CodeRequests.Style(),
+        })).ReadEnvelopeAsync<CodeDtoModel>();
+
+        var located = await Fixture.RedirectHost.Server.SendAsync(context =>
+        {
+            context.Request.Method = HttpMethods.Get;
+            context.Request.Path = $"/{code.Slug}";
+            context.Connection.RemoteIpAddress = FakeIpLocationBroker.AustralianClient;
+        });
+        var unlocated = await ScanAsync(code.Slug!, DesktopUserAgent);
+
+        located.Response.StatusCode.Should().Be(StatusCodes.Status302Found);
+        located.Response.Headers.Location.ToString().Should().Be(australia);
+        unlocated.Headers.Location.Should().Be(new Uri(FallbackUrl));
     }
 
     private async Task<HttpResponseMessage> ScanAsync(string slug, string userAgent)

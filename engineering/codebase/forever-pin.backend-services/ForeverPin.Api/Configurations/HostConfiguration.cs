@@ -19,6 +19,7 @@ public static partial class HostConfiguration
             o.ServiceName = "forever-pin-api";
             o.EnableOutputCache = false;
             o.EnableRateLimiting = false;
+            o.TrustDeploymentProxies(builder.Configuration);
 
             // Register application validators through the SDK adapter.
             o.ValidatorAssemblies.Add(typeof(ForeverPin.Application.ApplicationAssembly).Assembly);

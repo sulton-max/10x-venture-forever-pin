@@ -2,14 +2,15 @@ using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Redirect.Api.Application.Analytics.Models;
 using Microsoft.EntityFrameworkCore;
+using WoW.Two.Sdk.Backend.Beta.Jobs.Batches;
 
 namespace ForeverPin.Redirect.Api.Infrastructure.Analytics;
 
 /// <summary>Commits a scan batch and every affected counter in one database transaction.</summary>
-public sealed class ScanBatchWriterService(AppDbContext db)
+public sealed class ScanBatchHandler(AppDbContext db) : IBatchHandler<ScanRecordModel>
 {
     /// <summary>Persists all records and their counter increments atomically.</summary>
-    public async Task WriteAsync(IReadOnlyList<ScanRecordModel> records, CancellationToken ct)
+    public async Task HandleAsync(IReadOnlyList<ScanRecordModel> records, CancellationToken ct)
     {
         if (records.Count == 0)
             return;

@@ -1,4 +1,3 @@
-using ForeverPin.Redirect.Api.Infrastructure.Analytics.BackgroundServices;
 using ForeverPin.Application.Codes.Core.Commands;
 using ForeverPin.Application.Codes.Core.Enums;
 using ForeverPin.Application.Codes.Core.Models;
@@ -19,11 +18,13 @@ using ForeverPin.Redirect.Api.Infrastructure.Analytics;
 using ForeverPin.Tests.Integration.Harness;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Hosting;
 using Npgsql;
 using WoW.Two.Sdk.Backend.Beta.Codes.Models.Style;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
+using WoW.Two.Sdk.Backend.Beta.Jobs.Batches;
 
 namespace ForeverPin.Tests.Integration;
 
@@ -76,7 +77,7 @@ public sealed class DataAtomicityTests(ForeverPinTestDb db) : RepositoryTestBase
 
         await using var downgrade = NewContext();
         await using var transaction = await downgrade.Database.BeginTransactionAsync();
-        await downgrade.AcquireOwnerLocksAsync([owner], default);
+        await downgrade.Database.AcquireTransactionLocksAsync("owner", [owner], default);
         var subscription = await downgrade.Subscriptions.SingleAsync(value => value.UserId == owner);
         subscription.Plan = Plan.Free;
         await downgrade.SaveChangesAsync();
@@ -247,7 +248,7 @@ public sealed class DataAtomicityTests(ForeverPinTestDb db) : RepositoryTestBase
         await using (var context = NewContext())
         {
             var exception = await Assert.ThrowsAsync<PostgresException>(() =>
-                new ScanBatchWriterService(context).WriteAsync([NewScan(first.Id), NewScan(overflowing.Id)], default));
+                new ScanBatchHandler(context).HandleAsync([NewScan(first.Id), NewScan(overflowing.Id)], default));
             Assert.Equal(PostgresErrorCodes.NumericValueOutOfRange, exception.SqlState);
         }
 
@@ -264,40 +265,25 @@ public sealed class DataAtomicityTests(ForeverPinTestDb db) : RepositoryTestBase
         await using (var seed = NewContext())
             await new CodeRepository(seed).AddAsync(code, default);
 
-        var services = new ServiceCollection();
+        var services = new ServiceCollection().AddLogging();
         services.AddScoped(_ => NewContext());
-        services.AddScoped<ScanBatchWriterService>();
+        services.AddBatchPipeline<ScanRecordModel, ScanBatchHandler>(options => options.Name = "scans");
         await using var provider = services.BuildServiceProvider();
-        var recorder = new ChannelScanRecorder(NullLogger<ChannelScanRecorder>.Instance);
-        using var worker = new ScanFlushBackgroundService(
-            recorder, provider.GetRequiredService<IServiceScopeFactory>(),
-            NullLogger<ScanFlushBackgroundService>.Instance);
+        var pipeline = provider.GetRequiredService<BoundedBatchPipeline<ScanRecordModel>>();
+        var worker = provider.GetRequiredService<IHostedService>();
         for (var i = 0; i < 250; i++)
-            recorder.Enqueue(NewScan(code.Id));
+            Assert.True(pipeline.TryWrite(NewScan(code.Id)));
 
         await worker.StartAsync(default);
         using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(15));
         await worker.StopAsync(budget.Token);
 
-        Assert.Equal(250, recorder.PersistedCount);
-        Assert.Equal(0, recorder.FailedCount);
-        Assert.Equal(0, recorder.DroppedCount);
+        Assert.Equal(250, pipeline.ProcessedCount);
+        Assert.Equal(0, pipeline.FailedCount);
+        Assert.Equal(0, pipeline.DroppedCount);
         await using var check = NewContext();
         Assert.Equal(250, await check.ScanEvents.CountAsync());
         Assert.Equal(250, (await check.Codes.SingleAsync()).ScanCount);
-    }
-
-    [Fact]
-    public void Queue_reports_overflow_and_rejects_records_after_completion()
-    {
-        var recorder = new ChannelScanRecorder(NullLogger<ChannelScanRecorder>.Instance);
-        var scan = NewScan(Guid.NewGuid());
-        for (var i = 0; i < 10_001; i++)
-            recorder.Enqueue(scan);
-        Assert.Equal(1, recorder.DroppedCount);
-        recorder.Complete();
-        recorder.Enqueue(scan);
-        Assert.Equal(2, recorder.DroppedCount);
     }
 
     private static CodeEntity NewCode(Guid owner, string slug) => new()

@@ -34,6 +34,10 @@ HEALTHCHECK --interval=15s --timeout=5s --start-period=60s --retries=4 \
     CMD curl --fail --silent http://localhost:8080/health || exit 1
 
 FROM runtime AS redirect
+USER root
+RUN mkdir -p /data/geo && chown app:app /data/geo
+USER app
+ENV IP_LOCATION_DIRECTORY=/data/geo
 COPY --from=redirect-build /app ./
 ENTRYPOINT ["dotnet", "ForeverPin.Redirect.Api.dll"]
 

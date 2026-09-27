@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ForeverPin.Application.Billing.Core.Services;
 using ForeverPin.Domain.Billing.Entities;
 using ForeverPin.Persistence.DataContexts;
+using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
 
 namespace ForeverPin.Infrastructure.Persistence.Repositories;
 
@@ -22,7 +23,7 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
     public async Task<SubscriptionEntity> UpsertByUserAsync(SubscriptionEntity entity, CancellationToken ct)
     {
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
-        await db.AcquireOwnerLocksAsync([entity.UserId], ct);
+        await db.Database.AcquireTransactionLocksAsync("owner", [entity.UserId], ct);
 
         // Upsert the single subscription row identified by user_id.
         var existing = await db.Subscriptions.FirstOrDefaultAsync(s => s.UserId == entity.UserId, ct);

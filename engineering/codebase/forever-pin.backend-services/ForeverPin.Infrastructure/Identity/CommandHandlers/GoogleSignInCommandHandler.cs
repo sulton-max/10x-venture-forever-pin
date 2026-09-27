@@ -1,6 +1,3 @@
-using System.Buffers.Binary;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Application.Identity.Core.Commands;
@@ -12,6 +9,7 @@ using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
 using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google.Authenticators;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
 
 namespace ForeverPin.Infrastructure.Identity.CommandHandlers;
 
@@ -38,16 +36,11 @@ public sealed class GoogleSignInCommandHandler(
 
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
         // Serialize one provider subject before reading it; owner locks use their own acquisition phase.
-        if (db.Database.IsNpgsql())
-        {
-            var key = BinaryPrimitives.ReadInt64LittleEndian(
-                SHA256.HashData(Encoding.UTF8.GetBytes($"google-subject:{identity.Subject}")));
-            await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock({key})", ct);
-        }
+        await db.Database.AcquireTransactionLocksAsync([$"google-subject:{identity.Subject}"], ct);
 
         var account = await users.FindByGoogleSubjectAsync(identity.Subject, ct);
         var accountId = account?.Id ?? Guid.NewGuid();
-        await db.AcquireOwnerLocksAsync(request.GuestId is { } guest
+        await db.Database.AcquireTransactionLocksAsync("owner", request.GuestId is { } guest
             ? [guest, accountId] : [accountId], ct);
         // A guest capability can never authorize moving an existing account's data.
         if (request.GuestId is { } claimedGuest && await users.FindByIdAsync(claimedGuest, ct) is not null)

@@ -2,9 +2,10 @@ using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers;
 using System.Security.Cryptography;
 using System.Text;
 using ForeverPin.Redirect.Api.Application.Analytics.Models;
-using ForeverPin.Redirect.Api.Application.Analytics.Services;
 using ForeverPin.Redirect.Api.Application.Routing.Models;
 using ForeverPin.Redirect.Api.Application.Routing.Services;
+using WoW.Two.Sdk.Backend.Beta.Geo.IpLocation.Brokers;
+using WoW.Two.Sdk.Backend.Beta.Jobs.Batches;
 
 namespace ForeverPin.Redirect.Api.Endpoints;
 
@@ -20,8 +21,8 @@ public static class RedirectEndpoints
         IRedirectCodeRepository store,
         IRoutingService routingService,
         IDeviceMapper deviceMapper,
-        IGeoBroker geoBroker,
-        IScanRecorder recorder,
+        IIpLocationBroker ipLocation,
+        IBatchPipeline<ScanRecordModel> scans,
         IAcceptLanguageParser languageParser,
         TimeProvider clock,
         CancellationToken ct)
@@ -37,7 +38,7 @@ public static class RedirectEndpoints
         {
             Slug = slug,
             Device = deviceMapper.Resolve(userAgent),
-            CountryCode = geoBroker.ResolveCountry(ip),
+            CountryCode = http.Connection.RemoteIpAddress is { } address ? ipLocation.Locate(address)?.CountryCode : null,
             LanguagePreferences = languageParser.Parse(http.Request.Headers.AcceptLanguage.ToString())
                 .Match(preferences => preferences, _ => []),
             NowUtc = clock.GetUtcNow(),
@@ -49,8 +50,8 @@ public static class RedirectEndpoints
         if (routingService.Evaluate(code, context) is not RoutingResult.Redirect redirect)
             return Results.NotFound();
 
-        // Fire-and-forget — the redirect never waits on analytics.
-        recorder.Enqueue(new ScanRecordModel
+        // Fire-and-forget — the redirect never waits on analytics; a full queue drops the record.
+        scans.TryWrite(new ScanRecordModel
         {
             CodeId = code.Id,
             ScannedAt = context.NowUtc,

@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
 
 namespace ForeverPin.Infrastructure.Codes.Core.CommandHandlers;
 
@@ -35,7 +36,7 @@ public sealed class CodeCreateCommandHandler(
         CodeCreateCommand request, CancellationToken ct)
     {
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
-        await db.AcquireOwnerLocksAsync([request.UserId], ct);
+        await db.Database.AcquireTransactionLocksAsync("owner", [request.UserId], ct);
         var subscription = await subscriptions.GetByUserAsync(request.UserId, ct);
         var plan = subscription?.Plan ?? Plan.Free;
         var cap = PlanLimitsConstants.MaxCodes(plan);

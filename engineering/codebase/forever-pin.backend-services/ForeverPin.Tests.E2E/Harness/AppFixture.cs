@@ -13,6 +13,7 @@ using Testcontainers.PostgreSql;
 using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google.Authenticators;
 using WoW.Two.Sdk.Backend.Beta.Identity.CurrentUser;
 using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Audit;
+using WoW.Two.Sdk.Backend.Beta.Geo.IpLocation.Brokers;
 using WoW.Two.Sdk.Backend.Beta.Testing;
 using WoW.Two.Sdk.Backend.Beta.Testing.Containers.Postgres;
 using WoW.Two.Sdk.Backend.Beta.Testing.MultiHost;
@@ -97,6 +98,12 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
         RedirectHost = AddHost(new WebApiTestHost<RedirectProgram>
         {
             ConfigureConfigurationHook = ConfigureHost,
+            // Locate scans without downloading the DB-IP database.
+            ConfigureServicesHook = services =>
+            {
+                services.RemoveAll<IIpLocationBroker>();
+                services.AddSingleton<IIpLocationBroker, FakeIpLocationBroker>();
+            },
         });
     }
 
@@ -142,6 +149,8 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
             ["REDIS_CONNECTION"] = "",
             ["Auth:Google:ClientId"] = "foreverpin-e2e.apps.googleusercontent.com",
             ["DataProtection:KeyPath"] = _keyPath,
+            ["IpLocation:DatabaseDirectory"] = _keyPath,
+            ["IpLocation:EnableDownload"] = "false",
         });
 
     /// <summary>Snapshots the post-migration schema for Respawn.</summary>

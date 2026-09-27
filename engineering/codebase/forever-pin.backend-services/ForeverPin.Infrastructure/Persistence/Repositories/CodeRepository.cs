@@ -3,7 +3,8 @@ using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Application.Codes.Core.Enums;
-using Npgsql;
+using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
+using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Uniqueness.Extensions;
 
 namespace ForeverPin.Infrastructure.Persistence.Repositories;
 
@@ -16,31 +17,19 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
         await using var ownedTransaction = db.Database.CurrentTransaction is null
             ? await db.Database.BeginTransactionAsync(ct)
             : null;
-        var transaction = db.Database.CurrentTransaction!;
-        await db.AcquireOwnerLocksAsync([code.UserId], ct);
+        await db.Database.AcquireTransactionLocksAsync("owner", [code.UserId], ct);
 
         if (await db.Codes.CountAsync(c => c.UserId == code.UserId, ct) >= limit)
             return CodeInsertStatus.PlanLimitReached;
 
-        const string savepoint = "foreverpin_code_insert";
-        await transaction.CreateSavepointAsync(savepoint, ct);
+        // A taken slug rolls back to a savepoint and detaches the insert; the caller's transaction stays usable.
         db.Codes.Add(code);
-        try
-        {
-            await db.SaveChangesAsync(ct);
-            await transaction.ReleaseSavepointAsync(savepoint, ct);
-            if (ownedTransaction is not null)
-                await ownedTransaction.CommitAsync(ct);
-            return CodeInsertStatus.Added;
-        }
-        catch (DbUpdateException ex) when (ex.InnerException is PostgresException
-            { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: "ix_codes_slug" })
-        {
-            await transaction.RollbackToSavepointAsync(savepoint, ct);
-            db.Entry(code).State = EntityState.Detached;
-            await transaction.ReleaseSavepointAsync(savepoint, ct);
+        if (!await db.TrySaveChangesUniqueAsync("ix_codes_slug", ct))
             return CodeInsertStatus.SlugConflict;
-        }
+
+        if (ownedTransaction is not null)
+            await ownedTransaction.CommitAsync(ct);
+        return CodeInsertStatus.Added;
     }
 
     /// <inheritdoc />
@@ -124,7 +113,7 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
     /// <inheritdoc />
     public async Task<int> ReassignOwnerAsync(Guid fromUserId, Guid toUserId, CancellationToken ct)
     {
-        await db.AcquireOwnerLocksAsync([fromUserId, toUserId], ct);
+        await db.Database.AcquireTransactionLocksAsync("owner", [fromUserId, toUserId], ct);
         return await db.Codes
             .Where(c => c.UserId == fromUserId)
             .ExecuteUpdateAsync(setters => setters.SetProperty(c => c.UserId, toUserId), ct);
