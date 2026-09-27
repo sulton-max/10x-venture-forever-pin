@@ -59,20 +59,27 @@ public sealed class StripeBillingBroker(BillingSettings settings) : IBillingBrok
 
         var parsed = stripeEvent.Type switch
         {
-            EventTypes.CheckoutSessionCompleted => await FromCheckoutAsync((Session)stripeEvent.Data.Object, ct),
+            EventTypes.CheckoutSessionCompleted => await FromCheckoutAsync(stripeEvent, (Session)stripeEvent.Data.Object, ct),
             EventTypes.CustomerSubscriptionUpdated => FromSubscription(
+                stripeEvent,
                 (Subscription)stripeEvent.Data.Object,
                 BillingWebhookEventType.SubscriptionUpdated),
             EventTypes.CustomerSubscriptionDeleted => FromSubscription(
+                stripeEvent,
                 (Subscription)stripeEvent.Data.Object,
                 BillingWebhookEventType.SubscriptionDeleted),
-            _ => new BillingWebhookEvent { Type = BillingWebhookEventType.Ignored },
+            _ => new BillingWebhookEvent
+            {
+                Type = BillingWebhookEventType.Ignored,
+                EventId = stripeEvent.Id,
+                CreatedAt = CreatedAt(stripeEvent),
+            },
         };
         return Result<BillingWebhookEvent>.Ok(parsed);
     }
 
     /// <summary>Flattens a completed Checkout session, expanding the subscription for price and period end.</summary>
-    private async Task<BillingWebhookEvent> FromCheckoutAsync(Session session, CancellationToken ct)
+    private async Task<BillingWebhookEvent> FromCheckoutAsync(Event stripeEvent, Session session, CancellationToken ct)
     {
         string? priceId = null;
         DateTimeOffset? periodEnd = null;
@@ -90,6 +97,8 @@ public sealed class StripeBillingBroker(BillingSettings settings) : IBillingBrok
         return new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.CheckoutSessionCompleted,
+            EventId = stripeEvent.Id,
+            CreatedAt = CreatedAt(stripeEvent),
             UserId = Guid.TryParse(session.ClientReferenceId, out var id) ? id : null,
             StripeCustomerId = session.CustomerId,
             StripeSubscriptionId = session.SubscriptionId,
@@ -99,13 +108,16 @@ public sealed class StripeBillingBroker(BillingSettings settings) : IBillingBrok
     }
 
     /// <summary>Flattens a <c>customer.subscription.*</c> event.</summary>
-    private static BillingWebhookEvent FromSubscription(Subscription subscription, BillingWebhookEventType type)
+    private static BillingWebhookEvent FromSubscription(
+        Event stripeEvent, Subscription subscription, BillingWebhookEventType type)
     {
         var item = subscription.Items?.Data?.FirstOrDefault();
 
         return new BillingWebhookEvent
         {
             Type = type,
+            EventId = stripeEvent.Id,
+            CreatedAt = CreatedAt(stripeEvent),
             StripeCustomerId = subscription.CustomerId,
             StripeSubscriptionId = subscription.Id,
             PriceId = item?.Price?.Id,
@@ -114,4 +126,8 @@ public sealed class StripeBillingBroker(BillingSettings settings) : IBillingBrok
                 : new DateTimeOffset(DateTime.SpecifyKind(item.CurrentPeriodEnd, DateTimeKind.Utc)),
         };
     }
+
+    /// <summary>Reads the event's creation time, which Stripe reports in UTC.</summary>
+    private static DateTimeOffset CreatedAt(Event stripeEvent) =>
+        new(DateTime.SpecifyKind(stripeEvent.Created, DateTimeKind.Utc));
 }

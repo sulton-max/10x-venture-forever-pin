@@ -8,6 +8,7 @@ using ForeverPin.Domain.Billing.Enums;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability;
 using BillingSettings = ForeverPin.Application.Settings.BillingSettings;
 
 namespace ForeverPin.Infrastructure.Billing.CommandHandlers;
@@ -16,6 +17,7 @@ namespace ForeverPin.Infrastructure.Billing.CommandHandlers;
 public sealed class BillingWebhookCommandHandler(
     ISubscriptionRepository subscriptions,
     IBillingBroker gateway,
+    IInboxProcessor inbox,
     BillingSettings settings,
     ILogger<BillingWebhookCommandHandler> logger)
     : ICommandHandler<BillingWebhookCommand, AppResult<BillingWebhookResult.Success>>
@@ -28,7 +30,21 @@ public sealed class BillingWebhookCommandHandler(
         if (parsed is Result<BillingWebhookEvent>.Failure failure)
             return AppResult<BillingWebhookResult.Success>.Fail(failure.Error);
 
+        // Acknowledge unhandled events with 200 so Stripe doesn't retry them.
         var webhookEvent = ((Result<BillingWebhookEvent>.Success)parsed).Value;
+        if (webhookEvent.Type is BillingWebhookEventType.Ignored)
+            return AppResult<BillingWebhookResult.Success>.Ok(new BillingWebhookResult.Success());
+
+        // A redelivered event changes nothing; its dedupe mark commits with the subscription change.
+        if (!await inbox.ProcessOnceAsync($"stripe:{webhookEvent.EventId}", token => ApplyAsync(webhookEvent, token), ct))
+            logger.LogInformation("Stripe event {EventId} was already applied; acknowledging", webhookEvent.EventId);
+
+        return AppResult<BillingWebhookResult.Success>.Ok(new BillingWebhookResult.Success());
+    }
+
+    /// <summary>Applies one verified event's subscription change.</summary>
+    private async ValueTask ApplyAsync(BillingWebhookEvent webhookEvent, CancellationToken ct)
+    {
         switch (webhookEvent.Type)
         {
             case BillingWebhookEventType.CheckoutSessionCompleted:
@@ -42,14 +58,7 @@ public sealed class BillingWebhookCommandHandler(
             case BillingWebhookEventType.SubscriptionDeleted:
                 await RefreshFromSubscriptionAsync(webhookEvent, SubscriptionStatus.Canceled, ct);
                 break;
-
-            case BillingWebhookEventType.Ignored:
-            default:
-                // Acknowledge unhandled events with 200 so Stripe doesn't retry them.
-                break;
         }
-
-        return AppResult<BillingWebhookResult.Success>.Ok(new BillingWebhookResult.Success());
     }
 
     /// <summary>Upserts the subscription row from a completed Checkout session.</summary>
@@ -72,6 +81,7 @@ public sealed class BillingWebhookCommandHandler(
             StripeCustomerId = e.StripeCustomerId ?? "",
             StripeSubscriptionId = e.StripeSubscriptionId ?? "",
             CurrentPeriodEnd = e.CurrentPeriodEnd,
+            LastEventAt = e.CreatedAt,
         }, ct);
     }
 
@@ -106,6 +116,7 @@ public sealed class BillingWebhookCommandHandler(
             StripeCustomerId = e.StripeCustomerId ?? existing.StripeCustomerId,
             StripeSubscriptionId = e.StripeSubscriptionId,
             CurrentPeriodEnd = e.CurrentPeriodEnd ?? existing.CurrentPeriodEnd,
+            LastEventAt = e.CreatedAt,
         }, ct);
     }
 }

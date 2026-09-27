@@ -12,5 +12,6 @@ public interface ISubscriptionRepository
     Task<SubscriptionEntity?> GetByStripeSubscriptionIdAsync(string stripeSubscriptionId, CancellationToken ct);
 
     /// <summary>Inserts the user's subscription row, or overwrites the existing row's billing fields.</summary>
+    /// <remarks>Joins the caller's transaction; an entity whose event is older than the row's last applied event changes nothing.</remarks>
     Task<SubscriptionEntity> UpsertByUserAsync(SubscriptionEntity entity, CancellationToken ct);
 }

@@ -6,6 +6,12 @@ public sealed record BillingWebhookEvent
     /// <summary>Gets the kind of event.</summary>
     public required BillingWebhookEventType Type { get; init; }
 
+    /// <summary>Gets Stripe's event id (<c>evt_…</c>), which identifies a redelivery.</summary>
+    public required string EventId { get; init; }
+
+    /// <summary>Gets when Stripe created the event, which orders events delivered out of sequence.</summary>
+    public required DateTimeOffset CreatedAt { get; init; }
+
     /// <summary>Gets the owning user id, set only on a completed Checkout session.</summary>
     public Guid? UserId { get; init; }
 

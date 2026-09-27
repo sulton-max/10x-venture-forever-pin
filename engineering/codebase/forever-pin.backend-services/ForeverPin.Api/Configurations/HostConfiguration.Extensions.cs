@@ -26,6 +26,7 @@ using WoW.Two.Sdk.Backend.Beta.Identity.Guest;
 using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google;
 using WoW.Two.Sdk.Backend.Beta.Mediator;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Validation;
+using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability.Ef;
 using WoW.Two.Sdk.Backend.Beta.Meta;
 using WoW.Two.Sdk.Backend.Beta.Observability.HealthChecks;
 using WoW.Two.Sdk.Backend.Beta.Web.DataProtection;
@@ -176,6 +177,9 @@ public static partial class HostConfiguration
                 "Enabled billing requires a webhook secret, all price IDs, and absolute HTTP(S) return URLs."));
         builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         builder.Services.AddScoped<IBillingBroker, StripeBillingBroker>();
+
+        // Stripe redelivers events; the inbox applies each event id once, in the effect's transaction.
+        builder.Services.AddEfInbox<AppDbContext>();
         return builder;
     }
 

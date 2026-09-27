@@ -22,7 +22,9 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
     /// <inheritdoc />
     public async Task<SubscriptionEntity> UpsertByUserAsync(SubscriptionEntity entity, CancellationToken ct)
     {
-        await using var transaction = await db.Database.BeginTransactionAsync(ct);
+        await using var ownedTransaction = db.Database.CurrentTransaction is null
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
         await db.Database.AcquireTransactionLocksAsync("owner", [entity.UserId], ct);
 
         // Upsert the single subscription row identified by user_id.
@@ -32,17 +34,25 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
         {
             db.Subscriptions.Add(entity);
             await db.SaveChangesAsync(ct);
-            await transaction.CommitAsync(ct);
+            if (ownedTransaction is not null)
+                await ownedTransaction.CommitAsync(ct);
             return entity;
         }
+
+        // Stripe delivers out of order: an event older than the last one applied changes nothing.
+        // Same-second events apply in arrival order; the webhook inbox already drops redeliveries.
+        if (entity.LastEventAt is { } eventAt && existing.LastEventAt > eventAt)
+            return existing;
 
         existing.Plan = entity.Plan;
         existing.Status = entity.Status;
         existing.StripeCustomerId = entity.StripeCustomerId;
         existing.StripeSubscriptionId = entity.StripeSubscriptionId;
         existing.CurrentPeriodEnd = entity.CurrentPeriodEnd;
+        existing.LastEventAt = entity.LastEventAt ?? existing.LastEventAt;
         await db.SaveChangesAsync(ct);
-        await transaction.CommitAsync(ct);
+        if (ownedTransaction is not null)
+            await ownedTransaction.CommitAsync(ct);
         return existing;
     }
 }

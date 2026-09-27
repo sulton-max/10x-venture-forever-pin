@@ -31,6 +31,10 @@ public sealed record SubscriptionEntity : IKeyedEntity<Guid>, IHasTableName, IAu
     /// <summary>Gets or sets the current billing period's end, or null when unknown.</summary>
     public DateTimeOffset? CurrentPeriodEnd { get; set; }
 
+    /// <summary>Gets or sets the creation time of the last Stripe event applied, or null before any.</summary>
+    /// <remarks>An older event arriving later changes nothing, because Stripe does not deliver in order.</remarks>
+    public DateTimeOffset? LastEventAt { get; set; }
+
     /// <summary>Gets or sets the creation timestamp.</summary>
     public DateTimeOffset CreatedAt { get; set; }
 

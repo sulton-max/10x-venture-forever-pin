@@ -9,6 +9,7 @@ using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Tests.E2E.Harness;
 using ForeverPin.Tests.E2E.Support;
+using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability.Ef;
 using WoW.Two.Sdk.Backend.Beta.Testing.Web;
 using BillingWebhookEvent = ForeverPin.Application.Billing.Core.Models.BillingWebhookEvent;
 using BillingWebhookEventType = ForeverPin.Application.Billing.Core.Models.BillingWebhookEventType;
@@ -201,7 +202,9 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.CheckoutSessionCompleted,
-            UserId = owner.UserId, // client_reference_id — the same caller
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+                        UserId = owner.UserId, // client_reference_id — the same caller
             StripeCustomerId = "cus_1",
             StripeSubscriptionId = "sub_1",
             PriceId = AppFixture.PricePro, // → Pro via the inverse Billing:Prices map
@@ -233,7 +236,9 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.SubscriptionUpdated,
-            StripeSubscriptionId = "sub_upgrade",
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+                        StripeSubscriptionId = "sub_upgrade",
             StripeCustomerId = "cus_1",
             PriceId = AppFixture.PricePro,
             CurrentPeriodEnd = new DateTimeOffset(2026, 9, 1, 0, 0, 0, TimeSpan.Zero),
@@ -257,7 +262,9 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.SubscriptionDeleted,
-            StripeSubscriptionId = "sub_del",
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+                        StripeSubscriptionId = "sub_del",
             StripeCustomerId = "cus_1",
         };
 
@@ -326,7 +333,9 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.CheckoutSessionCompleted,
-            UserId = owner.UserId,
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+                        UserId = owner.UserId,
             StripeCustomerId = "cus_up",
             StripeSubscriptionId = "sub_up",
             PriceId = AppFixture.PricePro,
@@ -369,7 +378,9 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.SubscriptionDeleted,
-            StripeSubscriptionId = "sub_cancel",
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+                        StripeSubscriptionId = "sub_cancel",
             StripeCustomerId = "cus_c",
         };
         (await AppFixture.PostWebhookAsync(owner.Client)).StatusCode.Should().Be(HttpStatusCode.OK);
@@ -383,6 +394,67 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
     }
 
     // ── helpers ──
+
+    [Fact]
+    public async Task Webhook_RedeliveredEvent_IsAppliedOnce()
+    {
+        var owner = await CreateGuestClientAsync();
+        var checkout = new BillingWebhookEvent
+        {
+            Type = BillingWebhookEventType.CheckoutSessionCompleted,
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+            UserId = owner.UserId,
+            StripeCustomerId = "cus_redelivered",
+            StripeSubscriptionId = "sub_redelivered",
+            PriceId = AppFixture.PricePro,
+        };
+
+        Fixture.Gateway.NextEvent = checkout;
+        (await AppFixture.PostWebhookAsync(owner.Client)).StatusCode.Should().Be(HttpStatusCode.OK);
+        await using (var context = Fixture.NewDbContext())
+        {
+            var row = await context.Subscriptions.SingleAsync(subscription => subscription.UserId == owner.UserId);
+            row.Plan = Plan.Solo;   // a later change the redelivery must not overwrite
+            await context.SaveChangesAsync();
+        }
+
+        Fixture.Gateway.NextEvent = checkout;
+        (await AppFixture.PostWebhookAsync(owner.Client)).StatusCode.Should().Be(HttpStatusCode.OK);
+
+        (await GetMeAsync(owner)).Plan.Should().Be("solo");
+        await using var check = Fixture.NewDbContext();
+        (await check.Set<InboxMessageEntity>().CountAsync(message => message.MessageId == $"stripe:{checkout.EventId}"))
+            .Should().Be(1);
+    }
+
+    [Fact]
+    public async Task Webhook_OlderEventArrivingLate_DoesNotUndoANewerOne()
+    {
+        var owner = await CreateGuestClientAsync();
+        await SeedSubscriptionAsync(owner, Plan.Pro, "sub_order", "cus_1");
+
+        Fixture.Gateway.NextEvent = new BillingWebhookEvent
+        {
+            Type = BillingWebhookEventType.SubscriptionDeleted,
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime.AddMinutes(5),
+            StripeSubscriptionId = "sub_order",
+        };
+        (await AppFixture.PostWebhookAsync(owner.Client)).StatusCode.Should().Be(HttpStatusCode.OK);
+
+        Fixture.Gateway.NextEvent = new BillingWebhookEvent
+        {
+            Type = BillingWebhookEventType.SubscriptionUpdated,
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+            StripeSubscriptionId = "sub_order",
+            PriceId = AppFixture.PricePro,
+        };
+        (await AppFixture.PostWebhookAsync(owner.Client)).StatusCode.Should().Be(HttpStatusCode.OK);
+
+        (await GetMeAsync(owner)).Status.Should().Be("canceled");
+    }
 
     private async Task<BillingStatusDtoModel> GetMeAsync(GuestClient owner) =>
         await (await owner.Client.GetAsync("/api/billing/me")).ReadEnvelopeAsync<BillingStatusDtoModel>();

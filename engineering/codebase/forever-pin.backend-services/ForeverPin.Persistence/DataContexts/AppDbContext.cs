@@ -5,6 +5,7 @@ using ForeverPin.Domain.Identity.Entities;
 using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore;
 using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Naming;
 using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Sqlite;
+using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability.Ef;
 
 namespace ForeverPin.Persistence.DataContexts;
 
@@ -30,6 +31,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : AppDb
     {
         // Base applies this assembly's IEntityTypeConfiguration<T> and SDK conventions first.
         base.OnModelCreating(modelBuilder);
+
+        // Processed Stripe event ids; the dedupe mark commits with the webhook's effect.
+        modelBuilder.ApplyInboxModel();
 
         // Store every enum property (nullable and non-nullable) as snake_case text — bulk via the SDK helper.
         modelBuilder.ApplyEnumStringConversions();

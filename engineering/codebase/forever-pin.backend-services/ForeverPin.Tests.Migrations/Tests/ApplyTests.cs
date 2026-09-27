@@ -27,7 +27,7 @@ public sealed class ApplyTests(MigratorPostgresFixture fixture) : IAsyncLifetime
         labels.Should().BeEquivalentTo(embeddedLabels);
         labels.Should().Contain("010-rules-jsonb");
 
-        foreach (var table in new[] { "codes", "scan_events", "subscriptions", "users" })
+        foreach (var table in new[] { "codes", "scan_events", "subscriptions", "users", "inbox_messages" })
             (await migrator.HasTableAsync(table)).Should().BeTrue();
         (await migrator.HasTableAsync("routing_rules")).Should().BeFalse();
         (await migrator.HasIndexAsync("ix_codes_slug")).Should().BeTrue();

@@ -72,7 +72,9 @@ public sealed class HostConfigurationTests(AppFixture fixture) : E2EBase(fixture
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.CheckoutSessionCompleted,
-            UserId = Guid.NewGuid(),
+            EventId = FakeBillingBroker.NewEventId(),
+            CreatedAt = FakeBillingBroker.EventTime,
+                        UserId = Guid.NewGuid(),
             StripeCustomerId = "cus-canceled",
             StripeSubscriptionId = "sub-canceled",
             PriceId = AppFixture.PricePro,

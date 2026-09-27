@@ -17,6 +17,12 @@ public sealed class FakeBillingBroker : IBillingBroker
     /// <summary>Gets or sets the staged webhook event; null yields an <c>Ignored</c> event.</summary>
     public BillingWebhookEvent? NextEvent { get; set; }
 
+    /// <summary>Holds the creation time staged events share unless a test orders them.</summary>
+    public static readonly DateTimeOffset EventTime = new(2026, 9, 1, 0, 0, 0, TimeSpan.Zero);
+
+    /// <summary>Creates a unique Stripe-style event id, so the webhook inbox treats each staged event as new.</summary>
+    public static string NewEventId() => $"evt_{Guid.NewGuid():N}";
+
     /// <summary>Gets or sets a marker simulating a failed signature check.</summary>
     public Exception? SignatureError { get; set; }
 
@@ -60,7 +66,12 @@ public sealed class FakeBillingBroker : IBillingBroker
                 AppErrorType.Validation, "The webhook payload or signature is invalid.")));
 
         return Task.FromResult(Result<BillingWebhookEvent>.Ok(
-            NextEvent ?? new BillingWebhookEvent { Type = BillingWebhookEventType.Ignored }));
+            NextEvent ?? new BillingWebhookEvent
+            {
+                Type = BillingWebhookEventType.Ignored,
+                EventId = NewEventId(),
+                CreatedAt = EventTime,
+            }));
     }
 
     /// <summary>Clears the staged state and captured calls.</summary>
