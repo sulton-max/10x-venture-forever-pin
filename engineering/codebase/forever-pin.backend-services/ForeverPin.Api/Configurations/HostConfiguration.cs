@@ -1,5 +1,6 @@
 using WoW.Two.Sdk.Backend.Beta.Data;
 using WoW.Two.Sdk.Backend.Beta.Meta;
+using WoW.Two.Sdk.Backend.Beta.Web.Antiforgery;
 
 namespace ForeverPin.Api.Configurations;
 
@@ -58,6 +59,7 @@ public static partial class HostConfiguration
         {
             pipeline.UseAuthentication();
             pipeline.UseAuthorization();
+            pipeline.UseSpaAntiforgery();   // after authentication: tokens bind to the signed-in user
         });
 
         app.MapControllers();

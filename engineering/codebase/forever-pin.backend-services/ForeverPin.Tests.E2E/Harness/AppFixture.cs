@@ -17,6 +17,7 @@ using WoW.Two.Sdk.Backend.Beta.Geo.IpLocation.Brokers;
 using WoW.Two.Sdk.Backend.Beta.Testing;
 using WoW.Two.Sdk.Backend.Beta.Testing.Containers.Postgres;
 using WoW.Two.Sdk.Backend.Beta.Testing.MultiHost;
+using WoW.Two.Sdk.Backend.Beta.Testing.Web;
 
 // Disambiguate the two top-level `Program` types (both live in the global namespace of their assembly).
 using ApiProgram = apihost::Program;
@@ -107,8 +108,11 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
         });
     }
 
-    /// <summary>Creates a fresh anonymous client against the Api host.</summary>
-    public HttpClient CreateApiClient() => ApiHost.CreateClient();
+    /// <summary>Holds the path whose GET issues the SPA antiforgery token to test clients.</summary>
+    public const string TokenPath = "/health";
+
+    /// <summary>Creates a fresh anonymous client against the Api host that echoes antiforgery tokens like the SPA.</summary>
+    public HttpClient CreateApiClient() => ApiHost.CreateSpaClient(TokenPath);
 
     /// <summary>Creates a fresh client against the Redirect host that does not follow redirects.</summary>
     public HttpClient CreateRedirectClient() => RedirectHost.CreateClient(
@@ -161,7 +165,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
     /// <remarks>The <c>Secure</c> cookie won't round-trip over <c>http://</c>, so it's sent as a raw header.</remarks>
     public async Task<GuestClient> CreateGuestClientAsync()
     {
-        using var client = ApiHost.CreateClient();
+        using var client = ApiHost.CreateSpaClient(TokenPath);
 
         using var response = await client.PostAsync("/api/identity/guest", content: null);
         response.EnsureSuccessStatusCode();
@@ -169,7 +173,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
         var cookie = ExtractCookie(response, UserIdCookieName)
             ?? throw new InvalidOperationException("POST /api/identity/guest did not set the user-id cookie.");
 
-        var authed = ApiHost.CreateClient();
+        var authed = ApiHost.CreateSpaClient(TokenPath);
         authed.DefaultRequestHeaders.Add("Cookie", $"{UserIdCookieName}={cookie}");
 
         return new GuestClient { Client = authed, UserId = ReadGuestId(cookie), Cookie = cookie };

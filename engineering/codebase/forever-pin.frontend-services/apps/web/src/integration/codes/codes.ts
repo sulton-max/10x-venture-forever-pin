@@ -1,5 +1,5 @@
 import type { CodeDto, ImageFormat } from "@/domain/codes/common";
-import { API_BASE, problemError, readData, readDataWithWarnings } from "../common/client";
+import { API_BASE, apiFetch, problemError, readData, readDataWithWarnings } from "../common/client";
 import type {
   CodeCreateUpdateApiRequest,
   CodePreviewApiRequest,
@@ -12,11 +12,10 @@ import type {
 export const codesApiClient = {
   /** Creates a code for the current owner, returning any destination warnings the save raised. */
   async create(request: CodeCreateUpdateApiRequest): Promise<CodeSaveApiResult> {
-    const res = await fetch(`${API_BASE}/api/codes`, {
+    const res = await apiFetch("/api/codes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(request),
-      credentials: "include",
     });
 
     if (!res.ok) throw await problemError(res, "Create failed");
@@ -27,9 +26,7 @@ export const codesApiClient = {
   /** Lists the owner's codes, filtering names case-insensitively by `q`. */
   async list(q?: string): Promise<CodeDto[]> {
     const query = q && q.trim() ? `?q=${encodeURIComponent(q.trim())}` : "";
-    const res = await fetch(`${API_BASE}/api/codes${query}`, {
-      credentials: "include",
-    });
+    const res = await apiFetch(`/api/codes${query}`);
 
     if (!res.ok) throw await problemError(res, "List failed");
     return readData<CodeDto[]>(res);
@@ -37,9 +34,7 @@ export const codesApiClient = {
 
   /** Gets one code by id — 404 when missing or owned by someone else. */
   async get(id: string): Promise<CodeDto> {
-    const res = await fetch(`${API_BASE}/api/codes/${id}`, {
-      credentials: "include",
-    });
+    const res = await apiFetch(`/api/codes/${id}`);
 
     if (!res.ok) throw await problemError(res, "Load failed");
     return readData<CodeDto>(res);
@@ -47,11 +42,10 @@ export const codesApiClient = {
 
   /** Replaces editable fields; the server preserves the slug, scan count, creation time, and mode. */
   async update(id: string, request: CodeUpdateApiRequest): Promise<CodeSaveApiResult> {
-    const res = await fetch(`${API_BASE}/api/codes/${id}`, {
+    const res = await apiFetch(`/api/codes/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(request),
-      credentials: "include",
     });
 
     if (!res.ok) throw await problemError(res, "Update failed");
@@ -62,11 +56,10 @@ export const codesApiClient = {
   /** Toggles a code's active state. */
   async setActive(id: string, isActive: boolean): Promise<CodeDto> {
     const request: CodeSetActiveApiRequest = { isActive };
-    const res = await fetch(`${API_BASE}/api/codes/${id}/active`, {
+    const res = await apiFetch(`/api/codes/${id}/active`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(request),
-      credentials: "include",
     });
 
     if (!res.ok) throw await problemError(res, "Status change failed");
@@ -75,9 +68,8 @@ export const codesApiClient = {
 
   /** Deletes a code and its stored rules. */
   async delete(id: string): Promise<void> {
-    const res = await fetch(`${API_BASE}/api/codes/${id}`, {
+    const res = await apiFetch(`/api/codes/${id}`, {
       method: "DELETE",
-      credentials: "include",
     });
 
     if (!res.ok) throw await problemError(res, "Delete failed");
@@ -90,11 +82,10 @@ export const codesApiClient = {
 
   /** Renders a live preview as server-emitted SVG markup; pass an `AbortSignal` to cancel superseded requests. */
   async preview(request: CodePreviewApiRequest, signal?: AbortSignal): Promise<string> {
-    const res = await fetch(`${API_BASE}/api/codes/preview`, {
+    const res = await apiFetch("/api/codes/preview", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "image/svg+xml" },
       body: JSON.stringify(request),
-      credentials: "include",
       signal,
     });
 

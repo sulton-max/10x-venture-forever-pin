@@ -43,12 +43,12 @@ public sealed class HostConfigurationTests(AppFixture fixture) : E2EBase(fixture
         Guid codeId;
         using (var originalHost = Fixture.ApiHost.WithWebHostBuilder(_ => { }))
         {
-            using var anonymous = originalHost.CreateClient();
+            using var anonymous = originalHost.CreateSpaClient(AppFixture.TokenPath);
             using var provisioned = await anonymous.PostAsync("/api/identity/guest", content: null);
             provisioned.EnsureSuccessStatusCode();
             cookie = AppFixture.ExtractCookie(provisioned, AppFixture.UserIdCookieName)!;
             Guid.TryParse(cookie, out _).Should().BeFalse();
-            using var owner = originalHost.CreateClient();
+            using var owner = originalHost.CreateSpaClient(AppFixture.TokenPath);
             owner.DefaultRequestHeaders.Add("Cookie", $"{AppFixture.UserIdCookieName}={cookie}");
             codeId = (await (await owner.PostJsonAsync("/api/codes",
                 CodeRequests.StaticUrl("Survives restart", "https://example.com/restart")))
@@ -56,7 +56,7 @@ public sealed class HostConfigurationTests(AppFixture fixture) : E2EBase(fixture
         }
 
         using var restartedHost = Fixture.ApiHost.WithWebHostBuilder(_ => { });
-        using var restored = restartedHost.CreateClient();
+        using var restored = restartedHost.CreateSpaClient(AppFixture.TokenPath);
         restored.DefaultRequestHeaders.Add("Cookie", $"{AppFixture.UserIdCookieName}={cookie}");
         var response = await restored.GetAsync($"/api/codes/{codeId}");
 
@@ -64,6 +64,23 @@ public sealed class HostConfigurationTests(AppFixture fixture) : E2EBase(fixture
         (await response.ReadEnvelopeAsync<CodeDtoModel>()).Id.Should().Be(codeId);
         var keyPath = restartedHost.Services.GetRequiredService<IConfiguration>()["DataProtection:KeyPath"]!;
         Directory.GetFiles(keyPath, "key-*.xml").Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task Antiforgery_ShouldRejectACookieWrite_WithoutTheEchoedToken()
+    {
+        var owner = await CreateGuestClientAsync();
+        using var browserlessClient = Fixture.ApiHost.CreateClient();
+        browserlessClient.DefaultRequestHeaders.Add("Cookie", $"{AppFixture.UserIdCookieName}={owner.Cookie}");
+
+        var rejected = await browserlessClient.PostJsonAsync("/api/codes",
+            CodeRequests.StaticUrl("Forged", "https://example.com/forged"));
+        var accepted = await owner.Client.PostJsonAsync("/api/codes",
+            CodeRequests.StaticUrl("Echoed", "https://example.com/echoed"));
+
+        rejected.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        (await rejected.Content.ReadAsStringAsync()).Should().Contain("AntiforgeryValidationFailed");
+        accepted.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]

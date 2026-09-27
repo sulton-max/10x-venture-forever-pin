@@ -29,6 +29,7 @@ using WoW.Two.Sdk.Backend.Beta.Mediator.Validation;
 using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability.Ef;
 using WoW.Two.Sdk.Backend.Beta.Meta;
 using WoW.Two.Sdk.Backend.Beta.Observability.HealthChecks;
+using WoW.Two.Sdk.Backend.Beta.Web.Antiforgery;
 using WoW.Two.Sdk.Backend.Beta.Web.DataProtection;
 using WoW.Two.Sdk.Backend.Beta.Web.ExceptionHandling;
 using WoW.Two.Sdk.Backend.Beta.Web.Json;
@@ -162,6 +163,9 @@ public static partial class HostConfiguration
         });
 
         builder.Services.AddAuthorization();
+
+        // Cookie-authenticated writes echo the readable XSRF-TOKEN cookie; Stripe's signed webhook proves itself.
+        builder.Services.AddSpaAntiforgery(options => options.ExemptPathPrefixes.Add("/api/billing/webhook"));
         return builder;
     }
 

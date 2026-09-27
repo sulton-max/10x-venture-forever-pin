@@ -12,9 +12,45 @@ export let REDIRECT_BASE: string = import.meta.env.VITE_REDIRECT_BASE ?? "http:/
 // Public; also the backend's token audience. Empty leaves sign-in inert.
 export let GOOGLE_CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
 
+const UNSAFE_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+// The API issues this readable cookie on every GET; cookie-carrying writes must echo it.
+function xsrfToken(): string | null {
+  const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+async function isAntiforgeryRejection(response: Response): Promise<boolean> {
+  if (response.status !== 400) return false;
+  try {
+    return (await response.clone().text()).includes("AntiforgeryValidationFailed");
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Sends a same-site API request with cookies, echoing the antiforgery token on writes.
+ * A token issued before sign-in or sign-out is refreshed once through a GET, then the write retries.
+ */
+export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const method = (init.method ?? "GET").toUpperCase();
+  const send = () => {
+    const headers = new Headers(init.headers);
+    const token = UNSAFE_METHODS.has(method) ? xsrfToken() : null;
+    if (token) headers.set("X-XSRF-TOKEN", token);
+    return fetch(`${API_BASE}${path}`, { ...init, headers, credentials: "include" });
+  };
+
+  const response = await send();
+  if (!UNSAFE_METHODS.has(method) || !(await isAntiforgeryRejection(response))) return response;
+  await fetch(`${API_BASE}/api/runtime-config`, { cache: "no-store", credentials: "include" });
+  return send();
+}
+
 // Load before rendering so Google sign-in and generated links use this environment.
 export async function loadRuntimeConfig(): Promise<void> {
-  const response = await fetch(`${API_BASE}/api/runtime-config`, { cache: "no-store" });
+  const response = await apiFetch("/api/runtime-config", { cache: "no-store" });
   if (!response.ok) throw new Error("Runtime configuration unavailable");
   const config = await response.json();
   if (typeof config.googleClientId !== "string" || typeof config.redirectBaseUrl !== "string")
