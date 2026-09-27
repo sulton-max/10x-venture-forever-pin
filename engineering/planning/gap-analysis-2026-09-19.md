@@ -32,7 +32,7 @@ Probes ran in a separate disposable Compose project, `foreverpin-gap-audit`, on 
 
 Source inspection corroborated the reproduced mechanisms. These image results are not proof for an exact future source commit or the hosted AMD64 images.
 
-All audit containers, network and disposable database/key volumes were removed successfully. Existing DryDock pilot resources were untouched. Native approval allowed the required local Docker/socket work; no unresolved execution-permission blocker remained.
+All audit containers, network and disposable database/key volumes were removed successfully. Existing Wheelhouse pilot resources were untouched. Native approval allowed the required local Docker/socket work; no unresolved execution-permission blocker remained.
 
 ## Findings
 
@@ -178,7 +178,7 @@ References: [image healthcheck](/Users/max/Projects/10x-ws/workbench/career/engi
 
 **Impact:** Release-only configuration faults escape the current smoke test. An omitted environment name can create shared aliases without environment isolation.
 
-**Owner:** Deployment lane, coordinated with DryDock's input validation. Upstream validation may reduce the alias risk; the product bundle does not enforce it itself.
+**Owner:** Deployment lane, coordinated with Wheelhouse's input validation. Upstream validation may reduce the alias risk; the product bundle does not enforce it itself.
 
 **Acceptance:** Exercise the generated release artifact in isolation with production-shaped settings. Require and validate the environment identifier. Verify manifest/image/source/hash consistency and reject absent settings or invalid platform values.
 

@@ -20,10 +20,10 @@
 
 ## Settings contract
 
-- The release bundle lists every required setting; DryDock's `transport.py template` prints each service's skeleton.
-- `AllowedHosts` lists the public host plus `localhost`: health checks and DryDock smoke probes call `http://localhost:8080`.
+- The release bundle lists every required setting; Wheelhouse's `transport.py template` prints each service's skeleton.
+- `AllowedHosts` lists the public host plus `localhost`: health checks and Wheelhouse smoke probes call `http://localhost:8080`.
 - `Deployment:TrustedProxies` is a JSON array of ingress IPs; a plain string trusts no proxy.
-- DryDock refuses a deployment that breaks any of these before replacing a container.
+- Wheelhouse refuses a deployment that breaks any of these before replacing a container.
 - The local and CI stack runs with `AllowedHosts: "localhost;127.0.0.1"`; the smoke asserts a foreign host gets `400`.
 
 ---
@@ -39,7 +39,7 @@
 - Both hosts applied the same ten migrations without errors.
 - The database and data-protection key survived management-container replacement.
 - The release generator produced a valid digest-pinned Compose model.
-- Earlier verifier resources were removed; the DryDock pilot retains its own named test volumes.
+- Earlier verifier resources were removed; the Wheelhouse pilot retains its own named test volumes.
 
 ---
 
@@ -67,8 +67,8 @@ Preserve existing printed redirect URLs when changing domains.
 - No workflow or image publication has run remotely; the local changes remain uncommitted.
 - CI requires the intended runtime fixes, `smoke.py`, Dockerfile and workflows to be included in the pushed commit.
 
-The full ownership, registry and retention analysis is in DryDock's
-[CI/artifact policy](../../../../wow-two-platform/wow-two-platform.drydock/engineering/planning/ci-artifact-policy.md).
+The full ownership, registry and retention analysis is in Wheelhouse's
+[CI/artifact policy](../../../../wow-two-platform/wow-two-platform.wheelhouse/engineering/planning/ci-artifact-policy.md).
 
 Explicit Linux runtime identifiers removed other platforms' native assets from both images.
 Local `linux/arm64` sizes are 443,557,503 bytes for management and 435,977,901 bytes for redirect.

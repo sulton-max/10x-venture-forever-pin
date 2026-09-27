@@ -58,7 +58,7 @@ Integration and HTTP tests used disposable PostgreSQL containers.
 - `/api/runtime-config` returned the configured public redirect origin.
 - The database and data-protection key survived management-container replacement.
 - The release generator produced valid JSON and a valid Compose model.
-- Earlier verifier resources were removed; the separate DryDock pilot retains its named test volumes.
+- Earlier verifier resources were removed; the separate Wheelhouse pilot retains its named test volumes.
 
 ---
 

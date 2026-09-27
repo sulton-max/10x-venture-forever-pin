@@ -49,8 +49,8 @@ def run(management, redirect, state_file, create=False):
             cookie = next(value.split(";")[0] for value in response.headers.get_all("Set-Cookie", [])
                           if value.startswith("user-id="))
         payload = {
-            "name": "DryDock deployment acceptance", "barcodeFormat": "QrCode", "mode": "dynamic",
-            "contentType": "url", "rules": [{"type": "default", "content": {"type": "url", "url": "https://example.com/drydock-pilot"}}],
+            "name": "Wheelhouse deployment acceptance", "barcodeFormat": "QrCode", "mode": "dynamic",
+            "contentType": "url", "rules": [{"type": "default", "content": {"type": "url", "url": "https://example.com/wheelhouse-pilot"}}],
             "style": {"foregroundColor": "#000000", "backgroundColor": "#FFFFFF", "transparentBackground": False,
                       "eccLevel": "Q", "quietZoneModules": 4, "moduleShape": "square", "finderShape": "square", "finderDotShape": "square"}
         }
@@ -70,7 +70,7 @@ def run(management, redirect, state_file, create=False):
         assert response.status == 200 and b"<svg" in response.read(), "Code image rendering failed"
     with request(redirect, "/" + state["slug"]) as response:
         assert response.status == 302, "Saved code did not redirect"
-        assert response.headers["Location"] == "https://example.com/drydock-pilot", "Redirect destination changed"
+        assert response.headers["Location"] == "https://example.com/wheelhouse-pilot", "Redirect destination changed"
     print(json.dumps({"status": "passed", "checks": ["readiness", "host-filter", "guest-owned-code", "svg", "redirect"],
                       "mode": "create" if create else "persistence"}))
 
