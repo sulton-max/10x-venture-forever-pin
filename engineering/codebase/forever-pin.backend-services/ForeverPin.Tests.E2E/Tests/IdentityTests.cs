@@ -43,4 +43,25 @@ public sealed class IdentityTests(AppFixture fixture) : E2EBase(fixture)
         var me = await response.ReadEnvelopeAsync<MeResponseDto>();
         me.Kind.Should().Be("guest");
     }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task GetCode_ShouldReturn401_WhenGuestCapabilityIsForged(bool tampered)
+    {
+        var owner = await CreateGuestClientAsync();
+        var code = await (await owner.Client.PostJsonAsync("/api/codes",
+            CodeRequests.StaticUrl("Private", "https://example.com/private")))
+            .ReadEnvelopeAsync<CodeDtoModel>();
+        using var attacker = Fixture.CreateApiClient();
+        var cookie = tampered
+            ? owner.Cookie[..20] + (owner.Cookie[20] == 'A' ? 'B' : 'A') + owner.Cookie[21..]
+            : owner.UserId.ToString();
+        attacker.DefaultRequestHeaders.Add("Cookie", $"{AppFixture.UserIdCookieName}={cookie}");
+
+        var me = await (await attacker.GetAsync("/api/identity/me")).ReadEnvelopeAsync<MeResponseDto>();
+        me.Kind.Should().Be("anonymous");
+        (await attacker.GetAsync($"/api/codes/{code.Id}")).StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        (await owner.Client.GetAsync($"/api/codes/{code.Id}")).StatusCode.Should().Be(HttpStatusCode.OK);
+    }
 }

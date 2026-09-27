@@ -7,5 +7,5 @@ public abstract record CodeGetByIdResult
 
     /// <summary>Represents a fetched code.</summary>
     /// <param name="Code">The fetched code.</param>
-    public sealed record Success(CodeDto Code) : CodeGetByIdResult;
+    public sealed record Success(CodeModel Code) : CodeGetByIdResult;
 }

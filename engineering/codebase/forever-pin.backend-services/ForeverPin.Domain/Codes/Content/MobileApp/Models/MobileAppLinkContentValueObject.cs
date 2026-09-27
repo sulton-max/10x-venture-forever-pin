@@ -11,6 +11,4 @@ public sealed record MobileAppLinkContentValueObject : CodeContentValueObject
     /// <summary>Gets the store URL.</summary>
     public required string Url { get; init; }
 
-    /// <inheritdoc />
-    public override string? Encode() => null;
 }

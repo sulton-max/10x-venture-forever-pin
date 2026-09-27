@@ -7,5 +7,5 @@ namespace ForeverPin.Redirect.Api.Application.Analytics.Services;
 public interface IScanRecorder
 {
     /// <summary>Queues a scan for background flushing, dropping it on overload.</summary>
-    void Enqueue(ScanRecord record);
+    void Enqueue(ScanRecordModel record);
 }

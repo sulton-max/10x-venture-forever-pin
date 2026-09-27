@@ -5,7 +5,8 @@
 The management and redirect hosts run against disposable PostgreSQL.
 Google and Stripe are faked at the provider boundary.
 
-- Identity, ownership, account claiming, and logout.
+- Protected guest identity, forged/tampered-cookie rejection, account claiming, and logout.
+- Field-level validation paths, immutable code modes, and safe unexpected-error responses.
 - Code creation, editing, search, preview, and downloads.
 - Billing checkout, portal, webhook, limits, and cancellation.
 - Create → scan → edit → scan propagation across both hosts.

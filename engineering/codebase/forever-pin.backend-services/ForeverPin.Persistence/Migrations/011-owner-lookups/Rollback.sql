@@ -1,0 +1,2 @@
+DROP INDEX ix_subscriptions_stripe_subscription_id;
+DROP INDEX ix_codes_user_id_created_at;

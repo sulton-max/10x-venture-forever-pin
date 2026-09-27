@@ -7,5 +7,5 @@ public abstract record CodeCreateResult
 
     /// <summary>Represents a created code.</summary>
     /// <param name="Code">The created code.</param>
-    public sealed record Success(CodeDto Code) : CodeCreateResult;
+    public sealed record Success(CodeModel Code) : CodeCreateResult;
 }

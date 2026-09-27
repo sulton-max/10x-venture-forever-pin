@@ -49,7 +49,7 @@ public sealed class RedirectWedgeTests(AppFixture fixture) : E2EBase(fixture)
         scan.Headers.Location!.ToString().Should().Be(IosDestination);
 
         // Async flush — poll the owner's view until the denormalized counter catches up.
-        var afterScan = await Polling.UntilAsync(
+        var afterScan = await PollingExtensions.UntilAsync(
             probe: async () => await (await owner.Client.GetAsync($"/api/codes/{code.Id}"))
                 .ReadEnvelopeAsync<CodeDtoModel>(),
             predicate: c => c.ScanCount >= 1);

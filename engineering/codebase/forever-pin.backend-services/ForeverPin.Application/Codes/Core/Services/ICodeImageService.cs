@@ -1,3 +1,4 @@
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using WoW.Two.Sdk.Backend.Beta.Codes.Models;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
@@ -8,5 +9,5 @@ namespace ForeverPin.Application.Codes.Core.Services;
 public interface ICodeImageService
 {
     /// <summary>Renders the code's image in the requested format.</summary>
-    RenderedCode Render(CodeEntity code, ImageFormat format);
+    Result<RenderedCode> Render(CodeEntity code, ImageFormat format);
 }

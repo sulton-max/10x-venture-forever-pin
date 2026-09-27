@@ -1,9 +1,8 @@
 extern alias apihost;
 extern alias redirecthost;
 
-using System.Net;
-using System.Net.Http.Json;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,10 +10,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using ForeverPin.Application.Billing.Core.Services;
 using ForeverPin.Persistence.DataContexts;
 using Testcontainers.PostgreSql;
-// The Google-verifier seam (SDK type, global namespace) — swapped for a deterministic fake in the test host.
-using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google;
+using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google.Authenticators;
+using WoW.Two.Sdk.Backend.Beta.Identity.CurrentUser;
+using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Audit;
 using WoW.Two.Sdk.Backend.Beta.Testing;
-using WoW.Two.Sdk.Backend.Beta.Testing.Containers;
 using WoW.Two.Sdk.Backend.Beta.Testing.Containers.Postgres;
 using WoW.Two.Sdk.Backend.Beta.Testing.MultiHost;
 
@@ -49,6 +48,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
     public const string PriceAgency = "price_agency";
 
     private readonly PostgresFixture _postgres;
+    private readonly string _keyPath = Path.Combine(Path.GetTempPath(), "foreverpin-e2e-keys", Guid.NewGuid().ToString("N"));
 
     /// <summary>Gets the fake Stripe broker wired into the Api host.</summary>
     public FakeBillingBroker Gateway { get; } = new();
@@ -70,17 +70,12 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
 
         ApiHost = AddHost(new WebApiTestHost<ApiProgram>
         {
-            // Inject the started container's connection string through DatabaseOptions at host build time.
-            ConfigureHostHook = builder => builder.ConfigureAppConfiguration((_, config) =>
-                config.AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    ["DatabaseOptions:ConnectionString"] = _postgres.ConnectionString,
-                })),
+            ConfigureConfigurationHook = ConfigureHost,
             // Swap the real external seams for deterministic fakes so E2E never calls Google or Stripe.
             ConfigureServicesHook = services =>
             {
-                services.RemoveAll<IGoogleIdTokenVerifier>();
-                services.AddScoped<IGoogleIdTokenVerifier>(_ => new FakeGoogleTokenVerifier());
+                services.RemoveAll<IGoogleIdTokenAuthenticator>();
+                services.AddScoped<IGoogleIdTokenAuthenticator>(_ => new FakeGoogleTokenAuthenticator());
 
                 // Fake billing broker (no network) shared across the run so a test can stage a webhook event.
                 services.RemoveAll<IBillingBroker>();
@@ -101,11 +96,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
 
         RedirectHost = AddHost(new WebApiTestHost<RedirectProgram>
         {
-            ConfigureHostHook = builder => builder.ConfigureAppConfiguration((_, config) =>
-                config.AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    ["DatabaseOptions:ConnectionString"] = _postgres.ConnectionString,
-                })),
+            ConfigureConfigurationHook = ConfigureHost,
         });
     }
 
@@ -125,7 +116,8 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseNpgsql(_postgres.ConnectionString)
-            .UseSnakeCaseNamingConvention();
+            .UseSnakeCaseNamingConvention()
+            .AddInterceptors(new AuditInterceptor(ApiHost.Clock));
         return new AppDbContext(options.Options);
     }
 
@@ -140,13 +132,17 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
         return client.SendAsync(request);
     }
 
-    /// <summary>Points both hosts at the shared container before they build.</summary>
-    protected override void ConfigureEnvironment()
-    {
-        Environment.SetEnvironmentVariable("DB_CONNECTION", _postgres.ConnectionString);
-        Environment.SetEnvironmentVariable("REDIRECT_BASE_URL", RedirectBaseUrl);
-        Environment.SetEnvironmentVariable("REDIS_CONNECTION", null); // ensure DbRedirectConfigRepository path
-    }
+    private void ConfigureHost(IConfigurationBuilder configuration) =>
+        configuration.AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["DatabaseSettings:ConnectionString"] = _postgres.ConnectionString,
+            ["DB_CONNECTION"] = _postgres.ConnectionString,
+            ["ApiSettings:RedirectBaseUrl"] = RedirectBaseUrl,
+            ["REDIRECT_BASE_URL"] = RedirectBaseUrl,
+            ["REDIS_CONNECTION"] = "",
+            ["Auth:Google:ClientId"] = "foreverpin-e2e.apps.googleusercontent.com",
+            ["DataProtection:KeyPath"] = _keyPath,
+        });
 
     /// <summary>Snapshots the post-migration schema for Respawn.</summary>
     protected override ValueTask InitializeStateAsync(CancellationToken cancellationToken = default) =>
@@ -156,21 +152,38 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
     /// <remarks>The <c>Secure</c> cookie won't round-trip over <c>http://</c>, so it's sent as a raw header.</remarks>
     public async Task<GuestClient> CreateGuestClientAsync()
     {
-        var client = ApiHost.CreateClient();
+        using var client = ApiHost.CreateClient();
 
-        var response = await client.PostAsync("/api/identity/guest", content: null);
+        using var response = await client.PostAsync("/api/identity/guest", content: null);
         response.EnsureSuccessStatusCode();
 
-        var userId = ExtractUserId(response)
+        var cookie = ExtractCookie(response, UserIdCookieName)
             ?? throw new InvalidOperationException("POST /api/identity/guest did not set the user-id cookie.");
 
         var authed = ApiHost.CreateClient();
-        authed.DefaultRequestHeaders.Add("Cookie", $"{UserIdCookieName}={userId}");
+        authed.DefaultRequestHeaders.Add("Cookie", $"{UserIdCookieName}={cookie}");
 
-        return new GuestClient(authed, userId);
+        return new GuestClient { Client = authed, UserId = ReadGuestId(cookie), Cookie = cookie };
     }
 
-    private static string? ExtractUserId(HttpResponseMessage response) => ExtractCookie(response, UserIdCookieName);
+    private Guid ReadGuestId(string cookie)
+    {
+        using var scope = ApiHost.Services.CreateScope();
+        var accessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+        var previous = accessor.HttpContext;
+        try
+        {
+            var context = new DefaultHttpContext();
+            context.Request.Headers.Cookie = $"{UserIdCookieName}={cookie}";
+            accessor.HttpContext = context;
+            return scope.ServiceProvider.GetRequiredService<ICurrentUserService>().Id
+                ?? throw new InvalidOperationException("The issued guest cookie did not resolve through the host identity service.");
+        }
+        finally
+        {
+            accessor.HttpContext = previous;
+        }
+    }
 
     /// <summary>Lifts a cookie value out of the response's <c>Set-Cookie</c> headers, or null when absent.</summary>
     public static string? ExtractCookie(HttpResponseMessage response, string name)
@@ -194,44 +207,10 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
     Task IAsyncLifetime.InitializeAsync() => StartAsync().AsTask();
 
     /// <summary>Disposes the hosts, then the container.</summary>
-    Task IAsyncLifetime.DisposeAsync() => DisposeAsync().AsTask();
-}
-
-/// <summary>Represents a provisioned guest and the Api client carrying its cookie.</summary>
-/// <param name="Client">Api client carrying the <c>user-id</c> cookie.</param>
-/// <param name="UserId">The provisioned guest id (string form of the cookie value).</param>
-public sealed record GuestClient(HttpClient Client, string UserId);
-
-/// <summary>Defines the xUnit collection that shares one fixture across the E2E run.</summary>
-[CollectionDefinition(AppCollection.Name)]
-public sealed class AppCollection : ICollectionFixture<AppFixture>
-{
-    /// <summary>Holds the collection name every E2E test class joins.</summary>
-    public const string Name = "forever-pin-e2e";
-}
-
-/// <summary>Provides the shared fixture and per-test database reset for E2E tests.</summary>
-public abstract class E2EBase(AppFixture fixture) : IAsyncLifetime
-{
-    /// <summary>Gets the shared app fixture.</summary>
-    protected AppFixture Fixture { get; } = fixture;
-
-    /// <summary>Gets an Api client with no identity cookie.</summary>
-    protected HttpClient AnonymousClient => Fixture.CreateApiClient();
-
-    /// <summary>Gets a redirect client that does not auto-follow 302s.</summary>
-    protected HttpClient RedirectClient => Fixture.CreateRedirectClient();
-
-    /// <summary>Provisions a guest and returns a client carrying its cookie.</summary>
-    protected Task<GuestClient> CreateGuestClientAsync() => Fixture.CreateGuestClientAsync();
-
-    /// <summary>Resets the database and the fake gateway.</summary>
-    public async Task InitializeAsync()
+    async Task IAsyncLifetime.DisposeAsync()
     {
-        await Fixture.ResetAsync();
-        Fixture.Gateway.Reset();
+        await DisposeAsync();
+        if (Directory.Exists(_keyPath))
+            Directory.Delete(_keyPath, recursive: true);
     }
-
-    /// <inheritdoc />
-    public Task DisposeAsync() => Task.CompletedTask;
 }

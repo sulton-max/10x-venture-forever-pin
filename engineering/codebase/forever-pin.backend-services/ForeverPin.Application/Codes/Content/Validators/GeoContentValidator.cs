@@ -10,9 +10,11 @@ public sealed class GeoContentValidator : AbstractValidator<GeoContentValueObjec
     public GeoContentValidator()
     {
         RuleFor(content => content.Latitude)
+            .Must(double.IsFinite)
             .InclusiveBetween(-90, 90).WithMessage("Latitude must be between -90 and 90.");
 
         RuleFor(content => content.Longitude)
+            .Must(double.IsFinite)
             .InclusiveBetween(-180, 180).WithMessage("Longitude must be between -180 and 180.");
     }
 }

@@ -11,5 +11,6 @@ public sealed class DefaultRuleValidator : AbstractValidator<DefaultRuleValueObj
     /// <summary>Builds the catch-all rule's rules.</summary>
     public DefaultRuleValidator() =>
         RuleFor(rule => rule.Content)
+            .NotNull()
             .SetValidator(new CodeContentValidator());
 }

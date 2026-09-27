@@ -1,5 +1,4 @@
-using System.Text.Json.Serialization;
-using ForeverPin.Common.Domain.Serialization;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
 using ForeverPin.Domain.Codes.Core.Enums;
 
 namespace ForeverPin.Domain.Codes.Content;
@@ -21,11 +20,4 @@ public abstract record CodeContentValueObject
         (CodeContentType.VCard, typeof(VCard.Models.VCardContentValueObject)),
         (CodeContentType.Calendar, typeof(Calendar.Models.CalendarContentValueObject)));
 
-    /// <summary>Gets whether the content has an encoded payload.</summary>
-    /// <remarks>Encodes the content on each read.</remarks>
-    [JsonIgnore]
-    public bool IsStatic => Encode() is not null;
-
-    /// <summary>Encodes the content payload, or returns null when no payload encoder is available.</summary>
-    public abstract string? Encode();
 }

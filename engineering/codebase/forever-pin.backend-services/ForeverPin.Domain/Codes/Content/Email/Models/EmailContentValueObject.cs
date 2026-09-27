@@ -1,5 +1,3 @@
-using ForeverPin.Domain.Codes.Content.Email.Extensions;
-
 namespace ForeverPin.Domain.Codes.Content.Email.Models;
 
 /// <summary>Represents the recipient and prefilled draft of an email.</summary>
@@ -14,6 +12,4 @@ public sealed record EmailContentValueObject : CodeContentValueObject
     /// <summary>Gets the body prefilled in the composer.</summary>
     public string? Body { get; init; }
 
-    /// <inheritdoc />
-    public override string Encode() => this.ToPayload();
 }

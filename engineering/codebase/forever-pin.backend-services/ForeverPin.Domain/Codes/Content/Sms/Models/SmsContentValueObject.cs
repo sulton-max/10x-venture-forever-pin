@@ -1,5 +1,3 @@
-using ForeverPin.Domain.Codes.Content.Sms.Extensions;
-
 namespace ForeverPin.Domain.Codes.Content.Sms.Models;
 
 /// <summary>Represents the recipient and body of an SMS.</summary>
@@ -11,6 +9,4 @@ public sealed record SmsContentValueObject : CodeContentValueObject
     /// <summary>Gets the body prefilled in the composer.</summary>
     public string? Message { get; init; }
 
-    /// <inheritdoc />
-    public override string Encode() => this.ToPayload();
 }

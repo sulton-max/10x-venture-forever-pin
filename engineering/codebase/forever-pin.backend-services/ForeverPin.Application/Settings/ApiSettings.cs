@@ -1,11 +1,8 @@
-using WoW.Two.Sdk.Backend.Beta.Foundation.Configuration;
-
 namespace ForeverPin.Application.Settings;
 
 /// <summary>Represents the management API settings.</summary>
-public class ApiSettings
+public sealed record ApiSettings
 {
-    /// <summary>Gets or sets the base URL of the redirect service.</summary>
-    [EnvironmentVariable("REDIRECT_BASE_URL")]
-    public string RedirectBaseUrl { get; set; } = "https://localhost:7022";
+    /// <summary>Gets the base URL of the redirect service.</summary>
+    public string RedirectBaseUrl { get; init; } = "https://localhost:7022";
 }

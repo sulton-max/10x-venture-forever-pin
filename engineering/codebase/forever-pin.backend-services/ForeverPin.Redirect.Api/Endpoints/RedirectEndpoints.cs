@@ -1,3 +1,4 @@
+using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers;
 using System.Security.Cryptography;
 using System.Text;
 using ForeverPin.Redirect.Api.Application.Analytics.Models;
@@ -21,6 +22,8 @@ public static class RedirectEndpoints
         IDeviceMapper deviceMapper,
         IGeoBroker geoBroker,
         IScanRecorder recorder,
+        IAcceptLanguageParser languageParser,
+        TimeProvider clock,
         CancellationToken ct)
     {
         var code = await store.GetAsync(slug, ct);
@@ -30,13 +33,14 @@ public static class RedirectEndpoints
         var userAgent = http.Request.Headers.UserAgent.ToString();
         var ip = http.Connection.RemoteIpAddress?.ToString();
 
-        var context = new ScanContext
+        var context = new ScanContextModel
         {
             Slug = slug,
             Device = deviceMapper.Resolve(userAgent),
             CountryCode = geoBroker.ResolveCountry(ip),
-            Language = ParsePrimaryLanguage(http.Request.Headers.AcceptLanguage.ToString()),
-            NowUtc = DateTimeOffset.UtcNow,
+            LanguagePreferences = languageParser.Parse(http.Request.Headers.AcceptLanguage.ToString())
+                .Match(preferences => preferences, _ => []),
+            NowUtc = clock.GetUtcNow(),
             Referrer = NullIfEmpty(http.Request.Headers.Referer.ToString()),
             UserAgent = userAgent,
             IpAddress = ip,
@@ -46,7 +50,7 @@ public static class RedirectEndpoints
             return Results.NotFound();
 
         // Fire-and-forget — the redirect never waits on analytics.
-        recorder.Enqueue(new ScanRecord
+        recorder.Enqueue(new ScanRecordModel
         {
             CodeId = code.Id,
             ScannedAt = context.NowUtc,
@@ -60,17 +64,6 @@ public static class RedirectEndpoints
         });
 
         return Results.Redirect(redirect.Destination, permanent: false); // 302
-    }
-
-    private static string? ParsePrimaryLanguage(string acceptLanguage)
-    {
-        if (string.IsNullOrWhiteSpace(acceptLanguage))
-            return null;
-
-        // "ru-RU,ru;q=0.9,en;q=0.8" → "ru"
-        var first = acceptLanguage.Split(',')[0].Split(';')[0].Trim();
-        var primary = first.Split('-')[0].ToLowerInvariant();
-        return NullIfEmpty(primary);
     }
 
     private static string? OsFromUserAgent(string userAgent)

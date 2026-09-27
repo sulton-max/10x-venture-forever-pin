@@ -10,7 +10,7 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
 {
     /// <inheritdoc />
     public Task<SubscriptionEntity?> GetByUserAsync(Guid userId, CancellationToken ct) =>
-        db.Subscriptions.FirstOrDefaultAsync(s => s.UserId == userId, ct);
+        db.Subscriptions.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId, ct);
 
     /// <inheritdoc />
     public Task<SubscriptionEntity?> GetByStripeSubscriptionIdAsync(
@@ -21,6 +21,9 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
     /// <inheritdoc />
     public async Task<SubscriptionEntity> UpsertByUserAsync(SubscriptionEntity entity, CancellationToken ct)
     {
+        await using var transaction = await db.Database.BeginTransactionAsync(ct);
+        await db.AcquireOwnerLocksAsync([entity.UserId], ct);
+
         // Upsert the single subscription row identified by user_id.
         var existing = await db.Subscriptions.FirstOrDefaultAsync(s => s.UserId == entity.UserId, ct);
 
@@ -28,6 +31,7 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
         {
             db.Subscriptions.Add(entity);
             await db.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
             return entity;
         }
 
@@ -37,6 +41,7 @@ public sealed class SubscriptionRepository(AppDbContext db) : ISubscriptionRepos
         existing.StripeSubscriptionId = entity.StripeSubscriptionId;
         existing.CurrentPeriodEnd = entity.CurrentPeriodEnd;
         await db.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
         return existing;
     }
 }

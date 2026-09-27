@@ -1,3 +1,4 @@
+using ForeverPin.Domain.Codes.Serialization.Factories;
 using System.Text.Json;
 using ForeverPin.Common.Domain.Codes.Content.MobileApp.Enums;
 using ForeverPin.Common.Domain.Codes.Content.Wifi.Enums;
@@ -53,7 +54,7 @@ public sealed class CodeContentJsonTests
     [MemberData(nameof(Cases))]
     public void Serializes_with_the_camelCase_type_discriminator(CodeContentValueObject content, string discriminator)
     {
-        var json = CodeContentJson.Serialize(content);
+        var json = Serialize(content);
 
         using var document = JsonDocument.Parse(json);
         Assert.Equal(discriminator, document.RootElement.GetProperty("type").GetString());
@@ -64,7 +65,7 @@ public sealed class CodeContentJsonTests
     public void Round_trips_through_serialize_then_deserialize(CodeContentValueObject content, string discriminator)
     {
         _ = discriminator;
-        var restored = CodeContentJson.Deserialize(CodeContentJson.Serialize(content));
+        var restored = Deserialize(Serialize(content));
 
         Assert.NotNull(restored);
         Assert.Equal(content.GetType(), restored!.GetType());
@@ -77,7 +78,7 @@ public sealed class CodeContentJsonTests
         // Postgres jsonb reorders object keys, so a stored code can come back with "type" last, not first.
         var reordered = """{"ssid":"Cafe","password":"pw","encryption":"wpa","hidden":true,"type":"wifi"}""";
 
-        var restored = CodeContentJson.Deserialize(reordered);
+        var restored = Deserialize(reordered);
 
         var wifi = Assert.IsType<WifiContentValueObject>(restored);
         Assert.Equal("Cafe", wifi.Ssid);
@@ -85,10 +86,6 @@ public sealed class CodeContentJsonTests
         Assert.True(wifi.Hidden);
     }
 
-    [Fact]
-    public void Deserialize_null_or_blank_returns_null()
-    {
-        Assert.Null(CodeContentJson.Deserialize(null));
-        Assert.Null(CodeContentJson.Deserialize("   "));
-    }
+    private static string Serialize(CodeContentValueObject value) => JsonSerializer.Serialize(value, CodeJsonOptionsFactory.CreateContent());
+    private static CodeContentValueObject? Deserialize(string json) => JsonSerializer.Deserialize<CodeContentValueObject>(json, CodeJsonOptionsFactory.CreateContent());
 }

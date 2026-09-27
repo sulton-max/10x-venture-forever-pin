@@ -8,9 +8,13 @@ namespace ForeverPin.Application.Codes.Content.Validators;
 public sealed class MobileAppLinkContentValidator : AbstractValidator<MobileAppLinkContentValueObject>
 {
     /// <summary>Builds the store-link rules.</summary>
-    public MobileAppLinkContentValidator() =>
+    public MobileAppLinkContentValidator()
+    {
+        RuleFor(content => content.Store).IsInEnum();
+
         RuleFor(content => content.Url)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Store URL is required.")
             .Must(CodeValidationRules.IsAbsoluteHttpUrl).WithMessage("Store URL must be an absolute http(s) URL.");
+    }
 }

@@ -5,7 +5,7 @@ using ForeverPin.Application.Billing.Core.Models;
 using ForeverPin.Application.Billing.Core.Services;
 using ForeverPin.Domain.Billing.Entities;
 using ForeverPin.Domain.Billing.Enums;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
 using BillingSettings = ForeverPin.Application.Settings.BillingSettings;
@@ -24,47 +24,32 @@ public sealed class BillingWebhookCommandHandler(
     public async ValueTask<AppResult<BillingWebhookResult.Success>> HandleAsync(
         BillingWebhookCommand request, CancellationToken ct)
     {
-        BillingWebhookEvent webhookEvent;
-        try
+        var parsed = await gateway.ParseWebhookEventAsync(request.RawBody, request.StripeSignature, ct);
+        if (parsed is Result<BillingWebhookEvent>.Failure failure)
+            return AppResult<BillingWebhookResult.Success>.Fail(failure.Error);
+
+        var webhookEvent = ((Result<BillingWebhookEvent>.Success)parsed).Value;
+        switch (webhookEvent.Type)
         {
-            // Signature verification lives in the gateway (real one uses Stripe's EventUtility.ConstructEvent).
-            webhookEvent = gateway.ParseWebhookEvent(request.RawBody, request.StripeSignature);
+            case BillingWebhookEventType.CheckoutSessionCompleted:
+                await UpsertFromCheckoutAsync(webhookEvent, ct);
+                break;
+
+            case BillingWebhookEventType.SubscriptionUpdated:
+                await RefreshFromSubscriptionAsync(webhookEvent, SubscriptionStatus.Active, ct);
+                break;
+
+            case BillingWebhookEventType.SubscriptionDeleted:
+                await RefreshFromSubscriptionAsync(webhookEvent, SubscriptionStatus.Canceled, ct);
+                break;
+
+            case BillingWebhookEventType.Ignored:
+            default:
+                // Acknowledge unhandled events with 200 so Stripe doesn't retry them.
+                break;
         }
-        catch (Exception ex)
-        {
-            logger.LogWarning(ex, "Stripe webhook signature verification failed");
-            return AppResult<BillingWebhookResult.Success>.Fail(AppError.Of(AppErrorType.Validation, ex.Message));
-        }
 
-        try
-        {
-            switch (webhookEvent.Type)
-            {
-                case BillingWebhookEventType.CheckoutSessionCompleted:
-                    await UpsertFromCheckoutAsync(webhookEvent, ct);
-                    break;
-
-                case BillingWebhookEventType.SubscriptionUpdated:
-                    await RefreshFromSubscriptionAsync(webhookEvent, SubscriptionStatus.Active, ct);
-                    break;
-
-                case BillingWebhookEventType.SubscriptionDeleted:
-                    await RefreshFromSubscriptionAsync(webhookEvent, SubscriptionStatus.Canceled, ct);
-                    break;
-
-                case BillingWebhookEventType.Ignored:
-                default:
-                    // Acknowledge unhandled events with 200 so Stripe doesn't retry them.
-                    break;
-            }
-
-            return AppResult<BillingWebhookResult.Success>.Ok(new BillingWebhookResult.Success());
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "BillingWebhook processing failed for event {EventType}", webhookEvent.Type);
-            return AppResult<BillingWebhookResult.Success>.Fail(AppError.Of(AppErrorType.Unexpected, ex.Message));
-        }
+        return AppResult<BillingWebhookResult.Success>.Ok(new BillingWebhookResult.Success());
     }
 
     /// <summary>Upserts the subscription row from a completed Checkout session.</summary>

@@ -1,53 +1,63 @@
-using Microsoft.Extensions.Logging;
+using System.Buffers.Binary;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Application.Identity.Core.Commands;
 using ForeverPin.Application.Identity.Core.Models;
 using ForeverPin.Application.Identity.Core.Services;
 using ForeverPin.Domain.Identity.Entities;
+using ForeverPin.Persistence.DataContexts;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
-using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google;
+using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google.Authenticators;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
 
 namespace ForeverPin.Infrastructure.Identity.CommandHandlers;
 
-/// <summary>Handles <see cref="GoogleSignInCommand"/>.</summary>
+/// <summary>Authenticates an account and atomically claims its validated guest's codes.</summary>
 public sealed class GoogleSignInCommandHandler(
-    IGoogleIdTokenVerifier verifier,
+    IEnumerable<IGoogleIdTokenAuthenticator> authenticators,
     IUserRepository users,
     ICodeRepository codes,
-    ILogger<GoogleSignInCommandHandler> logger)
+    AppDbContext db)
     : ICommandHandler<GoogleSignInCommand, AppResult<GoogleSignInResult.Success>>
 {
     /// <inheritdoc />
     public async ValueTask<AppResult<GoogleSignInResult.Success>> HandleAsync(
         GoogleSignInCommand request, CancellationToken ct)
     {
-        try
+        var authenticator = authenticators.SingleOrDefault();
+        if (authenticator is null)
+            return AppResult<GoogleSignInResult.Success>.Fail(AppError.Of(
+                AppErrorType.ExternalUnavailable, "Google sign-in is not configured."));
+        var identity = await authenticator.AuthenticateAsync(request.IdToken, ct);
+        if (identity is null)
+            return AppResult<GoogleSignInResult.Success>.Fail(AppError.Of(
+                AppErrorType.Unauthorized, "The Google token could not be verified."));
+
+        await using var transaction = await db.Database.BeginTransactionAsync(ct);
+        // Serialize one provider subject before reading it; owner locks use their own acquisition phase.
+        if (db.Database.IsNpgsql())
         {
-            var identity = await verifier.VerifyAsync(request.IdToken, ct);
-            if (identity is null)
-                return AppResult<GoogleSignInResult.Success>.Fail(AppError.Of(
-                    AppErrorType.Unauthorized,
-                    "The Google token could not be verified."));
+            var key = BinaryPrimitives.ReadInt64LittleEndian(
+                SHA256.HashData(Encoding.UTF8.GetBytes($"google-subject:{identity.Subject}")));
+            await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock({key})", ct);
+        }
 
-            var existing = await users.FindByGoogleSubjectAsync(identity.Subject, ct);
+        var account = await users.FindByGoogleSubjectAsync(identity.Subject, ct);
+        var accountId = account?.Id ?? Guid.NewGuid();
+        await db.AcquireOwnerLocksAsync(request.GuestId is { } guest
+            ? [guest, accountId] : [accountId], ct);
+        // A guest capability can never authorize moving an existing account's data.
+        if (request.GuestId is { } claimedGuest && await users.FindByIdAsync(claimedGuest, ct) is not null)
+            return AppResult<GoogleSignInResult.Success>.Fail(AppError.Of(
+                AppErrorType.Unauthorized, "A registered account cannot be claimed as a guest."));
 
-            // Returning account: claim any guest codes created on this device, then return it.
-            if (existing is not null)
-            {
-                if (request.GuestId is { } returningGuest && returningGuest != existing.Id)
-                    await codes.ReassignOwnerAsync(returningGuest, existing.Id, ct);
-
-                return Ok(existing);
-            }
-
-            // Reuse an available guest id to retain code ownership; otherwise reassign codes to a new account id.
-            var accountId = request.GuestId is { } guestId && await users.FindByIdAsync(guestId, ct) is null
-                ? guestId
-                : Guid.NewGuid();
-
-            var account = await users.AddAsync(new UserEntity
+        if (account is null)
+        {
+            // Never promote a guest ID: its signed guest capability must not become account authorization.
+            account = await users.AddAsync(new UserEntity
             {
                 Id = accountId,
                 GoogleSubject = identity.Subject,
@@ -55,22 +65,11 @@ public sealed class GoogleSignInCommandHandler(
                 Name = identity.Name,
                 AvatarUrl = identity.Picture,
             }, ct);
-
-            if (request.GuestId is { } newGuest && newGuest != accountId)
-                await codes.ReassignOwnerAsync(newGuest, accountId, ct);
-
-            return Ok(account);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Google sign-in failed.");
-            return AppResult<GoogleSignInResult.Success>.Fail(AppError.Of(AppErrorType.Unexpected, ex.Message));
-        }
+        if (request.GuestId is { } guestId)
+            await codes.ReassignOwnerAsync(guestId, accountId, ct);
+        await transaction.CommitAsync(ct);
+        return AppResult<GoogleSignInResult.Success>.Ok(new GoogleSignInResult.Success(
+            new UserSummaryModel(account.Id, account.Name, account.Email)));
     }
-
-    private static AppResult<GoogleSignInResult.Success> Ok(UserEntity user) =>
-        AppResult<GoogleSignInResult.Success>.Ok(new GoogleSignInResult.Success(new UserSummaryDto(
-            user.Id,
-            user.Name,
-            user.Email)));
 }

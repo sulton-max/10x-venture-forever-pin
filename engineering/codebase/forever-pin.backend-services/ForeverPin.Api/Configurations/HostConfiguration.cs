@@ -11,7 +11,7 @@ public static partial class HostConfiguration
     /// <returns>The same <paramref name="builder"/> for chaining.</returns>
     public static WebApplicationBuilder Configure(this WebApplicationBuilder builder)
     {
-        builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
+        builder.AddConfiguration();
 
         // Lay the SDK boot floor before any product seam.
         builder.AddApiDefaults(o =>
@@ -26,9 +26,9 @@ public static partial class HostConfiguration
 
         builder
             .AddSettings()
-            .AddPersistence()
-            .AddCodeServices()
-            .AddApplicationServices()
+            .AddPostgresDatabase()
+            .AddCodes()
+            .AddMediator()
             .AddIdentity()
             .AddAuth()
             .AddBilling()
@@ -40,10 +40,10 @@ public static partial class HostConfiguration
     /// <summary>Configures the middleware pipeline and endpoints after startup tasks run.</summary>
     /// <param name="app">The built web application to configure.</param>
     /// <returns>The same <paramref name="app"/> for chaining.</returns>
-    public static WebApplication Configure(this WebApplication app)
+    public static async Task<WebApplication> ConfigureAsync(this WebApplication app)
     {
         // Apply pending migrations before serving — advisory-locked, blocks once at startup.
-        app.Services.MigrateBespokeOnStartupAsync().GetAwaiter().GetResult();
+        await app.Services.MigrateBespokeOnStartupAsync(app.Lifetime.ApplicationStopping);
 
         // Google sign-in popups need their opener, so SPA HTML overrides the SDK isolation headers.
         // Register before static files and SDK middleware: OnStarting runs in reverse registration order.
@@ -53,10 +53,11 @@ public static partial class HostConfiguration
         app.UseDefaultFiles();
         app.UseStaticFiles();
 
-        app.UseApiDefaults();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
+        app.UseApiDefaults(pipeline =>
+        {
+            pipeline.UseAuthentication();
+            pipeline.UseAuthorization();
+        });
 
         app.MapControllers();
 

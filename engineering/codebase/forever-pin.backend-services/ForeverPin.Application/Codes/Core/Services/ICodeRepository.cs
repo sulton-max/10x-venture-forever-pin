@@ -1,4 +1,5 @@
 using ForeverPin.Domain.Codes.Core.Entities;
+using ForeverPin.Application.Codes.Core.Enums;
 
 namespace ForeverPin.Application.Codes.Core.Services;
 
@@ -7,6 +8,10 @@ public interface ICodeRepository
 {
     /// <summary>Inserts a code (with its rules) and returns it.</summary>
     Task<CodeEntity> AddAsync(CodeEntity code, CancellationToken ct);
+
+    /// <summary>Atomically inserts below the owner's cap, reporting quota and public-slug conflicts.</summary>
+    /// <remarks>Joins the caller's transaction when present; a rejected slug rolls back only its insert attempt.</remarks>
+    Task<CodeInsertStatus> AddWithinLimitAsync(CodeEntity code, int limit, CancellationToken ct);
 
     /// <summary>Loads a code (including rules) by id, or null.</summary>
     Task<CodeEntity?> GetByIdAsync(Guid id, CancellationToken ct);
@@ -33,5 +38,6 @@ public interface ICodeRepository
     Task<int> CountByUserAsync(Guid userId, CancellationToken ct);
 
     /// <summary>Reassigns every code owned by <paramref name="fromUserId"/> to <paramref name="toUserId"/>.</summary>
+    /// <remarks>The caller owns the transaction containing account creation and the ownership transfer.</remarks>
     Task<int> ReassignOwnerAsync(Guid fromUserId, Guid toUserId, CancellationToken ct);
 }

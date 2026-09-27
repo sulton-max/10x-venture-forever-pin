@@ -1,3 +1,11 @@
+using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
+using ForeverPin.Domain.Codes.Rules.Mappers;
+using ForeverPin.Common.Domain.Codes.Content.MobileApp.Enums;
+using ForeverPin.Domain.Codes.Content.MobileApp.Models;
+using ForeverPin.Domain.Codes.Content.Text.Models;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Exporters;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Serializers;
 using ForeverPin.Common.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Content.Phone.Models;
 using ForeverPin.Domain.Codes.Content.Url.Models;
@@ -13,7 +21,7 @@ namespace ForeverPin.Tests.Unit;
 /// <remarks>Carry <see cref="PhoneContentValueObject"/> in a rule to exercise a Redirect.</remarks>
 public class RoutingServiceTests
 {
-    private readonly RoutingService _routingService = new();
+    private readonly RoutingService _routingService = new(new CodePayloadMapper(new CodePayloadSerializer(), new VCardExporter(), new FloatingCalendarEventExporter()));
 
     [Theory]
     [InlineData("https://example.com/path", true)]
@@ -45,7 +53,7 @@ public class RoutingServiceTests
         Rules = [.. rules],
     };
 
-    private static ScanContext Context(DeviceType device) => new()
+    private static ScanContextModel Context(DeviceType device) => new()
     {
         Slug = "abc1234",
         Device = device,
@@ -112,5 +120,53 @@ public class RoutingServiceTests
         var result = _routingService.Evaluate(code, Context(DeviceType.Ios));
 
         Assert.IsType<RoutingResult.NotFound>(result);
+    }
+
+    [Theory]
+    [InlineData("https://apps.apple.com/a", true)]
+    [InlineData("javascript:alert(1)", false)]
+    [InlineData("https://user:password@example.com", false)]
+    public void Mobile_app_rules_use_validated_store_destinations(string url, bool redirects)
+    {
+        var code = Code(new DefaultRuleValueObject { Content = new MobileAppLinkContentValueObject { Store = MobileAppStoreType.AppStore, Url = url } });
+        var result = _routingService.Evaluate(code, Context(DeviceType.Ios));
+        if (redirects) Assert.Equal(url, Assert.IsType<RoutingResult.Redirect>(result).Destination);
+        else Assert.IsType<RoutingResult.NotFound>(result);
+    }
+
+    [Theory]
+    [InlineData("javascript:alert(1)")]
+    [InlineData("/relative")]
+    [InlineData("ordinary text")]
+    [InlineData("https://example.com/text-is-not-a-url-rule")]
+    public void Text_documents_are_not_interpreted_as_redirect_locations(string text)
+    {
+        var code = Code(new DefaultRuleValueObject { Content = new TextContentValueObject { Text = text } });
+        Assert.IsType<RoutingResult.NotFound>(_routingService.Evaluate(code, Context(DeviceType.Desktop)));
+    }
+
+    [Theory]
+    [InlineData("2026-01-01T23:45:00Z", true)]
+    [InlineData("2026-01-02T00:30:00Z", true)]
+    [InlineData("2026-01-02T01:00:00Z", false)]
+    public void Utc_time_windows_wrap_midnight_and_exclude_the_end(string instant, bool matches)
+    {
+        var rule = DeviceRule(1, "23:30-01:00", "+1000000001") with { Condition = RuleConditionType.TimeOfDay };
+        var result = _routingService.Evaluate(Code(rule), Context(DeviceType.Desktop) with { NowUtc = DateTimeOffset.Parse(instant) });
+        Assert.Equal(matches, result is RoutingResult.Redirect);
+    }
+
+    [Theory]
+    [InlineData("en", "en-US;q=0.8,ru;q=0.2", true)]
+    [InlineData("en-US", "en;q=1,en-US;q=0", false)]
+    [InlineData("en-US", "en;q=0,en-US;q=0.8", true)]
+    [InlineData("en", "en;q=0,*;q=1", false)]
+    [InlineData("en", "*;q=1", false)]
+    [InlineData("ru", "en;q=0.8,ru;q=0.2", true)]
+    public void Language_preferences_preserve_specific_exclusions_and_ignore_wildcard_only_matching(string language, string header, bool matches)
+    {
+        var rule = DeviceRule(1, language, "+1000000001") with { Condition = RuleConditionType.Language };
+        var context = Context(DeviceType.Desktop) with { LanguagePreferences = new AcceptLanguageParser().Parse(header).ValueOrThrow() };
+        Assert.Equal(matches, _routingService.Evaluate(Code(rule), context) is RoutingResult.Redirect);
     }
 }

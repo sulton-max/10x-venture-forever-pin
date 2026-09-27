@@ -1,8 +1,8 @@
 namespace ForeverPin.Redirect.Api.Settings;
 
 /// <summary>Represents the redirect-service settings.</summary>
-public class RedirectSettings
+public sealed record RedirectSettings
 {
-    /// <summary>Gets or sets the in-memory code-cache lifetime, in seconds.</summary>
-    public int ConfigCacheSeconds { get; set; } = 30;
+    /// <summary>Gets the in-memory code-cache lifetime, in seconds.</summary>
+    public int ConfigCacheSeconds { get; init; } = 30;
 }

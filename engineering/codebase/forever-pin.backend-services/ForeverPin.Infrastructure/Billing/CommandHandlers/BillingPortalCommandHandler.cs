@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using ForeverPin.Application.Billing.Core.Commands;
 using ForeverPin.Application.Billing.Core.Models;
 using ForeverPin.Application.Billing.Core.Services;
@@ -13,32 +12,23 @@ namespace ForeverPin.Infrastructure.Billing.CommandHandlers;
 public sealed class BillingPortalCommandHandler(
     ISubscriptionRepository subscriptions,
     IBillingBroker gateway,
-    BillingSettings settings,
-    ILogger<BillingPortalCommandHandler> logger)
+    BillingSettings settings)
     : ICommandHandler<BillingPortalCommand, AppResult<BillingPortalResult.Success>>
 {
     /// <inheritdoc />
     public async ValueTask<AppResult<BillingPortalResult.Success>> HandleAsync(
         BillingPortalCommand request, CancellationToken ct)
     {
-        try
-        {
-            var subscription = await subscriptions.GetByUserAsync(request.UserId, ct);
+        var subscription = await subscriptions.GetByUserAsync(request.UserId, ct);
 
-            // No row, or a row without a Stripe customer, means there's nothing to manage in the portal.
-            if (subscription is null || string.IsNullOrWhiteSpace(subscription.StripeCustomerId))
-                return Failure("No billing customer to manage — start a subscription first.", AppErrorType.NotFound);
+        // No row, or a row without a Stripe customer, means there's nothing to manage in the portal.
+        if (subscription is null || string.IsNullOrWhiteSpace(subscription.StripeCustomerId))
+            return Failure("No billing customer to manage — start a subscription first.", AppErrorType.NotFound);
 
-            var url = await gateway.CreatePortalSessionAsync(subscription.StripeCustomerId, settings.CancelUrl, ct);
+        var url = await gateway.CreatePortalSessionAsync(subscription.StripeCustomerId, settings.CancelUrl, ct);
 
-            return AppResult<BillingPortalResult.Success>.Ok(
-            new BillingPortalResult.Success(new PortalSessionDto { Url = url }));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "BillingPortal failed for user {UserId}", request.UserId);
-            return Failure(ex.Message, AppErrorType.Unexpected);
-        }
+        return AppResult<BillingPortalResult.Success>.Ok(
+            new BillingPortalResult.Success(new PortalSessionModel { Url = url }));
     }
 
     private static AppResult<BillingPortalResult.Success> Failure(

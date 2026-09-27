@@ -4,6 +4,8 @@ using ForeverPin.Domain.Codes.Content.Phone.Models;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Rules.Models;
+using ForeverPin.Domain.Codes.Rules.Mappers;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Redirect.Api.Application.Routing.Models;
 using ForeverPin.Redirect.Api.Application.Routing.Services;
@@ -14,7 +16,6 @@ using ForeverPin.Tests.Integration.Harness;
 namespace ForeverPin.Tests.Integration;
 
 /// <summary>The redirect data path — seeded code → cached store → evaluator → destination.</summary>
-/// <remarks>Carry <see cref="PhoneContentValueObject"/> in a rule — url content encodes to null.</remarks>
 public class RedirectResolutionTests(ForeverPinTestDb db) : RepositoryTestBase(db)
 {
     /// <summary>Builds the redirect routing services over the shared test database.</summary>
@@ -23,6 +24,8 @@ public class RedirectResolutionTests(ForeverPinTestDb db) : RepositoryTestBase(d
         var services = new ServiceCollection();
         services.AddScoped(_ => Db.NewContext());
         services.AddMemoryCache();
+        services.AddCodePayloads();
+        services.AddSingleton<CodePayloadMapper>();
         services.AddSingleton(new RedirectSettings { ConfigCacheSeconds = 30 });
         services.AddSingleton<IRoutingService, RoutingService>();
         services.AddSingleton<IRedirectCodeRepository, CachedRedirectCodeRepository>();
@@ -60,7 +63,7 @@ public class RedirectResolutionTests(ForeverPinTestDb db) : RepositoryTestBase(d
         await ctx.SaveChangesAsync();
     }
 
-    private static ScanContext Scan(string slug, DeviceType device) => new()
+    private static ScanContextModel Scan(string slug, DeviceType device) => new()
     {
         Slug = slug,
         Device = device,

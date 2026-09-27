@@ -7,9 +7,16 @@ namespace ForeverPin.Application.Codes.Content.Validators;
 public sealed class EmailContentValidator : AbstractValidator<EmailContentValueObject>
 {
     /// <summary>Builds the email-content rules.</summary>
-    public EmailContentValidator() =>
+    public EmailContentValidator()
+    {
         RuleFor(content => content.To)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Recipient is required.")
-            .EmailAddress().WithMessage("Recipient must be a valid email address.");
+            .EmailAddress().WithMessage("Recipient must be a valid email address.")
+            .Must(value => value is not null && !value.Any(char.IsControl));
+
+        RuleFor(content => content.Subject)
+            .Must(value => value is null || (!value.Contains('\r') && !value.Contains('\n')))
+            .WithMessage("Subject must not contain line breaks.");
+    }
 }

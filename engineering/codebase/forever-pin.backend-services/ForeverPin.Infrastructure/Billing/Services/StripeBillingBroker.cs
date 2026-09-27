@@ -1,4 +1,6 @@
 using Stripe;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using Stripe.Checkout;
 using ForeverPin.Application.Billing.Core.Models;
 using ForeverPin.Application.Billing.Core.Services;
@@ -40,14 +42,24 @@ public sealed class StripeBillingBroker(BillingSettings settings) : IBillingBrok
     }
 
     /// <inheritdoc />
-    public BillingWebhookEvent ParseWebhookEvent(string rawBody, string stripeSignatureHeader)
+    public async Task<Result<BillingWebhookEvent>> ParseWebhookEventAsync(
+        string rawBody, string stripeSignatureHeader, CancellationToken ct)
     {
-        // Throws StripeException on a bad signature — the handler maps that to 400 so Stripe retries.
-        var stripeEvent = EventUtility.ConstructEvent(rawBody, stripeSignatureHeader, settings.WebhookSecret);
-
-        return stripeEvent.Type switch
+        ct.ThrowIfCancellationRequested();
+        Event stripeEvent;
+        try
         {
-            EventTypes.CheckoutSessionCompleted => FromCheckout((Session)stripeEvent.Data.Object),
+            stripeEvent = EventUtility.ConstructEvent(rawBody, stripeSignatureHeader, settings.WebhookSecret);
+        }
+        catch (Exception ex) when (ex is StripeException or Newtonsoft.Json.JsonException)
+        {
+            return Result<BillingWebhookEvent>.Fail(AppError.Of(
+                AppErrorType.Validation, "The webhook payload or signature is invalid."));
+        }
+
+        var parsed = stripeEvent.Type switch
+        {
+            EventTypes.CheckoutSessionCompleted => await FromCheckoutAsync((Session)stripeEvent.Data.Object, ct),
             EventTypes.CustomerSubscriptionUpdated => FromSubscription(
                 (Subscription)stripeEvent.Data.Object,
                 BillingWebhookEventType.SubscriptionUpdated),
@@ -56,17 +68,19 @@ public sealed class StripeBillingBroker(BillingSettings settings) : IBillingBrok
                 BillingWebhookEventType.SubscriptionDeleted),
             _ => new BillingWebhookEvent { Type = BillingWebhookEventType.Ignored },
         };
+        return Result<BillingWebhookEvent>.Ok(parsed);
     }
 
     /// <summary>Flattens a completed Checkout session, expanding the subscription for price and period end.</summary>
-    private BillingWebhookEvent FromCheckout(Session session)
+    private async Task<BillingWebhookEvent> FromCheckoutAsync(Session session, CancellationToken ct)
     {
         string? priceId = null;
         DateTimeOffset? periodEnd = null;
 
         if (!string.IsNullOrWhiteSpace(session.SubscriptionId))
         {
-            var subscription = new SubscriptionService().Get(session.SubscriptionId, requestOptions: Request);
+            var subscription = await new SubscriptionService().GetAsync(
+                session.SubscriptionId, requestOptions: Request, cancellationToken: ct);
             var item = subscription.Items?.Data?.FirstOrDefault();
             priceId = item?.Price?.Id;
             if (item is not null)

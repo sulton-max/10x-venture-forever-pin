@@ -1,10 +1,8 @@
-using Microsoft.Extensions.Logging;
 using ForeverPin.Application.Codes.Core.Models;
 using ForeverPin.Application.Codes.Core.Queries;
 using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Infrastructure.Codes.Core.Extensions;
 using ForeverPin.Application.Settings;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
 
@@ -13,25 +11,16 @@ namespace ForeverPin.Infrastructure.Codes.Core.QueryHandlers;
 /// <summary>Handles <see cref="CodeListQuery"/>.</summary>
 public sealed class CodeListQueryHandler(
     ICodeRepository repository,
-    ApiSettings settings,
-    ILogger<CodeListQueryHandler> logger)
+    ApiSettings settings)
     : IQueryHandler<CodeListQuery, AppResult<CodeListResult.Success>>
 {
     /// <inheritdoc />
     public async ValueTask<AppResult<CodeListResult.Success>> HandleAsync(
         CodeListQuery request, CancellationToken ct)
     {
-        try
-        {
-            var codes = await repository.ListByUserAsync(request.UserId, request.Q, ct);
-            var dtos = codes.Select(c => c.ToDto(settings.RedirectBaseUrl)).ToList();
+        var codes = await repository.ListByUserAsync(request.UserId, request.Q, ct);
+        var models = codes.Select(c => c.ToModel(settings.RedirectBaseUrl)).ToList();
 
-            return AppResult<CodeListResult.Success>.Ok(new CodeListResult.Success(dtos));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "CodeList failed for user {UserId}", request.UserId);
-            return AppResult<CodeListResult.Success>.Fail(AppError.Of(AppErrorType.Unexpected, ex.Message));
-        }
+        return AppResult<CodeListResult.Success>.Ok(new CodeListResult.Success(models));
     }
 }

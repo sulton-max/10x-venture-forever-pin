@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using ForeverPin.Application.Codes.Core.Commands;
 using ForeverPin.Application.Codes.Core.Models;
 using ForeverPin.Application.Codes.Core.Services;
@@ -10,27 +9,18 @@ namespace ForeverPin.Infrastructure.Codes.Core.CommandHandlers;
 
 /// <summary>Handles <see cref="CodeDeleteCommand"/>.</summary>
 public sealed class CodeDeleteCommandHandler(
-    ICodeRepository repository,
-    ILogger<CodeDeleteCommandHandler> logger)
+    ICodeRepository repository)
     : ICommandHandler<CodeDeleteCommand, AppResult<CodeDeleteResult.Success>>
 {
     /// <inheritdoc />
     public async ValueTask<AppResult<CodeDeleteResult.Success>> HandleAsync(
         CodeDeleteCommand request, CancellationToken ct)
     {
-        try
-        {
-            var deleted = await repository.DeleteAsync(request.Id, request.UserId, ct);
+        var deleted = await repository.DeleteAsync(request.Id, request.UserId, ct);
 
-            if (!deleted)
-                return AppResult<CodeDeleteResult.Success>.Fail(AppError.Of(AppErrorType.NotFound, "Code not found"));
+        if (!deleted)
+            return AppResult<CodeDeleteResult.Success>.Fail(AppError.Of(AppErrorType.NotFound, "Code not found"));
 
-            return AppResult<CodeDeleteResult.Success>.Ok(new CodeDeleteResult.Success());
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "CodeDelete failed for {CodeId} user {UserId}", request.Id, request.UserId);
-            return AppResult<CodeDeleteResult.Success>.Fail(AppError.Of(AppErrorType.Unexpected, ex.Message));
-        }
+        return AppResult<CodeDeleteResult.Success>.Ok(new CodeDeleteResult.Success());
     }
 }

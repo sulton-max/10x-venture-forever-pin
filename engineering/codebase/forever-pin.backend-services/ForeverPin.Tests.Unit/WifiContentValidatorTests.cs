@@ -1,3 +1,7 @@
+using ForeverPin.Domain.Codes.Rules.Mappers;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Exporters;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Serializers;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using ForeverPin.Application.Codes.Content.Validators;
 using ForeverPin.Common.Domain.Codes.Content.Wifi.Enums;
 using ForeverPin.Domain.Codes.Content.Wifi.Models;
@@ -49,6 +53,6 @@ public sealed class WifiContentValidatorTests
         var network = Network(WifiEncryption.None, "ignored");
 
         Assert.True(_validator.Validate(network).IsValid);
-        Assert.DoesNotContain("ignored", network.Encode());
+        Assert.DoesNotContain("ignored", new CodePayloadMapper(new CodePayloadSerializer(), new VCardExporter(), new FloatingCalendarEventExporter()).Map(network).ValueOrThrow());
     }
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using AwesomeAssertions;
+using Microsoft.EntityFrameworkCore;
 using ForeverPin.Tests.E2E.Harness;
 using ForeverPin.Tests.E2E.Support;
 using WoW.Two.Sdk.Backend.Beta.Testing.Web;
@@ -64,6 +65,71 @@ public sealed class AuthTests(AppFixture fixture) : E2EBase(fixture)
         // The account now owns the code the guest made.
         var codes = await (await authed.GetAsync("/api/codes")).ReadEnvelopeAsync<IReadOnlyList<CodeDtoModel>>();
         codes.Should().ContainSingle(c => c.Id == created.Id);
+
+        var account = await (await authed.GetAsync("/api/identity/me")).ReadEnvelopeAsync<MeWithUserDto>();
+        account.User!.Id.Should().NotBe(guest.UserId);
+        (await guest.Client.GetAsync($"/api/codes/{created.Id}")).StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SignIn_ShouldLeaveVictimCodesOwned_WhenGuestCookieIsForged(bool tampered)
+    {
+        var victim = await CreateGuestClientAsync();
+        var code = await (await victim.Client.PostJsonAsync("/api/codes",
+            CodeRequests.StaticUrl("Victim", "https://example.com/private")))
+            .ReadEnvelopeAsync<CodeDtoModel>();
+        using var attacker = Fixture.CreateApiClient();
+        var cookie = tampered
+            ? victim.Cookie[..20] + (victim.Cookie[20] == 'A' ? 'B' : 'A') + victim.Cookie[21..]
+            : victim.UserId.ToString();
+        attacker.DefaultRequestHeaders.Add("Cookie", $"{AppFixture.UserIdCookieName}={cookie}");
+
+        var (response, signedIn) = await SignInAsync(Token("attacker", "attacker@example.com", "Attacker"), attacker);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var codes = await (await signedIn.GetAsync("/api/codes")).ReadEnvelopeAsync<IReadOnlyList<CodeDtoModel>>();
+        codes.Should().BeEmpty();
+        (await victim.Client.GetAsync($"/api/codes/{code.Id}")).StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task SignIn_ShouldCreateOneAccount_WhenSubjectSignsInConcurrently()
+    {
+        var responses = await Task.WhenAll(Enumerable.Range(0, 8).Select(_ =>
+            SignInAsync(Token("concurrent-subject", "same@example.com", "Same"))));
+
+        foreach (var (response, _) in responses)
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var accounts = await Task.WhenAll(responses.Select(async result =>
+            await (await result.Authed.GetAsync("/api/identity/me")).ReadEnvelopeAsync<MeWithUserDto>()));
+        accounts.Select(account => account.User!.Id).Distinct().Should().ContainSingle();
+        await using var context = Fixture.NewDbContext();
+        (await context.Users.CountAsync(user => user.GoogleSubject == "concurrent-subject")).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task SignIn_ShouldClaimWholeGuestOwnership_WhenDifferentAccountsCompete()
+    {
+        var guest = await CreateGuestClientAsync();
+        var first = await (await guest.Client.PostJsonAsync("/api/codes",
+            CodeRequests.StaticUrl("First", "https://example.com/first"))).ReadEnvelopeAsync<CodeDtoModel>();
+        var second = await (await guest.Client.PostJsonAsync("/api/codes",
+            CodeRequests.StaticUrl("Second", "https://example.com/second"))).ReadEnvelopeAsync<CodeDtoModel>();
+
+        var claims = await Task.WhenAll(
+            SignInAsync(Token("claim-a", "a@example.com", "A"), guest.Client),
+            SignInAsync(Token("claim-b", "b@example.com", "B"), guest.Client));
+
+        foreach (var (response, _) in claims)
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var lists = await Task.WhenAll(claims.Select(async claim =>
+            await (await claim.Authed.GetAsync("/api/codes")).ReadEnvelopeAsync<IReadOnlyList<CodeDtoModel>>()));
+        lists.Select(list => list.Count).Should().BeEquivalentTo([0, 2]);
+        lists.SelectMany(list => list).Select(code => code.Id).Should().BeEquivalentTo([first.Id, second.Id]);
+        await using var context = Fixture.NewDbContext();
+        (await context.Codes.Select(code => code.UserId).Distinct().ToListAsync()).Should().ContainSingle();
+        (await context.Codes.AnyAsync(code => code.UserId == guest.UserId)).Should().BeFalse();
     }
 
     [Fact]

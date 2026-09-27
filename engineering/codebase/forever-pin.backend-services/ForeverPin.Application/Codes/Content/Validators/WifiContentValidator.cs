@@ -10,6 +10,8 @@ public sealed class WifiContentValidator : AbstractValidator<WifiContentValueObj
     /// <summary>Builds the wifi-content rules.</summary>
     public WifiContentValidator()
     {
+        RuleFor(content => content.Encryption).IsInEnum();
+
         RuleFor(content => content.Ssid).NotEmpty().WithMessage("Network name is required.");
 
         // An open network carries no password; every other scheme needs one to be joinable.

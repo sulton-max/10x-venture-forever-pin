@@ -7,5 +7,5 @@ public abstract record BillingPortalResult
 
     /// <summary>Represents a created Customer Portal session.</summary>
     /// <param name="Session">The created Customer Portal session.</param>
-    public sealed record Success(PortalSessionDto Session) : BillingPortalResult;
+    public sealed record Success(PortalSessionModel Session) : BillingPortalResult;
 }

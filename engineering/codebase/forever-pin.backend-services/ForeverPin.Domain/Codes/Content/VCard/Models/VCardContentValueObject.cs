@@ -1,5 +1,3 @@
-using ForeverPin.Domain.Codes.Content.VCard.Extensions;
-
 namespace ForeverPin.Domain.Codes.Content.VCard.Models;
 
 /// <summary>Represents a contact card.</summary>
@@ -32,6 +30,4 @@ public sealed record VCardContentValueObject : CodeContentValueObject
     /// <summary>Gets the free-form note.</summary>
     public string? Note { get; init; }
 
-    /// <inheritdoc />
-    public override string Encode() => this.ToPayload();
 }

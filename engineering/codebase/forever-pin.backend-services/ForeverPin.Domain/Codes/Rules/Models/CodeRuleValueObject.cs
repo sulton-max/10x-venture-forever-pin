@@ -1,4 +1,4 @@
-using ForeverPin.Common.Domain.Serialization;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
 using ForeverPin.Domain.Codes.Rules.Enums;
 
 namespace ForeverPin.Domain.Codes.Rules.Models;

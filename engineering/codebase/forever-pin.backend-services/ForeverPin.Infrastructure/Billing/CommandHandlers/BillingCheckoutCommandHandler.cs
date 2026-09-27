@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using ForeverPin.Application.Billing.Core;
 using ForeverPin.Application.Billing.Core.Commands;
 using ForeverPin.Application.Billing.Core.Models;
@@ -14,8 +13,7 @@ namespace ForeverPin.Infrastructure.Billing.CommandHandlers;
 /// <summary>Handles <see cref="BillingCheckoutCommand"/>.</summary>
 public sealed class BillingCheckoutCommandHandler(
     IBillingBroker gateway,
-    BillingSettings settings,
-    ILogger<BillingCheckoutCommandHandler> logger)
+    BillingSettings settings)
     : ICommandHandler<BillingCheckoutCommand, AppResult<BillingCheckoutResult.Success>>
 {
     /// <inheritdoc />
@@ -30,19 +28,11 @@ public sealed class BillingCheckoutCommandHandler(
         if (priceId is null)
             return Failure($"No price configured for plan '{request.Plan}'.", AppErrorType.Validation);
 
-        try
-        {
-            var url = await gateway.CreateCheckoutSessionAsync(
-                request.UserId, priceId, settings.SuccessUrl, settings.CancelUrl, ct);
+        var url = await gateway.CreateCheckoutSessionAsync(
+            request.UserId, priceId, settings.SuccessUrl, settings.CancelUrl, ct);
 
-            return AppResult<BillingCheckoutResult.Success>.Ok(
-            new BillingCheckoutResult.Success(new CheckoutSessionDto { Url = url }));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "BillingCheckout failed for user {UserId} plan {Plan}", request.UserId, request.Plan);
-            return Failure(ex.Message, AppErrorType.Unexpected);
-        }
+        return AppResult<BillingCheckoutResult.Success>.Ok(
+            new BillingCheckoutResult.Success(new CheckoutSessionModel { Url = url }));
     }
 
     private static AppResult<BillingCheckoutResult.Success> Failure(

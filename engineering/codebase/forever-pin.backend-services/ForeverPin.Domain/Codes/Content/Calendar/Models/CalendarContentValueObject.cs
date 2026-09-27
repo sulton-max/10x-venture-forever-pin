@@ -1,5 +1,3 @@
-using ForeverPin.Domain.Codes.Content.Calendar.Extensions;
-
 namespace ForeverPin.Domain.Codes.Content.Calendar.Models;
 
 /// <summary>Represents a calendar event.</summary>
@@ -20,6 +18,4 @@ public sealed record CalendarContentValueObject : CodeContentValueObject
     /// <summary>Gets the description.</summary>
     public string? Description { get; init; }
 
-    /// <inheritdoc />
-    public override string Encode() => this.ToPayload();
 }

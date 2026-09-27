@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.DataProtection.Repositories;
 using System.Net;
 using ForeverPin.Persistence.DataContexts;
 using Microsoft.AspNetCore.DataProtection;
@@ -11,10 +13,17 @@ public static class DeploymentHosting
     /// <summary>Applies host-owned deployment settings without trusting arbitrary forwarded headers.</summary>
     public static WebApplicationBuilder AddDeploymentHosting(this WebApplicationBuilder builder)
     {
-        var keyPath = builder.Configuration["DataProtection:KeyPath"];
-        if (!string.IsNullOrWhiteSpace(keyPath))
-            builder.Services.AddDataProtection().SetApplicationName("ForeverPin")
-                .PersistKeysToFileSystem(new DirectoryInfo(keyPath));
+        builder.Services.AddDataProtection().SetApplicationName("ForeverPin");
+        builder.Services.AddOptions<KeyManagementOptions>()
+            .Configure<IConfiguration, IHostEnvironment, ILoggerFactory>((options, configuration, environment, logging) =>
+            {
+                var keyPath = configuration["DataProtection:KeyPath"];
+                if (!string.IsNullOrWhiteSpace(keyPath))
+                    options.XmlRepository = new FileSystemXmlRepository(new DirectoryInfo(keyPath), logging);
+                else if (!environment.IsDevelopment())
+                    throw new InvalidOperationException("Production requires DataProtection:KeyPath for persistent identity cookies.");
+            })
+            .ValidateOnStart();
 
         var proxies = builder.Configuration.GetSection("Deployment:TrustedProxies").Get<string[]>() ?? [];
         builder.Services.PostConfigure<ForwardedHeadersOptions>(options =>

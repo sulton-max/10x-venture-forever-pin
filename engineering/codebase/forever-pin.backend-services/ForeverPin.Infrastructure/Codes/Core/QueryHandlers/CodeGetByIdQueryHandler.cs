@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using ForeverPin.Application.Codes.Core.Models;
 using ForeverPin.Application.Codes.Core.Queries;
 using ForeverPin.Application.Codes.Core.Services;
@@ -13,28 +12,19 @@ namespace ForeverPin.Infrastructure.Codes.Core.QueryHandlers;
 /// <summary>Handles <see cref="CodeGetByIdQuery"/>.</summary>
 public sealed class CodeGetByIdQueryHandler(
     ICodeRepository repository,
-    ApiSettings settings,
-    ILogger<CodeGetByIdQueryHandler> logger)
+    ApiSettings settings)
     : IQueryHandler<CodeGetByIdQuery, AppResult<CodeGetByIdResult.Success>>
 {
     /// <inheritdoc />
     public async ValueTask<AppResult<CodeGetByIdResult.Success>> HandleAsync(
         CodeGetByIdQuery request, CancellationToken ct)
     {
-        try
-        {
-            var code = await repository.GetByIdForUserAsync(request.Id, request.UserId, ct);
+        var code = await repository.GetByIdForUserAsync(request.Id, request.UserId, ct);
 
-            if (code is null)
-                return AppResult<CodeGetByIdResult.Success>.Fail(AppError.Of(AppErrorType.NotFound, "Code not found"));
+        if (code is null)
+            return AppResult<CodeGetByIdResult.Success>.Fail(AppError.Of(AppErrorType.NotFound, "Code not found"));
 
-            return AppResult<CodeGetByIdResult.Success>.Ok(
-            new CodeGetByIdResult.Success(code.ToDto(settings.RedirectBaseUrl)));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "CodeGetById failed for {CodeId}", request.Id);
-            return AppResult<CodeGetByIdResult.Success>.Fail(AppError.Of(AppErrorType.Unexpected, ex.Message));
-        }
+        return AppResult<CodeGetByIdResult.Success>.Ok(
+            new CodeGetByIdResult.Success(code.ToModel(settings.RedirectBaseUrl)));
     }
 }

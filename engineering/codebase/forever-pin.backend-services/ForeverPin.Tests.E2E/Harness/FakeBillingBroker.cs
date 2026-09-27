@@ -1,4 +1,6 @@
 using ForeverPin.Application.Billing.Core.Models;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using ForeverPin.Application.Billing.Core.Services;
 
 namespace ForeverPin.Tests.E2E.Harness;
@@ -15,8 +17,11 @@ public sealed class FakeBillingBroker : IBillingBroker
     /// <summary>Gets or sets the staged webhook event; null yields an <c>Ignored</c> event.</summary>
     public BillingWebhookEvent? NextEvent { get; set; }
 
-    /// <summary>Gets or sets the exception thrown to simulate a failed signature check.</summary>
+    /// <summary>Gets or sets a marker simulating a failed signature check.</summary>
     public Exception? SignatureError { get; set; }
+
+    /// <summary>Gets or sets an unexpected provider failure.</summary>
+    public Exception? WebhookError { get; set; }
 
     /// <summary>Gets the arguments captured from the last checkout call.</summary>
     public (Guid UserId, string PriceId, string SuccessUrl, string CancelUrl)? LastCheckout { get; private set; }
@@ -44,12 +49,18 @@ public sealed class FakeBillingBroker : IBillingBroker
     }
 
     /// <inheritdoc />
-    public BillingWebhookEvent ParseWebhookEvent(string rawBody, string stripeSignatureHeader)
+    public Task<Result<BillingWebhookEvent>> ParseWebhookEventAsync(
+        string rawBody, string stripeSignatureHeader, CancellationToken ct)
     {
+        ct.ThrowIfCancellationRequested();
+        if (WebhookError is not null)
+            throw WebhookError;
         if (SignatureError is not null)
-            throw SignatureError;
+            return Task.FromResult(Result<BillingWebhookEvent>.Fail(AppError.Of(
+                AppErrorType.Validation, "The webhook payload or signature is invalid.")));
 
-        return NextEvent ?? new BillingWebhookEvent { Type = BillingWebhookEventType.Ignored };
+        return Task.FromResult(Result<BillingWebhookEvent>.Ok(
+            NextEvent ?? new BillingWebhookEvent { Type = BillingWebhookEventType.Ignored }));
     }
 
     /// <summary>Clears the staged state and captured calls.</summary>
@@ -57,6 +68,7 @@ public sealed class FakeBillingBroker : IBillingBroker
     {
         NextEvent = null;
         SignatureError = null;
+        WebhookError = null;
         LastCheckout = null;
         LastPortalCustomerId = null;
     }

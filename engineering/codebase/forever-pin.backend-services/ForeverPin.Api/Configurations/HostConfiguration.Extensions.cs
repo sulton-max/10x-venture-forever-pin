@@ -1,8 +1,13 @@
+using ForeverPin.Domain.Codes.Rules.Mappers;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Identifiers.Generators;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
+using ForeverPin.Domain.Codes.Serialization.Factories;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using ForeverPin.Application.Billing.Core.Services;
 using ForeverPin.Domain.Codes.Content;
-using ForeverPin.Common.Domain.Serialization.Json;
 using ForeverPin.Domain.Codes.Rules.Models;
 using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Application.Identity.Core.Services;
@@ -14,6 +19,7 @@ using WoW.Two.Sdk.Backend.Beta.Codes;
 using ForeverPin.Persistence.DataContexts;
 using WoW.Two.Sdk.Backend.Beta.Data;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Configuration;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Options;
 using WoW.Two.Sdk.Backend.Beta.Identity.Cookies;
 using WoW.Two.Sdk.Backend.Beta.Identity.CurrentUser;
 using WoW.Two.Sdk.Backend.Beta.Identity.Guest;
@@ -27,38 +33,79 @@ namespace ForeverPin.Api.Configurations;
 
 public static partial class HostConfiguration
 {
+    /// <summary>Configures file settings and explicitly supported deployment aliases.</summary>
+    private static WebApplicationBuilder AddConfiguration(this WebApplicationBuilder builder)
+    {
+        var hosting = new Dictionary<string, string?>();
+        foreach (var key in new[] { "urls", "http_ports", "https_ports" })
+            if (builder.Configuration[key] is { } value) hosting[key] = value;
+        foreach (var source in builder.Configuration.Sources.OfType<EnvironmentVariablesConfigurationSource>().ToArray())
+            builder.Configuration.Sources.Remove(source);
+        builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
+        builder.Configuration.AddInMemoryCollection(hosting);
+        var aliases = new Dictionary<string, string>
+        {
+            ["DB_CONNECTION"] = "DB_CONNECTION",
+            ["REDIRECT_BASE_URL"] = "ApiSettings:RedirectBaseUrl",
+            ["ALLOWED_HOSTS"] = "AllowedHosts",
+            ["AllowedHosts"] = "AllowedHosts",
+            ["DATA_PROTECTION_KEY_PATH"] = "DataProtection:KeyPath",
+            ["DataProtection__KeyPath"] = "DataProtection:KeyPath",
+            ["GOOGLE_CLIENT_ID"] = "Auth:Google:ClientId",
+            ["BILLING_SECRET_KEY"] = "Billing:SecretKey",
+            ["BILLING_WEBHOOK_SECRET"] = "Billing:WebhookSecret",
+            ["BILLING_SUCCESS_URL"] = "Billing:SuccessUrl",
+            ["BILLING_CANCEL_URL"] = "Billing:CancelUrl",
+            ["BILLING_PRICE_SOLO"] = "Billing:Prices:Solo",
+            ["BILLING_PRICE_PRO"] = "Billing:Prices:Pro",
+            ["BILLING_PRICE_AGENCY"] = "Billing:Prices:Agency",
+        };
+        var overrides = new Dictionary<string, string?>();
+        foreach (var alias in aliases)
+            if (Environment.GetEnvironmentVariable(alias.Key) is { } value) overrides[alias.Value] = value;
+        builder.Configuration.AddInMemoryCollection(overrides);
+        return builder;
+    }
+
+
     /// <summary>Loads and registers the application settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
     {
         builder.AddDeploymentHosting();
-        builder.Services.AddSingleton(ConfigurationLoader.Load<ApiSettings>(builder.Configuration));
-        builder.Services.AddSingleton(ConfigurationLoader.Load<BillingSettings>(builder.Configuration, "Billing"));
-        builder.Services.AddSingleton(ConfigurationLoader.Load<AuthSettings>(builder.Configuration, "Auth"));
+        builder.Services.AddValidatedSettings<ApiSettings>(builder.Configuration, nameof(ApiSettings),
+            options => options.Validate(settings => IsHttpUrl(settings.RedirectBaseUrl),
+                "ApiSettings.RedirectBaseUrl must be an absolute HTTP(S) URL."));
         return builder;
     }
 
     /// <summary>Registers the Postgres host floor for <see cref="AppDbContext"/>.</summary>
-    private static WebApplicationBuilder AddPersistence(this WebApplicationBuilder builder)
+    private static WebApplicationBuilder AddPostgresDatabase(this WebApplicationBuilder builder)
     {
+        builder.Services.AddStoredJsonOptionsProfile("foreverpin-content", CodeJsonOptionsFactory.CreateContent());
+        builder.Services.AddStoredJsonOptionsProfile("foreverpin-rules", CodeJsonOptionsFactory.CreateRules());
+        builder.Services.AddStoredJsonOptionsProfile("foreverpin-style", CodeJsonOptionsFactory.CreateStyle());
         builder.Services.AddPostgresPersistence<AppDbContext>(builder.Configuration);
         return builder;
     }
 
     /// <summary>Registers the code-rendering engine and the image service.</summary>
-    private static WebApplicationBuilder AddCodeServices(this WebApplicationBuilder builder)
+    private static WebApplicationBuilder AddCodes(this WebApplicationBuilder builder)
     {
         builder.Services.AddCodeRendering();
+        builder.Services.AddCodePayloads();
+        builder.Services.AddSingleton<CodePayloadMapper>();
+        builder.Services.AddSingleton<IIdGenerator, CryptographicIdGenerator>();
         builder.Services.AddScoped<ICodeImageService, CodeImageService>();
         return builder;
     }
 
     /// <summary>Registers the mediator pipeline and the application services.</summary>
-    private static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
+    private static WebApplicationBuilder AddMediator(this WebApplicationBuilder builder)
     {
         builder.Services.AddMediator(typeof(ForeverPin.Infrastructure.InfrastructureAssembly).Assembly);
 
         // Validate before handlers; the exception filter maps failures to HTTP 400.
-        builder.Services.AddMediatorValidationBehavior();
+        builder.Services.AddMediatorValidatingInterceptor();
 
         builder.Services.AddScoped<ICodeRepository, CodeRepository>();
         builder.Services.AddSingleton<ISlugGenerator, SlugGenerator>();
@@ -80,8 +127,11 @@ public static partial class HostConfiguration
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         // Verify Google ID tokens against the Web client id (same id the SPA uses via VITE_GOOGLE_CLIENT_ID).
-        var auth = ConfigurationLoader.Load<AuthSettings>(builder.Configuration, "Auth");
-        builder.Services.AddGoogleIdTokenVerifier(o => o.WithClientId(auth.Google.ClientId));
+        builder.Services.AddValidatedSettings<AuthSettings>(builder.Configuration, "Auth",
+            options => options.Validate(settings => settings.Google is not null, "Auth.Google is required."));
+        var auth = ConfigurationMapper.Load<AuthSettings>(builder.Configuration, "Auth");
+        if (!string.IsNullOrWhiteSpace(auth.Google?.ClientId))
+            builder.Services.AddGoogleIdTokenAuthenticator(options => options.WithClientId(auth.Google.ClientId));
 
         // API mode returns 401/403 (not a 302) so the SPA reacts; HttpOnly/Secure/SameSite=Lax come from SDK defaults.
         builder.Services.AddCookieAuthentication(o =>
@@ -99,6 +149,13 @@ public static partial class HostConfiguration
     /// <summary>Registers the subscription repository and the Stripe broker.</summary>
     private static WebApplicationBuilder AddBilling(this WebApplicationBuilder builder)
     {
+        builder.Services.AddValidatedSettings<BillingSettings>(builder.Configuration, "Billing",
+            options => options.Validate(settings => string.IsNullOrWhiteSpace(settings.SecretKey)
+                || (!string.IsNullOrWhiteSpace(settings.WebhookSecret)
+                    && settings.Prices is { } prices && !string.IsNullOrWhiteSpace(prices.Solo)
+                    && !string.IsNullOrWhiteSpace(prices.Pro) && !string.IsNullOrWhiteSpace(prices.Agency)
+                    && IsHttpUrl(settings.SuccessUrl) && IsHttpUrl(settings.CancelUrl)),
+                "Enabled billing requires a webhook secret, all price IDs, and absolute HTTP(S) return URLs."));
         builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         builder.Services.AddScoped<IBillingBroker, StripeBillingBroker>();
         return builder;
@@ -122,4 +179,6 @@ public static partial class HostConfiguration
             });
         return builder;
     }
+    private static bool IsHttpUrl(string? value) => Uri.TryCreate(value, UriKind.Absolute, out var uri)
+        && uri.Scheme is "http" or "https" && !string.IsNullOrWhiteSpace(uri.Host);
 }

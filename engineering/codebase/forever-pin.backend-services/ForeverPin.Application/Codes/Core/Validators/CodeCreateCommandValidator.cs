@@ -7,7 +7,7 @@ namespace ForeverPin.Application.Codes.Core.Validators;
 
 /// <summary>Validates create-code input.</summary>
 /// <seealso cref="CodeRuleValidator"/>
-/// <seealso cref="CodeRuleSetValidator"/>
+/// <seealso cref="CodeRuleSetModelValidator"/>
 public sealed class CodeCreateCommandValidator : AbstractValidator<CodeCreateCommand>
 {
     /// <summary>Builds the create-code rules.</summary>
@@ -18,9 +18,13 @@ public sealed class CodeCreateCommandValidator : AbstractValidator<CodeCreateCom
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(200).WithMessage("Name must be 200 characters or fewer.");
 
-        RuleForEach(command => command.Rules).SetValidator(new CodeRuleValidator());
+        RuleForEach(command => command.Rules).NotNull().SetValidator(new CodeRuleValidator());
 
-        RuleFor(command => new CodeRuleSet(command.Mode, command.ContentType, command.Rules))
-            .SetValidator(new CodeRuleSetValidator());
+        RuleFor(command => new CodeRuleSetModel(command.Mode, command.ContentType, command.Rules))
+            .SetValidator(new CodeRuleSetModelValidator());
+
+        RuleFor(command => command.BarcodeFormat).IsInEnum();
+
+        RuleFor(command => command.Style).NotNull().SetValidator(new WoW.Two.Sdk.Backend.Beta.Codes.Validators.StyleSpecValidator());
     }
 }

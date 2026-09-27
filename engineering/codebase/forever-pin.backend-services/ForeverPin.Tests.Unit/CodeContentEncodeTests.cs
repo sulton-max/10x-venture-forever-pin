@@ -1,6 +1,6 @@
-using System.Globalization;
 using ForeverPin.Common.Domain.Codes.Content.MobileApp.Enums;
 using ForeverPin.Common.Domain.Codes.Content.Wifi.Enums;
+using ForeverPin.Common.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Content;
 using ForeverPin.Domain.Codes.Content.Calendar.Models;
 using ForeverPin.Domain.Codes.Content.Email.Models;
@@ -12,149 +12,79 @@ using ForeverPin.Domain.Codes.Content.Text.Models;
 using ForeverPin.Domain.Codes.Content.Url.Models;
 using ForeverPin.Domain.Codes.Content.VCard.Models;
 using ForeverPin.Domain.Codes.Content.Wifi.Models;
+using ForeverPin.Domain.Codes.Rules.Mappers;
+using ForeverPin.Domain.Codes.Rules.Models;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Exporters;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Serializers;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 
 namespace ForeverPin.Tests.Unit;
 
-/// <summary>Proves payload-encoding parity for every polymorphic <see cref="CodeContentValueObject"/> type.</summary>
+/// <summary>Proves product-to-SDK mapping preserves fields and selects the correct mode payload.</summary>
 public sealed class CodeContentEncodeTests
 {
-    [Fact]
-    public void Dynamic_types_bake_no_payload()
-    {
-        // url / mobileApp carry the redirect short link, not a baked payload → Encode() is null, IsStatic false.
-        Assert.Null(new UrlContentValueObject { Url = "https://x.io" }.Encode());
-        Assert.False(new UrlContentValueObject { Url = "https://x.io" }.IsStatic);
-        Assert.Null(new MobileAppLinkContentValueObject
-        {
-            Store = MobileAppStoreType.AppStore,
-            Url = "https://apps.apple.com/a"
-        }.Encode());
-        Assert.False(new MobileAppLinkContentValueObject
-        {
-            Store = MobileAppStoreType.AppStore,
-            Url = "https://apps.apple.com/a"
-        }.IsStatic);
-    }
+    private readonly CodePayloadMapper _mapper = new(new CodePayloadSerializer(), new VCardExporter(), new FloatingCalendarEventExporter());
 
-    [Fact]
-    public void Text_is_passed_through_untrimmed()
+    public static TheoryData<CodeContentValueObject, string> Payloads() => new()
     {
-        Assert.Equal("hi there", new TextContentValueObject { Text = "hi there" }.Encode());
-        Assert.True(new TextContentValueObject { Text = "hi there" }.IsStatic);
-    }
+        { new UrlContentValueObject { Url = "https://example.com/a" }, "https://example.com/a" },
+        { new MobileAppLinkContentValueObject { Store = MobileAppStoreType.AppStore, Url = "https://apps.apple.com/a" }, "https://apps.apple.com/a" },
+        { new TextContentValueObject { Text = " text " }, " text " },
+        { new PhoneContentValueObject { Phone = "+15550100" }, "tel:+15550100" },
+        { new SmsContentValueObject { Phone = "+15550100", Message = "hey" }, "SMSTO:+15550100:hey" },
+        { new EmailContentValueObject { To = "a+b@c.com", Subject = "Hi & bye", Body = "line one\n+é" }, "mailto:a%2Bb@c.com?subject=Hi%20%26%20bye&body=line%20one%0D%0A%2B%C3%A9" },
+        { new GeoContentValueObject { Latitude = 41.31, Longitude = 69.24 }, "geo:41.31,69.24" },
+        { new WifiContentValueObject { Ssid = " Cafe ", Password = " x ", Encryption = WifiEncryption.Wpa, Hidden = true }, "WIFI:T:WPA;S: Cafe ;P: x ;H:true;;" },
+        { new WifiContentValueObject { Ssid = "Open", Password = "ignored", Encryption = WifiEncryption.None }, "WIFI:T:nopass;S:Open;;" },
+        { new WifiContentValueObject { Ssid = "Net", Password = "pw", Encryption = WifiEncryption.Wep }, "WIFI:T:WEP;S:Net;P:pw;;" },
+    };
+
+    [Theory]
+    [MemberData(nameof(Payloads))]
+    public void Maps_each_product_payload(CodeContentValueObject content, string expected) =>
+        Assert.Equal(expected, _mapper.Map(content).ValueOrThrow());
 
     [Fact]
-    public void Phone_and_sms_encode_to_tel_and_smsto()
+    public void Static_urls_bake_the_destination_and_dynamic_urls_bake_the_short_link()
     {
-        Assert.Equal("tel:+15550100", new PhoneContentValueObject { Phone = "+15550100" }.Encode());
-        Assert.Equal("SMSTO:+15550100", new SmsContentValueObject { Phone = "+15550100" }.Encode());
-        Assert.Equal(
-            "SMSTO:+15550100:hey",
-            new SmsContentValueObject { Phone = "+15550100", Message = "hey" }.Encode());
-    }
-
-    [Fact]
-    public void Email_encodes_to_mailto_with_form_encoded_params()
-    {
-        Assert.Equal("mailto:a@b.com", new EmailContentValueObject { To = "a@b.com" }.Encode());
-        Assert.Equal(
-            "mailto:a@b.com?subject=Hi+%26+bye&body=line+one",
-            new EmailContentValueObject { To = "a@b.com", Subject = "Hi & bye", Body = "line one" }.Encode());
-    }
-
-    [Fact]
-    public void Geo_encodes_to_geo_lat_lng()
-    {
-        Assert.Equal("geo:41.31,69.24", new GeoContentValueObject { Latitude = 41.31, Longitude = 69.24 }.Encode());
-    }
-
-    [Fact]
-    public void Wifi_encodes_with_escaping_nopass_and_hidden_flag()
-    {
-        Assert.Equal(
-            "WIFI:T:WPA;S:Cafe;P:p@ss;;",
-            new WifiContentValueObject { Ssid = "Cafe", Password = "p@ss", Encryption = WifiEncryption.Wpa }.Encode());
-
-        // Reserved chars in SSID / password are backslash-escaped.
-        Assert.Equal(
-            "WIFI:T:WPA;S:My\\;Net;P:a\\\"b\\,c;;",
-            new WifiContentValueObject
-            {
-                Ssid = "My;Net",
-                Password = "a\"b,c",
-                Encryption = WifiEncryption.Wpa
-            }.Encode());
-
-        Assert.Equal(
-            "WIFI:T:nopass;S:Open;;",
-            new WifiContentValueObject { Ssid = "Open", Encryption = WifiEncryption.None }.Encode());
-
-        Assert.Equal(
-            "WIFI:T:WPA;S:Hid;P:x;H:true;;",
-            new WifiContentValueObject
-            {
-                Ssid = "Hid",
-                Password = "x",
-                Encryption = WifiEncryption.Wpa,
-                Hidden = true
-            }.Encode());
-    }
-
-    [Fact]
-    public void Wifi_wep_encryption_encodes_the_wep_token()
-    {
-        Assert.Equal(
-            "WIFI:T:WEP;S:Net;P:pw;;",
-            new WifiContentValueObject { Ssid = "Net", Password = "pw", Encryption = WifiEncryption.Wep }.Encode());
-    }
-
-    [Fact]
-    public void VCard_emits_vcard_3_with_only_filled_fields_ical_escaped()
-    {
-        var output = new VCardContentValueObject
-        {
-            FirstName = "Ada",
-            LastName = "Lovelace",
-            Org = "Babbage, Inc",
-            Phone = "+15550100",
-        }.Encode();
-
-        Assert.Contains("BEGIN:VCARD", output);
-        Assert.Contains("VERSION:3.0", output);
-        Assert.Contains("N:Lovelace;Ada;;;", output);
-        Assert.Contains("FN:Ada Lovelace", output);
-        Assert.Contains("ORG:Babbage\\, Inc", output);
-        Assert.Contains("TEL;TYPE=CELL:+15550100", output);
-        Assert.DoesNotContain("EMAIL:", output);
-        Assert.EndsWith("END:VCARD", output);
-    }
-
-    [Fact]
-    public void Calendar_emits_vevent_with_basic_format_dates()
-    {
-        var output = new CalendarContentValueObject
-        {
-            Title = "Launch",
-            Start = new DateTime(2026, 7, 1, 18, 30, 0),
-            End = new DateTime(2026, 7, 1, 19, 0, 0),
-            Location = "HQ",
-        }.Encode();
-
-        Assert.Contains("BEGIN:VEVENT", output);
-        Assert.Contains("SUMMARY:Launch", output);
-        Assert.Contains("DTSTART:20260701T183000", output);
-        Assert.Contains("DTEND:20260701T190000", output);
-        Assert.Contains("LOCATION:HQ", output);
-        Assert.EndsWith("END:VEVENT", output);
+        CodeRuleValueObject[] rules = [new DefaultRuleValueObject { Content = new UrlContentValueObject { Url = "https://destination.test" } }];
+        Assert.Equal("https://destination.test", _mapper.Resolve(ContentMode.Static, rules, "https://short.test/a").ValueOrThrow());
+        Assert.Equal("https://short.test/a", _mapper.Resolve(ContentMode.Dynamic, rules, "https://short.test/a").ValueOrThrow());
+        Assert.False(_mapper.Resolve(ContentMode.Static, [], "https://short.test/a").IsSuccess);
     }
 
     [Theory]
-    [InlineData("2026-07-01T18:30:00", "20260701T183000")]
-    [InlineData("2026-07-01T18:30:45", "20260701T183045")]
-    [InlineData("2026-07-01T00:00:00", "20260701T000000")]
-    public void ToICalDate_formats_datetime_to_ical_basic_form(string input, string expected)
+    [InlineData("javascript:alert(1)")]
+    [InlineData("/relative")]
+    [InlineData("https://user:password@example.com")]
+    [InlineData("https://example.com\r\nLocation:evil")]
+    public void Unsafe_url_and_mobile_destinations_fail(string url)
     {
-        var value = DateTime.Parse(input, CultureInfo.InvariantCulture, DateTimeStyles.None);
-        Assert.Equal(expected, ContentEncodingExtensions.ToICalDate(value));
+        Assert.False(_mapper.Map(new UrlContentValueObject { Url = url }).IsSuccess);
+        Assert.False(_mapper.Map(new MobileAppLinkContentValueObject { Store = MobileAppStoreType.AppStore, Url = url }).IsSuccess);
+    }
+
+    [Fact]
+    public void Contact_maps_organization_and_optional_fields_to_the_exporter()
+    {
+        var output = _mapper.Map(new VCardContentValueObject
+        {
+            FirstName = "Ada", LastName = "Lovelace", Org = "Babbage, Inc", Phone = "+15550100", Note = "hello\rINJECT:bad",
+        }).ValueOrThrow();
+        Assert.Contains("N:Lovelace;Ada;;;\r\nFN:Ada Lovelace", output);
+        Assert.Contains("ORG:Babbage\\, Inc", output);
+        Assert.Contains("NOTE:hello\\nINJECT:bad", output);
+        Assert.DoesNotContain("EMAIL:", output);
+    }
+
+    [Fact]
+    public void Calendar_preserves_floating_fields_and_optional_end()
+    {
+        var content = new CalendarContentValueObject { Title = "Launch", Start = new DateTime(2026, 7, 1, 18, 30, 0), Location = "HQ" };
+        var output = _mapper.Map(content).ValueOrThrow();
+        Assert.Contains("DTSTART:20260701T183000\r\nLOCATION:HQ", output);
+        Assert.DoesNotContain("DTEND", output);
+        Assert.Contains("DTEND:20260701T190000", _mapper.Map(content with { End = new DateTime(2026, 7, 1, 19, 0, 0) }).ValueOrThrow());
+        Assert.False(_mapper.Map(content with { End = content.Start }).IsSuccess);
     }
 }

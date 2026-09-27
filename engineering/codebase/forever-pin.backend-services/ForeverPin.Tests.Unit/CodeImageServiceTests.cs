@@ -1,3 +1,7 @@
+using ForeverPin.Domain.Codes.Rules.Mappers;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Exporters;
+using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Serializers;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using SkiaSharp;
 using ForeverPin.Common.Domain.Codes.Content.Wifi.Enums;
 using ForeverPin.Common.Domain.Codes.Core.Enums;
@@ -28,14 +32,14 @@ public sealed class CodeImageServiceTests
     private readonly CodeImageService _service = new(
         new CodeRenderer(
             new QrCodeRenderer(new QrMatrixGenerator(), new SvgRenderer(), new SkiaSvgRasterizer()),
-            new BarcodeRenderer()),
-        new ApiSettings { RedirectBaseUrl = RedirectBase });
+            new BarcodeRenderer(), new SkiaSvgRasterizer()),
+        new ApiSettings { RedirectBaseUrl = RedirectBase },
+        new CodePayloadMapper(new CodePayloadSerializer(), new VCardExporter(), new FloatingCalendarEventExporter()));
 
     [Fact]
     public void Static_code_bakes_its_content_payload_into_the_symbol()
     {
-        // The backend encodes the payload from the typed content (WifiContentValueObject.Encode()), not a client-baked
-        // string.
+        // The SDK serializes the persisted Wi-Fi fields before rendering.
         const string payload = "WIFI:T:WPA;S:CoffeeShop;P:latte123;;";
         var code = Code(content: new WifiContentValueObject
         {
@@ -44,7 +48,7 @@ public sealed class CodeImageServiceTests
             Encryption = WifiEncryption.Wpa
         });
 
-        var png = _service.Render(code, ImageFormat.Png);
+        var png = _service.Render(code, ImageFormat.Png).ValueOrThrow();
 
         Assert.Equal(payload, Decode(png.Content));
     }
@@ -52,14 +56,13 @@ public sealed class CodeImageServiceTests
     [Fact]
     public void Dynamic_code_encodes_the_redirect_short_link()
     {
-        // A dynamic content whose Encode() is null (url) → the symbol carries the redirect short link, not a baked
-        // payload.
+        // Dynamic mode always carries the short link.
         var code = Code(
             slug: "abc1234",
             content: new UrlContentValueObject { Url = "https://example.com" },
             mode: ContentMode.Dynamic);
 
-        var png = _service.Render(code, ImageFormat.Png);
+        var png = _service.Render(code, ImageFormat.Png).ValueOrThrow();
 
         Assert.Equal($"{RedirectBase}/abc1234", Decode(png.Content));
     }
@@ -67,14 +70,13 @@ public sealed class CodeImageServiceTests
     [Fact]
     public void Dynamic_content_without_a_baked_payload_still_encodes_the_short_link()
     {
-        // A url code persists its typed content but Encode() is null (dynamic) → the symbol carries the short link, not
-        // the fields.
+        // Stored content does not replace the dynamic short link.
         var code = Code(
             slug: "xyz9999",
             content: new UrlContentValueObject { Url = "https://example.com" },
             mode: ContentMode.Dynamic);
 
-        Assert.Equal($"{RedirectBase}/xyz9999", Decode(_service.Render(code, ImageFormat.Png).Content));
+        Assert.Equal($"{RedirectBase}/xyz9999", Decode(_service.Render(code, ImageFormat.Png).ValueOrThrow().Content));
     }
 
     // A static code bakes rule[0]'s content into the symbol; a dynamic code encodes the redirect short link instead.

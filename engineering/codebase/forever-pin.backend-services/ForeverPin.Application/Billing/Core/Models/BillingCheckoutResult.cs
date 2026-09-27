@@ -7,5 +7,5 @@ public abstract record BillingCheckoutResult
 
     /// <summary>Represents a created Checkout session.</summary>
     /// <param name="Session">The created Checkout session.</param>
-    public sealed record Success(CheckoutSessionDto Session) : BillingCheckoutResult;
+    public sealed record Success(CheckoutSessionModel Session) : BillingCheckoutResult;
 }

@@ -1,5 +1,13 @@
+using System.Globalization;
 using ForeverPin.Domain.Codes.Content;
 using ForeverPin.Domain.Codes.Content.Url.Models;
+using ForeverPin.Domain.Codes.Content.MobileApp.Models;
+using ForeverPin.Domain.Codes.Content.Phone.Models;
+using ForeverPin.Domain.Codes.Content.Sms.Models;
+using ForeverPin.Domain.Codes.Content.Email.Models;
+using ForeverPin.Domain.Codes.Content.Geo.Models;
+using ForeverPin.Domain.Codes.Rules.Mappers;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Rules.Models;
@@ -10,10 +18,10 @@ namespace ForeverPin.Redirect.Api.Infrastructure.Routing;
 
 /// <summary>Provides rule evaluation for a scan.</summary>
 /// <remarks>Resolve the scan context (device, geo, language) before evaluating.</remarks>
-public sealed class RoutingService : IRoutingService
+public sealed class RoutingService(CodePayloadMapper payloads) : IRoutingService
 {
     /// <inheritdoc />
-    public RoutingResult Evaluate(CodeEntity code, ScanContext context)
+    public RoutingResult Evaluate(CodeEntity code, ScanContextModel context)
     {
         if (!code.IsActive)
             return new RoutingResult.NotFound();
@@ -35,7 +43,7 @@ public sealed class RoutingService : IRoutingService
     }
 
     // The pointer nominates an existing conditional rule rather than repeating its content.
-    private static RoutingResult ResolvePointer(CodeEntity code, DefaultPointerRuleValueObject pointer)
+    private RoutingResult ResolvePointer(CodeEntity code, DefaultPointerRuleValueObject pointer)
     {
         var target = code.Rules
             .OfType<ConditionalRuleValueObject>()
@@ -46,21 +54,25 @@ public sealed class RoutingService : IRoutingService
             : Resolve(target.Content, target.Order);
     }
 
-    // A dynamic URL has no static payload encoder; its destination is stored directly.
-    private static RoutingResult Resolve(CodeContentValueObject content, int? matchedRuleOrder)
+    private RoutingResult Resolve(CodeContentValueObject content, int? matchedRuleOrder)
     {
-        var destination = content is UrlContentValueObject url
-            ? Uri.TryCreate(url.Url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https"
-                ? url.Url
-                : null
-            : content.Encode();
+        if (content is not (UrlContentValueObject or MobileAppLinkContentValueObject or PhoneContentValueObject
+            or SmsContentValueObject or EmailContentValueObject or GeoContentValueObject))
+            return new RoutingResult.NotFound();
 
-        return string.IsNullOrWhiteSpace(destination)
-            ? new RoutingResult.NotFound()
-            : new RoutingResult.Redirect(destination, matchedRuleOrder);
+        var payload = payloads.Map(content);
+        if (payload is not Result<string>.Success success || string.IsNullOrWhiteSpace(success.Value))
+            return new RoutingResult.NotFound();
+
+        // Existing URI payloads retain their schemes; document/text delivery has no redirect representation.
+        if (!Uri.TryCreate(success.Value, UriKind.Absolute, out var destination)
+            || destination.Scheme is not ("http" or "https" or "tel" or "mailto" or "smsto" or "geo"))
+            return new RoutingResult.NotFound();
+
+        return new RoutingResult.Redirect(success.Value, matchedRuleOrder);
     }
 
-    private static bool Matches(ConditionalRuleValueObject rule, ScanContext ctx) => rule.Condition switch
+    private static bool Matches(ConditionalRuleValueObject rule, ScanContextModel ctx) => rule.Condition switch
     {
         RuleConditionType.Device => string.Equals(
             rule.ConditionValue,
@@ -68,11 +80,31 @@ public sealed class RoutingService : IRoutingService
             StringComparison.OrdinalIgnoreCase),
         RuleConditionType.Country => ctx.CountryCode is not null
             && string.Equals(rule.ConditionValue, ctx.CountryCode, StringComparison.OrdinalIgnoreCase),
-        RuleConditionType.Language => ctx.Language is not null
-            && string.Equals(rule.ConditionValue, ctx.Language, StringComparison.OrdinalIgnoreCase),
+        RuleConditionType.Language => MatchesLanguage(rule.ConditionValue, ctx),
         RuleConditionType.TimeOfDay => MatchesTimeWindow(rule.ConditionValue, ctx.NowUtc),
         _ => false,
     };
+
+    private static bool MatchesLanguage(string language, ScanContextModel context)
+    {
+        if (context.LanguagePreferences.Count == 0)
+            return context.Language is not null && string.Equals(language, context.Language, StringComparison.OrdinalIgnoreCase);
+
+        foreach (var preference in context.LanguagePreferences.Where(item => item.Quality > 0 && item.Range != "*"))
+        {
+            if (!Includes(language, preference.Range) && !Includes(preference.Range, language)) continue;
+            var tag = language.Length >= preference.Range.Length ? language : preference.Range;
+            var effective = context.LanguagePreferences
+                .Where(item => item.Range == "*" || Includes(item.Range, tag))
+                .OrderByDescending(item => item.Range == "*" ? 0 : item.Range.Length)
+                .First();
+            if (effective.Quality > 0) return true;
+        }
+        return false;
+    }
+
+    private static bool Includes(string range, string tag) => string.Equals(range, tag, StringComparison.OrdinalIgnoreCase)
+        || tag.StartsWith(range + "-", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Matches a daily UTC <c>HH:mm-HH:mm</c> window, wrapping past midnight.</summary>
     private static bool MatchesTimeWindow(string? window, DateTimeOffset now)
@@ -82,8 +114,8 @@ public sealed class RoutingService : IRoutingService
 
         var parts = window.Split('-', 2);
         if (parts.Length != 2
-            || !TimeOnly.TryParse(parts[0], out var start)
-            || !TimeOnly.TryParse(parts[1], out var end))
+            || !TimeOnly.TryParseExact(parts[0], "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var start)
+            || !TimeOnly.TryParseExact(parts[1], "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var end))
             return false;
 
         var t = TimeOnly.FromDateTime(now.UtcDateTime);

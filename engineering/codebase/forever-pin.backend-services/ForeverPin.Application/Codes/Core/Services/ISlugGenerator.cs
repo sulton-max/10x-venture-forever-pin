@@ -4,6 +4,6 @@ namespace ForeverPin.Application.Codes.Core.Services;
 public interface ISlugGenerator
 {
     /// <summary>Returns a new random slug.</summary>
-    /// <remarks>Check uniqueness against the store before use.</remarks>
+    /// <remarks>The database unique index arbitrates collisions; callers retry a bounded number of times.</remarks>
     string Next();
 }

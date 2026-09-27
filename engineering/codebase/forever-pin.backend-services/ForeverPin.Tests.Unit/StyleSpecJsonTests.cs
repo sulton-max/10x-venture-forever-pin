@@ -1,3 +1,7 @@
+using System.Text.Json;
+using ForeverPin.Domain.Codes.Core.Entities;
+using ForeverPin.Domain.Codes.Serialization.Factories;
+using ForeverPin.Infrastructure.Codes.Core.Extensions;
 using WoW.Two.Sdk.Backend.Beta.Codes.Models;
 using WoW.Two.Sdk.Backend.Beta.Codes.Models.Style;
 
@@ -14,7 +18,7 @@ public class StyleSpecJsonTests
     [InlineData("not json")]
     public void Deserialize_blank_or_malformed_falls_back_to_default(string? json)
     {
-        var spec = StyleSpecJson.Deserialize(json);
+        var spec = ReadStoredStyle(json);
 
         Assert.Equal(StyleSpec.Default, spec);
     }
@@ -32,11 +36,15 @@ public class StyleSpecJsonTests
             Logo = new LogoSpec { DataUrl = "data:image/png;base64,AAAA", SizeRatio = 0.3 },
         };
 
-        var json = StyleSpecJson.Serialize(original);
-        var restored = StyleSpecJson.Deserialize(json);
+        var json = JsonSerializer.Serialize(original, CodeJsonOptionsFactory.CreateStyle());
+        var restored = ReadStoredStyle(json);
 
         Assert.Equal(original, restored);
         Assert.Contains("foregroundColor", json);        // camelCase
         Assert.Contains("\"eccLevel\":\"H\"", json);      // string enum
     }
+    private static StyleSpec ReadStoredStyle(string? json) => new CodeEntity
+    {
+        Id = Guid.NewGuid(), UserId = Guid.NewGuid(), Name = "Style corpus", StyleJson = json!,
+    }.ToModel("https://redirect.test").Style;
 }

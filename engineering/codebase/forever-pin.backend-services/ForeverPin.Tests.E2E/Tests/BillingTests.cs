@@ -1,6 +1,7 @@
 using System.Net;
 using AwesomeAssertions;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using ForeverPin.Common.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Billing.Entities;
 using ForeverPin.Domain.Billing.Enums;
@@ -44,7 +45,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         // The handler resolved Billing:Prices:Pro and passed the caller as client_reference_id.
         Fixture.Gateway.LastCheckout.Should().NotBeNull();
         Fixture.Gateway.LastCheckout!.Value.PriceId.Should().Be(AppFixture.PricePro);
-        Fixture.Gateway.LastCheckout!.Value.UserId.Should().Be(Guid.Parse(owner.UserId));
+        Fixture.Gateway.LastCheckout!.Value.UserId.Should().Be(owner.UserId);
     }
 
     [Fact]
@@ -200,7 +201,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.CheckoutSessionCompleted,
-            UserId = Guid.Parse(owner.UserId), // client_reference_id — the same caller
+            UserId = owner.UserId, // client_reference_id — the same caller
             StripeCustomerId = "cus_1",
             StripeSubscriptionId = "sub_1",
             PriceId = AppFixture.PricePro, // → Pro via the inverse Billing:Prices map
@@ -278,6 +279,33 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         webhook.StatusCode.Should().Be(HttpStatusCode.BadRequest); // 400 so Stripe retries
     }
 
+    [Fact]
+    public async Task Webhook_ShouldReturnSafe500_WhenProviderFailsUnexpectedly()
+    {
+        const string privateDiagnostic = "private-provider-token-and-database-detail";
+        Fixture.Gateway.WebhookError = new InvalidOperationException(privateDiagnostic);
+
+        var response = await AppFixture.PostWebhookAsync(AnonymousClient);
+
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        response.Content.Headers.ContentType!.MediaType.Should().Be("application/problem+json");
+        (await response.Content.ReadAsStringAsync()).Should().NotContain(privateDiagnostic);
+    }
+
+    [Fact]
+    public async Task Webhook_ShouldReturnSafe409_WhenDatabaseReportsUniqueConflict()
+    {
+        const string privateDiagnostic = "private-constraint-name-and-row-values";
+        Fixture.Gateway.WebhookError = new DbUpdateException(privateDiagnostic,
+            new PostgresException(privateDiagnostic, "ERROR", "ERROR", PostgresErrorCodes.UniqueViolation));
+
+        var response = await AppFixture.PostWebhookAsync(AnonymousClient);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        response.Content.Headers.ContentType!.MediaType.Should().Be("application/problem+json");
+        (await response.Content.ReadAsStringAsync()).Should().NotContain(privateDiagnostic);
+    }
+
     // ── cross-cutting: cap → upgrade unblocks; cancel keeps the code resolving ──
 
     [Fact]
@@ -298,7 +326,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
             Type = BillingWebhookEventType.CheckoutSessionCompleted,
-            UserId = Guid.Parse(owner.UserId),
+            UserId = owner.UserId,
             StripeCustomerId = "cus_up",
             StripeSubscriptionId = "sub_up",
             PriceId = AppFixture.PricePro,
@@ -320,14 +348,13 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         // Owner subscribes (Pro) then prints a code while subscribed.
         await SeedSubscriptionAsync(owner, Plan.Pro, "sub_cancel", "cus_c");
         const string destination = "https://still-works.example";
-        // Text content supplies a redirect payload; the URL content encoder returns null.
         var code = await (await owner.Client.PostJsonAsync("/api/codes", new
         {
             name = "keeper",
             barcodeFormat = "QrCode",
             mode = "dynamic",
-            contentType = "text",
-            rules = new object[] { CodeRequests.DefaultRule(new { type = "text", text = destination }) },
+            contentType = "url",
+            rules = new object[] { CodeRequests.DefaultRule(new { type = "url", url = destination }) },
             style = CodeRequests.Style(),
         })).ReadEnvelopeAsync<CodeDtoModel>();
 
@@ -366,7 +393,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         ctx.Set<SubscriptionEntity>().Add(new SubscriptionEntity
         {
             Id = Guid.NewGuid(),
-            UserId = Guid.Parse(owner.UserId),
+            UserId = owner.UserId,
             Plan = plan,
             Status = SubscriptionStatus.Active,
             StripeCustomerId = customerId,
@@ -383,7 +410,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
             {
                 Id = Guid.NewGuid(),
                 Slug = Guid.NewGuid().ToString("N")[..7], // unique 7-char slug per code
-                UserId = Guid.Parse(owner.UserId),
+                UserId = owner.UserId,
                 Name = $"seed-{i}",
                 BarcodeFormat = BarcodeFormat.QrCode,
                 StyleJson = "{}",

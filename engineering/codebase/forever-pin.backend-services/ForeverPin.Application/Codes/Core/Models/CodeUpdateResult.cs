@@ -7,5 +7,5 @@ public abstract record CodeUpdateResult
 
     /// <summary>Represents an updated code.</summary>
     /// <param name="Code">The updated code.</param>
-    public sealed record Success(CodeDto Code) : CodeUpdateResult;
+    public sealed record Success(CodeModel Code) : CodeUpdateResult;
 }

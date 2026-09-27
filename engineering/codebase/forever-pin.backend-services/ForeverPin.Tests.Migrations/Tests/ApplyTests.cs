@@ -1,49 +1,63 @@
 using AwesomeAssertions;
+using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Tests.Migrations.Harness;
+using Microsoft.EntityFrameworkCore;
+using WoW.Two.Sdk.Backend.Beta.Data.Migrations.Bespoke;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
 using WoW.Two.Sdk.Backend.Beta.Testing.Data.Migrations;
 
 namespace ForeverPin.Tests.Migrations.Tests;
 
-/// <summary>Fresh-DB apply: pending → applied, history recorded, status reflects it, second apply is a no-op.</summary>
+/// <summary>Verifies the embedded product migrations against the current persistence model.</summary>
 [Collection(MigratorCollection.Name)]
-public sealed class ApplyTests(MigratorPostgresFixture fixture) : MigratorTestBase(fixture)
+public sealed class ApplyTests(MigratorPostgresFixture fixture) : IAsyncLifetime
 {
     [Fact]
-    public async Task ApplyPending_OnFreshDb_AppliesRecordsAndIsIdempotent()
+    public async Task Apply_ShouldCreateProductSchema_WhenEmbeddedMigrationsRunOnEmptyDatabase()
     {
-        Workspace.Write("001-baseline",
-            applySql: "create table t1(id int primary key);",
-            rollbackSql: "drop table t1;");
-        Workspace.Write("002-second",
-            applySql: "create table t2(id int primary key);",
-            rollbackSql: "drop table t2;");
+        await using var migrator = MigratorHarness.CreatePostgres(
+            fixture.ConnectionString, typeof(AppDbContext).Assembly);
 
-        await using var migrator = CreateMigrator();
+        var applied = await migrator.Runner.ApplyPendingAsync("product-test");
+        var labels = applied.Should().BeOfType<Result<IReadOnlyList<string>>.Success>().Subject.Value;
+        var embeddedLabels = typeof(AppDbContext).Assembly.GetManifestResourceNames()
+            .Where(name => name.StartsWith("Migrations/", StringComparison.Ordinal)
+                && name.EndsWith("/Apply.sql", StringComparison.Ordinal))
+            .Select(name => name.Split('/')[1]);
+        labels.Should().BeEquivalentTo(embeddedLabels);
+        labels.Should().Contain("010-rules-jsonb");
 
-        // First apply: both pending migrations run.
-        var applied = await migrator.Runner.ApplyPendingAsync("test", CancellationToken.None);
-        applied.Should().BeEquivalentTo(["001-baseline", "002-second"]);
+        foreach (var table in new[] { "codes", "scan_events", "subscriptions", "users" })
+            (await migrator.HasTableAsync(table)).Should().BeTrue();
+        (await migrator.HasTableAsync("routing_rules")).Should().BeFalse();
+        (await migrator.HasIndexAsync("ix_codes_slug")).Should().BeTrue();
+        (await migrator.HasIndexAsync("ix_subscriptions_user_id")).Should().BeTrue();
+        (await migrator.HasIndexAsync("ix_users_google_subject")).Should().BeTrue();
 
-        // The tables they declare now exist.
-        (await migrator.HasTableAsync("t1")).Should().BeTrue();
-        (await migrator.HasTableAsync("t2")).Should().BeTrue();
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseNpgsql(fixture.ConnectionString).UseSnakeCaseNamingConvention().Options;
+        await using var context = new AppDbContext(options);
+        // Materializing each mapped table checks columns and converters against the actual SQL resources.
+        (await context.Codes.ToListAsync()).Should().BeEmpty();
+        (await context.ScanEvents.ToListAsync()).Should().BeEmpty();
+        (await context.Subscriptions.ToListAsync()).Should().BeEmpty();
+        (await context.Users.ToListAsync()).Should().BeEmpty();
 
-        // migration_history has one row per migration, stamped with appliedBy.
-        var history = await migrator.ReadHistoryAsync();
-        history.Select(r => r.Ordinal).Should().Equal(1, 2);
-        history.Select(r => r.Name).Should().Equal("baseline", "second");
-        history.Should().OnlyContain(r => r.AppliedBy == "test");
-
-        // GetStatus shows both applied, nothing pending / drifted / orphaned.
-        var status = await migrator.Runner.GetStatusAsync(CancellationToken.None);
-        status.Applied.Select(a => a.Ordinal).Should().Equal(1, 2);
+        var status = (await migrator.Runner.GetStatusAsync()).Should()
+            .BeOfType<Result<MigrationStatus>.Success>().Subject.Value;
+        status.Applied.Should().HaveCount(labels.Count);
         status.Pending.Should().BeEmpty();
         status.Drifted.Should().BeEmpty();
         status.Orphaned.Should().BeEmpty();
+        (await migrator.ReadHistoryAsync()).Should().OnlyContain(row => row.AppliedBy == "product-test");
 
-        // Second apply against an up-to-date DB is a no-op: no labels, history unchanged.
-        var second = await migrator.Runner.ApplyPendingAsync("test", CancellationToken.None);
-        second.Should().BeEmpty();
-        (await migrator.ReadHistoryAsync()).Should().HaveCount(2);
+        var repeated = await migrator.Runner.ApplyPendingAsync("second-host");
+        repeated.Should().BeOfType<Result<IReadOnlyList<string>>.Success>().Subject.Value.Should().BeEmpty();
     }
+
+    /// <inheritdoc />
+    public Task InitializeAsync() => fixture.ResetAsync().AsTask();
+
+    /// <inheritdoc />
+    public Task DisposeAsync() => Task.CompletedTask;
 }

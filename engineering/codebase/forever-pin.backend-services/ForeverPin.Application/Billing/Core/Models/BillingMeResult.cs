@@ -7,5 +7,5 @@ public abstract record BillingMeResult
 
     /// <summary>Represents a resolved billing snapshot.</summary>
     /// <param name="Status">The resolved billing snapshot.</param>
-    public sealed record Success(BillingStatusDto Status) : BillingMeResult;
+    public sealed record Success(BillingStatusModel Status) : BillingMeResult;
 }

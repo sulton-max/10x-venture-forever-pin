@@ -6,6 +6,4 @@ public sealed record TextContentValueObject : CodeContentValueObject
     /// <summary>Gets the free-form text.</summary>
     public required string Text { get; init; }
 
-    /// <inheritdoc />
-    public override string Encode() => Text ?? string.Empty;
 }
