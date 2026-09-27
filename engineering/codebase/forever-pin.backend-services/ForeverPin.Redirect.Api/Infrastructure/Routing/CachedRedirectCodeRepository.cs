@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using ForeverPin.Domain.Codes.Core.Entities;
+using ForeverPin.Persistence.Constants;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Redirect.Api.Application.Routing.Services;
 using ForeverPin.Redirect.Api.Settings;
@@ -9,6 +10,7 @@ using ForeverPin.Redirect.Api.Settings;
 namespace ForeverPin.Redirect.Api.Infrastructure.Routing;
 
 /// <summary>Fetches the scanned code through an in-memory cache, reading the DB only on a miss.</summary>
+/// <remarks>A committed edit on the management host evicts the entry; the lifetime bounds a missed eviction.</remarks>
 public sealed class CachedRedirectCodeRepository(
     IServiceScopeFactory scopeFactory,
     IMemoryCache cache,
@@ -33,5 +35,5 @@ public sealed class CachedRedirectCodeRepository(
         return code;
     }
 
-    private static string CacheKey(string slug) => $"route:{slug}";
+    private static string CacheKey(string slug) => CodeCacheConstants.KeyPrefix + slug;
 }

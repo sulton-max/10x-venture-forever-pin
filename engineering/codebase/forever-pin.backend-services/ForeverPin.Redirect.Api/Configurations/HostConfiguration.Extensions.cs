@@ -11,6 +11,7 @@ using ForeverPin.Redirect.Api.Application.Routing.Services;
 using ForeverPin.Redirect.Api.Infrastructure.Analytics;
 using ForeverPin.Redirect.Api.Infrastructure.Routing;
 using ForeverPin.Redirect.Api.Settings;
+using WoW.Two.Sdk.Backend.Beta.Caching.Invalidation;
 using WoW.Two.Sdk.Backend.Beta.Data;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Configuration;
 using WoW.Two.Sdk.Backend.Beta.Geo.IpLocation;
@@ -90,7 +91,6 @@ public static partial class HostConfiguration
     /// <summary>Registers the routing pipeline.</summary>
     private static WebApplicationBuilder AddRouting(this WebApplicationBuilder builder)
     {
-        builder.Services.AddMemoryCache();
         builder.Services.AddCodePayloads();
         builder.Services.AddSingleton<CodePayloadMapper>();
         builder.Services.AddSingleton<WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers.IAcceptLanguageParser,
@@ -106,8 +106,10 @@ public static partial class HostConfiguration
             options.EnableDownload = builder.Configuration.GetValue("IpLocation:EnableDownload", true);
         });
 
-        // Read each scan from the database so edits apply without cache invalidation.
-        builder.Services.AddSingleton<IRedirectCodeRepository, DbRedirectCodeRepository>();
+        // Cache scanned codes in memory; the management host's committed edits evict them on every redirect host.
+        builder.Services.AddSingleton<IRedirectCodeRepository, CachedRedirectCodeRepository>();
+        builder.Services.AddMemoryCacheInvalidationHandler();
+        builder.Services.AddPostgresCacheInvalidation();
 
         // Best-effort analytics: scans queue in memory and flush in batches; a full queue drops and counts.
         builder.Services.AddBatchPipeline<ScanRecordModel, ScanBatchHandler>(options => options.Name = "scans");

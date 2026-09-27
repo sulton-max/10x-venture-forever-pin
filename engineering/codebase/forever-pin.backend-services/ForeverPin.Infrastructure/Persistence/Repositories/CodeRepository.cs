@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Domain.Codes.Core.Entities;
+using ForeverPin.Persistence.Constants;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Application.Codes.Core.Enums;
+using WoW.Two.Sdk.Backend.Beta.Caching.Invalidation.Extensions;
 using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
 using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Uniqueness.Extensions;
 
@@ -73,7 +75,7 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
             throw new InvalidOperationException("Load and mutate the tracked code before updating it.");
 
         // The replacement rule set is saved in the code's jsonb column.
-        await db.SaveChangesAsync(ct);
+        await SaveAndEvictAsync(code.Slug, ct);
         return code;
     }
 
@@ -87,18 +89,26 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
             return null;
 
         code.IsActive = isActive;
-        await db.SaveChangesAsync(ct);
+        await SaveAndEvictAsync(code.Slug, ct);
         return code;
     }
 
     /// <inheritdoc />
     public async Task<bool> DeleteAsync(Guid id, Guid userId, CancellationToken ct)
     {
-        // Owner-scoped hard delete; the rules ride the row, so there is nothing to cascade. No-op if not theirs.
-        var removed = await db.Codes
-            .Where(c => c.Id == id && c.UserId == userId)
-            .ExecuteDeleteAsync(ct);
+        await using var ownedTransaction = db.Database.CurrentTransaction is null
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
+        var owned = db.Codes.Where(c => c.Id == id && c.UserId == userId);
+        var slug = await owned.Select(c => c.Slug).FirstOrDefaultAsync(ct);
 
+        // Owner-scoped hard delete; the rules ride the row, so there is nothing to cascade. No-op if not theirs.
+        var removed = await owned.ExecuteDeleteAsync(ct);
+        if (removed > 0 && slug is not null)
+            await db.Database.PublishCacheKeyInvalidationAsync(CodeCacheConstants.KeyPrefix + slug, cancellationToken: ct);
+
+        if (ownedTransaction is not null)
+            await ownedTransaction.CommitAsync(ct);
         return removed > 0;
     }
 
@@ -109,6 +119,21 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
     /// <inheritdoc />
     public Task<int> CountByUserAsync(Guid userId, CancellationToken ct) =>
         db.Codes.CountAsync(c => c.UserId == userId, ct);
+
+    /// <summary>Saves the pending change and evicts the code from every redirect host once the change commits.</summary>
+    /// <remarks>Joins the caller's transaction when present; a static code has no slug and no cached route.</remarks>
+    private async Task SaveAndEvictAsync(string? slug, CancellationToken ct)
+    {
+        await using var ownedTransaction = db.Database.CurrentTransaction is null
+            ? await db.Database.BeginTransactionAsync(ct)
+            : null;
+        await db.SaveChangesAsync(ct);
+        if (slug is not null)
+            await db.Database.PublishCacheKeyInvalidationAsync(CodeCacheConstants.KeyPrefix + slug, cancellationToken: ct);
+
+        if (ownedTransaction is not null)
+            await ownedTransaction.CommitAsync(ct);
+    }
 
     /// <inheritdoc />
     public async Task<int> ReassignOwnerAsync(Guid fromUserId, Guid toUserId, CancellationToken ct)

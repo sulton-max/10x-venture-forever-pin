@@ -91,9 +91,30 @@ public sealed class RedirectWedgeTests(AppFixture fixture) : E2EBase(fixture)
             .ReadEnvelopeAsync<CodeDtoModel>();
         updated.Slug.Should().Be(code.Slug);
 
-        var second = await ScanAsync(code.Slug!, IosUserAgent);
+        // The committed edit evicts the cached code on the redirect host through a database notification.
+        var second = await PollingExtensions.UntilAsync(
+            probe: () => ScanAsync(code.Slug!, IosUserAgent),
+            predicate: scan => scan.Headers.Location?.ToString() == newDestination);
         second.StatusCode.Should().Be(HttpStatusCode.Found);
         second.Headers.Location!.ToString().Should().Be(newDestination);
+    }
+
+    [Fact]
+    public async Task Scan_AfterDeactivation_StopsRedirecting()
+    {
+        var owner = await CreateGuestClientAsync();
+        var code = await (await owner.Client.PostJsonAsync("/api/codes",
+            AppCode("App download", FallbackUrl, IosDestination)))
+            .ReadEnvelopeAsync<CodeDtoModel>();
+        (await ScanAsync(code.Slug!, IosUserAgent)).StatusCode.Should().Be(HttpStatusCode.Found);
+
+        (await owner.Client.PatchJsonAsync($"/api/codes/{code.Id}/active", new { isActive = false }))
+            .EnsureSuccessStatusCode();
+
+        var scan = await PollingExtensions.UntilAsync(
+            probe: () => ScanAsync(code.Slug!, IosUserAgent),
+            predicate: response => response.StatusCode != HttpStatusCode.Found);
+        scan.StatusCode.Should().NotBe(HttpStatusCode.Found);
     }
 
     [Fact]
