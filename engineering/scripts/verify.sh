@@ -33,5 +33,5 @@ if [[ "$suite" != frontend ]]; then
   # Serial builds avoid shared MSBuild/compiler servers. Test sockets and
   # Docker still require native execution approval in a restricted sandbox.
   dotnet test "$target" --disable-build-servers -m:1 \
-    -p:UseSharedCompilation=false --verbosity minimal
+    -p:UseSharedCompilation=false -p:BuildSpa=false --verbosity minimal
 fi

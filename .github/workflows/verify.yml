@@ -34,7 +34,7 @@ jobs:
           git merge-base --is-ancestor "$GITHUB_SHA" origin/main
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
-          dotnet-version: '10.0.x'
+          global-json-file: engineering/codebase/forever-pin.backend-services/global.json
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.11.0'
