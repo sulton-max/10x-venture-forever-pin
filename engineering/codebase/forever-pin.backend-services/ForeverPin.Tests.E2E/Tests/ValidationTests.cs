@@ -161,6 +161,58 @@ public sealed class ValidationTests(AppFixture fixture) : E2EBase(fixture)
         unchanged.Name.Should().Be("Owned");
     }
 
+    [Fact]
+    public async Task Create_ShouldSucceedWithAWarning_WhenTheDestinationIsInsecure()
+    {
+        var owner = await CreateGuestClientAsync();
+        var response = await owner.Client.PostJsonAsync("/api/codes",
+            CodeRequests.DynamicUrl("Plain http", "http://menu.example.com/today"));
+
+        var warnings = await ReadWarningsAsync(response);
+        warnings.Should().ContainSingle();
+        warnings[0].Code.Should().Be("RedirectTargetInsecure");
+        warnings[0].Property.Should().Be("Rules[0].Content.Url");
+        warnings[0].Severity.Should().BeEquivalentTo("warning");
+    }
+
+    [Fact]
+    public async Task Update_ShouldSucceedWithAWarning_WhenTheDestinationIsOnAPrivateNetwork()
+    {
+        var owner = await CreateGuestClientAsync();
+        var code = await (await owner.Client.PostJsonAsync("/api/codes",
+            CodeRequests.DynamicUrl("Office wiki", "https://example.com"))).ReadEnvelopeAsync<CodeDtoModel>();
+
+        var response = await owner.Client.PutJsonAsync($"/api/codes/{code.Id}",
+            CodeRequests.DynamicUrl("Office wiki", "https://10.0.0.8/wiki"));
+
+        (await ReadWarningsAsync(response)).Select(warning => warning.Code)
+            .Should().Contain("RedirectTargetPrivateNetwork");
+    }
+
+    [Fact]
+    public async Task Create_ShouldOmitWarnings_WhenTheDestinationIsPublicAndSecure()
+    {
+        var owner = await CreateGuestClientAsync();
+        var response = await owner.Client.PostJsonAsync("/api/codes",
+            CodeRequests.DynamicUrl("Menu", "https://example.com/menu"));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        body.RootElement.TryGetProperty("warnings", out _).Should().BeFalse();
+    }
+
+    private static async Task<(string Property, string Code, string Severity)[]> ReadWarningsAsync(HttpResponseMessage response)
+    {
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        return body.RootElement.GetProperty("warnings").EnumerateArray()
+            .Select(warning => (
+                warning.GetProperty("property").GetString()!,
+                warning.GetProperty("code").GetString()!,
+                warning.GetProperty("severity").GetString()!))
+            .ToArray();
+    }
+
     private static async Task<string[]> ReadValidationPropertiesAsync(HttpResponseMessage response)
     {
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

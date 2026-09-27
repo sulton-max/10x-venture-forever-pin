@@ -1,16 +1,17 @@
 import type { CodeDto, ImageFormat } from "@/domain/codes/common";
-import { API_BASE, problemError, readData } from "../common/client";
+import { API_BASE, problemError, readData, readDataWithWarnings } from "../common/client";
 import type {
   CodeCreateUpdateApiRequest,
   CodePreviewApiRequest,
+  CodeSaveApiResult,
   CodeSetActiveApiRequest,
   CodeUpdateApiRequest,
 } from "./models";
 
 /** Provides code management and image rendering. */
 export const codesApiClient = {
-  /** Creates a code for the current owner. */
-  async create(request: CodeCreateUpdateApiRequest): Promise<CodeDto> {
+  /** Creates a code for the current owner, returning any destination warnings the save raised. */
+  async create(request: CodeCreateUpdateApiRequest): Promise<CodeSaveApiResult> {
     const res = await fetch(`${API_BASE}/api/codes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -19,7 +20,8 @@ export const codesApiClient = {
     });
 
     if (!res.ok) throw await problemError(res, "Create failed");
-    return readData<CodeDto>(res);
+    const { data, warnings } = await readDataWithWarnings<CodeDto>(res);
+    return { code: data, warnings };
   },
 
   /** Lists the owner's codes, filtering names case-insensitively by `q`. */
@@ -44,7 +46,7 @@ export const codesApiClient = {
   },
 
   /** Replaces editable fields; the server preserves the slug, scan count, creation time, and mode. */
-  async update(id: string, request: CodeUpdateApiRequest): Promise<CodeDto> {
+  async update(id: string, request: CodeUpdateApiRequest): Promise<CodeSaveApiResult> {
     const res = await fetch(`${API_BASE}/api/codes/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -53,7 +55,8 @@ export const codesApiClient = {
     });
 
     if (!res.ok) throw await problemError(res, "Update failed");
-    return readData<CodeDto>(res);
+    const { data, warnings } = await readDataWithWarnings<CodeDto>(res);
+    return { code: data, warnings };
   },
 
   /** Toggles a code's active state. */

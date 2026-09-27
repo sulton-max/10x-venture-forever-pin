@@ -10,6 +10,8 @@ using WoW.Two.Sdk.Backend.Beta.Foundation.Validation;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
 using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Validation.Trackers;
+using WoW.Two.Sdk.Backend.Beta.Foundation.Validation.Trackers.Extensions;
 
 namespace ForeverPin.Infrastructure.Codes.Core.CommandHandlers;
 
@@ -17,7 +19,8 @@ namespace ForeverPin.Infrastructure.Codes.Core.CommandHandlers;
 public sealed class CodeUpdateCommandHandler(
     ICodeRepository repository,
     ApiSettings settings,
-    IValidator<CodeUpdateModel> validator)
+    IValidator<CodeUpdateModel> validator,
+    IValidationAdvisoryTracker advisories)
     : ICommandHandler<CodeUpdateCommand, AppResult<CodeUpdateResult.Success>>
 {
     /// <inheritdoc />
@@ -29,7 +32,8 @@ public sealed class CodeUpdateCommandHandler(
         if (code is null)
             return AppResult<CodeUpdateResult.Success>.Fail(AppError.Of(AppErrorType.NotFound, "Code not found"));
 
-        var validation = validator.Validate(new CodeUpdateModel(code.Mode, request));
+        // Errors block the update; warnings and suggestions travel with the saved code.
+        var validation = validator.Validate(new CodeUpdateModel(code.Mode, request), advisories);
         if (validation is not null)
             return AppResult<CodeUpdateResult.Success>.Fail(validation);
 

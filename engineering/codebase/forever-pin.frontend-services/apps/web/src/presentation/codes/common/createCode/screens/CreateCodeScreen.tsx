@@ -25,6 +25,7 @@ import {
   toUpdateCodeRequest,
 } from "@/application/codes";
 import { codesApiClient, type CodeCreateUpdateApiRequest } from "@/integration/codes";
+import type { ApiWarning } from "@/integration/common";
 import { useAppForm } from "@/form";
 import { ContentModeDisplays } from "@/presentation/codes/content/components/ContentModeDisplays";
 import { ContentView, DesignView, PreviewView } from "../views";
@@ -69,6 +70,8 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
   const [existingCode, setExistingCode] = useState<CodeDto | null>(null);
   // Saved result for the confirmation panel.
   const [saved, setSaved] = useState<CodeDto | null>(null);
+  // Findings the last save raised without blocking it, such as an insecure destination.
+  const [warnings, setWarnings] = useState<readonly ApiWarning[]>([]);
   // The mode a copy is being created in — set once the source loads, so the header can name it.
   const [copiedInto, setCopiedInto] = useState<ContentMode | null>(null);
   // Edit / copy fetch state.
@@ -82,11 +85,13 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
     mapFieldPath: mapCodeFieldPath,
     // onSubmit is the only failure path — a thrown SDK ApiError maps to fields, the remainder to submitError.
     onSubmit: async (values) => {
-      const dto = codeId
+      setWarnings([]);
+      const result = codeId
         ? await codesApiClient.update(codeId, toUpdateCodeRequest(values))
         : await codesApiClient.create(toCreateCodeRequest(values));
-      setSaved(dto);
-      setExistingCode(dto);
+      setSaved(result.code);
+      setExistingCode(result.code);
+      setWarnings(result.warnings);
       onSaved?.();
     },
   });
@@ -124,6 +129,7 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
   // "Create another" clears only the saved panel — the builder keeps its values for a quick variant.
   function handleCreateAnother() {
     setSaved(null);
+    setWarnings([]);
   }
 
   if (loading) {
@@ -209,6 +215,19 @@ export function CreateCodeScreen({ codeId, copyFromId, copyMode, onBack, onSaved
             <form.Subscribe selector={(s) => s.submitError}>
               {(submitError) => submitError && <Alert severity="danger" description={submitError.message} />}
             </form.Subscribe>
+            {warnings.length > 0 && (
+              <Alert
+                severity="warning"
+                title="Saved — check the destination"
+                description={
+                  <ul className="list-disc pl-4">
+                    {warnings.map((warning) => (
+                      <li key={`${warning.property}:${warning.code}`}>{warning.message}</li>
+                    ))}
+                  </ul>
+                }
+              />
+            )}
           </Card>
         </form>
 

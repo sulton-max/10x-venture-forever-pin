@@ -23,10 +23,28 @@ export async function loadRuntimeConfig(): Promise<void> {
   REDIRECT_BASE = config.redirectBaseUrl;
 }
 
+/** Describes an advisory finding that a successful write returns beside its data. */
+export interface ApiWarning {
+  /** The field path the finding concerns, such as `Rules[0].Content.Url`. */
+  readonly property: string;
+  /** The display message. */
+  readonly message: string;
+  /** The stable finding code, such as `RedirectTargetInsecure`. */
+  readonly code: string;
+  /** The finding's severity: a warning or a suggestion. */
+  readonly severity: string;
+}
+
 // Parse Temporal values and unwrap the success envelope.
 export async function readData<T>(res: Response): Promise<T> {
   const envelope = parseJson<ApiResponse<T>>(await res.text());
   return envelope.data;
+}
+
+// Unwrap the success envelope, keeping the warnings a successful write carries.
+export async function readDataWithWarnings<T>(res: Response): Promise<{ data: T; warnings: readonly ApiWarning[] }> {
+  const envelope = parseJson<ApiResponse<T> & { warnings?: ApiWarning[] }>(await res.text());
+  return { data: envelope.data, warnings: envelope.warnings ?? [] };
 }
 
 // Prefer validation messages, then problem details, then the HTTP status.

@@ -21,6 +21,7 @@ using ForeverPin.Domain.Codes.Rules.Mappers;
 using WoW.Two.Sdk.Backend.Beta.Identity.CurrentUser;
 using WoW.Two.Sdk.Backend.Beta.Mediator;
 using WoW.Two.Sdk.Backend.Beta.Web.Contracts;
+using WoW.Two.Sdk.Backend.Beta.Web.ErrorMapping;
 
 namespace ForeverPin.Api.Codes.Core.Controllers;
 
@@ -36,6 +37,7 @@ public sealed class CodesController(
     IValidator<CodeRuleSetModel> ruleSetValidator,
     IValidator<CodeRuleValueObject> ruleValidator,
     ICurrentUserService currentUser,
+    IValidationAdvisoryMapper advisories,
     ApiSettings settings) : ControllerBase
 {
     // Placeholder slug for an unsaved dynamic preview.
@@ -103,7 +105,7 @@ public sealed class CodesController(
         var result = await sender.SendAsync(command, ct);
 
         return result.Match<IActionResult>(
-            ok => Ok(ApiResponse<CodeDto>.Ok(ok.Data.Code.ToDto())),
+            ok => Ok(ApiResponse<CodeDto>.Ok(ok.Data.Code.ToDto(), advisories.Map(HttpContext))),
             fail => this.ToProblem(fail.Error));
     }
 
@@ -156,7 +158,7 @@ public sealed class CodesController(
         var result = await sender.SendAsync(command, ct);
 
         return result.Match<IActionResult>(
-            ok => Ok(ApiResponse<CodeDto>.Ok(ok.Data.Code.ToDto())),
+            ok => Ok(ApiResponse<CodeDto>.Ok(ok.Data.Code.ToDto(), advisories.Map(HttpContext))),
             fail => this.ToProblem(fail.Error));
     }
 

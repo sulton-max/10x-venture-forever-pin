@@ -1,6 +1,7 @@
 using FluentValidation;
 using ForeverPin.Application.Codes.Validators;
 using ForeverPin.Domain.Codes.Content.MobileApp.Models;
+using WoW.Two.Sdk.Backend.Beta.Web.Redirects.Extensions;
 
 namespace ForeverPin.Application.Codes.Content.Validators;
 
@@ -16,5 +17,7 @@ public sealed class MobileAppLinkContentValidator : AbstractValidator<MobileAppL
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Store URL is required.")
             .Must(CodeValidationRules.IsAbsoluteHttpUrl).WithMessage("Store URL must be an absolute http(s) URL.");
+
+        RuleFor(content => content.Url).AdviseOnRedirectTarget();
     }
 }
