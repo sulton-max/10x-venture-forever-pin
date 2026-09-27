@@ -45,7 +45,7 @@ def create_bundle(output, management, redirect, release, commit, platform, rollb
         "images": {"management": management, "redirect": redirect},
         "requiredConfiguration": {
             "management": [
-                "DatabaseOptions:ConnectionString",
+                "DatabaseSettings:ConnectionString",
                 "ApiSettings:RedirectBaseUrl",
                 "Auth:Google:ClientId",
                 "Billing:SecretKey",
@@ -59,7 +59,7 @@ def create_bundle(output, management, redirect, release, commit, platform, rollb
                 "Deployment:TrustedProxies",
             ],
             "redirect": [
-                "DatabaseOptions:ConnectionString",
+                "DatabaseSettings:ConnectionString",
                 "AllowedHosts",
                 "Deployment:TrustedProxies",
             ],

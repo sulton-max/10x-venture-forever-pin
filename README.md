@@ -50,7 +50,9 @@ Dev certificates apply only to the dev server; builds and tests never install ce
 
 ## Configuration
 
-- Both hosts: `DB_CONNECTION` or `DatabaseOptions:ConnectionString`.
+- Both hosts: `DB_CONNECTION` or `DatabaseSettings:ConnectionString`.
+- Both hosts: `Deployment:TrustedProxies` (IPs) and `Deployment:TrustedNetworks` (CIDR) for the ingress.
+- Redirect host: `IP_LOCATION_DIRECTORY` holds the monthly DB-IP Lite database; the image uses `/data/geo`.
 - Management API: `ApiSettings:RedirectBaseUrl` controls printed dynamic links.
 - Google: frontend `VITE_GOOGLE_CLIENT_ID` and backend `Auth:Google:ClientId`.
 - Stripe: [billing configuration](engineering/architecture/billing.md).

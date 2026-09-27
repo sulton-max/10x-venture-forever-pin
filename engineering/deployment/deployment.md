@@ -1,6 +1,6 @@
 # Deployment
 
-*Last updated: 2026-09-25*
+*Last updated: 2026-09-28*
 
 ## Implemented shape
 
@@ -21,8 +21,12 @@
 ## Settings contract
 
 - The release bundle lists every required setting; Wheelhouse's `transport.py template` prints each service's skeleton.
-- `AllowedHosts` lists the public host plus `localhost`: health checks and Wheelhouse smoke probes call `http://localhost:8080`.
+- Both hosts read `DatabaseSettings:ConnectionString` or `DB_CONNECTION`; the bundle previously named a dead key.
+- `AllowedHosts` lists the public host; the SDK appends `localhost`, so health checks and smoke probes pass.
 - `Deployment:TrustedProxies` is a JSON array of ingress IPs; a plain string trusts no proxy.
+- `Deployment:TrustedNetworks` is a JSON array of ingress CIDR ranges, such as a Docker network.
+- Without either, only loopback forwarding is trusted, so scans behind an ingress record the ingress address.
+- The redirect image keeps the monthly DB-IP Lite database in `/data/geo`; a volume avoids re-downloading.
 - Wheelhouse refuses a deployment that breaks any of these before replacing a container.
 - The local and CI stack runs with `AllowedHosts: "localhost;127.0.0.1"`; the smoke asserts a foreign host gets `400`.
 
