@@ -133,6 +133,20 @@ public sealed class AuthTests(AppFixture fixture) : E2EBase(fixture)
     }
 
     [Fact]
+    public async Task SignIn_ShouldRefreshTheStoredProfile_WhenGoogleDetailsChange()
+    {
+        await SignInAsync(Token("sub-frank", "frank@example.com", "Frank"));
+
+        var (response, _) = await SignInAsync(Token("sub-frank", "frank@new.example", "Frank Ocean"));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        await using var context = Fixture.NewDbContext();
+        var account = await context.Users.SingleAsync(user => user.GoogleSubject == "sub-frank");
+        account.Email.Should().Be("frank@new.example");
+        account.Name.Should().Be("Frank Ocean");
+    }
+
+    [Fact]
     public async Task SignedIn_CodesFollowAccount_AcrossDevices()
     {
         // Device A: sign in, create a code.

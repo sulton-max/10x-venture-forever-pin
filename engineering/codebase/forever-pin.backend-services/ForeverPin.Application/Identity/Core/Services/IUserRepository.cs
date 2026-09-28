@@ -13,4 +13,7 @@ public interface IUserRepository
 
     /// <summary>Inserts a new account and returns it.</summary>
     Task<UserEntity> AddAsync(UserEntity user, CancellationToken ct);
+
+    /// <summary>Persists changes to a loaded account.</summary>
+    Task SaveAsync(UserEntity user, CancellationToken ct);
 }

@@ -59,6 +59,14 @@ public sealed class GoogleSignInCommandHandler(
                 AvatarUrl = identity.Picture,
             }, ct);
         }
+        else if (account.Email != identity.Email || account.Name != identity.Name || account.AvatarUrl != identity.Picture)
+        {
+            // Google owns the profile; each sign-in brings the stored copy up to date.
+            account.Email = identity.Email;
+            account.Name = identity.Name;
+            account.AvatarUrl = identity.Picture;
+            await users.SaveAsync(account, ct);
+        }
         if (request.GuestId is { } guestId)
             await codes.ReassignOwnerAsync(guestId, accountId, ct);
         await transaction.CommitAsync(ct);

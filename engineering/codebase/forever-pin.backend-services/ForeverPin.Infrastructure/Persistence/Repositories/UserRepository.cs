@@ -23,4 +23,11 @@ public sealed class UserRepository(AppDbContext db) : IUserRepository
         await db.SaveChangesAsync(ct);
         return user;
     }
+
+    /// <inheritdoc />
+    public async Task SaveAsync(UserEntity user, CancellationToken ct)
+    {
+        db.Users.Update(user);
+        await db.SaveChangesAsync(ct);
+    }
 }
