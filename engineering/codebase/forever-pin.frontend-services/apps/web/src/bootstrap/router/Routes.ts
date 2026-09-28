@@ -8,6 +8,7 @@ import { BlogPosts } from '@/presentation/marketing';
 import AppLayout from '../AppLayout.vue';
 import MarketingLayout from '../MarketingLayout.vue';
 
+import { installCanonicalLink } from './CanonicalLink';
 import { RoutePropsExtensions } from './RoutePropsExtensions';
 
 /** Holds the Stripe Checkout return states the billing page reports. */
@@ -24,6 +25,9 @@ function publicPage(title: string, description?: string): RouteHandle {
   };
 }
 
+/** Keeps crawlers off the product pages; they are private to each visitor. */
+const PrivatePage = { robots: 'noindex' } as const;
+
 /** Holds the route table — the public marketing surface and the guest-gated product under `/app`. */
 export const routes: RouteConfig = [
   {
@@ -33,7 +37,7 @@ export const routes: RouteConfig = [
       {
         index: true,
         id: 'codes',
-        handle: { title: 'Your codes · ForeverPin' },
+        handle: { title: 'Your codes · ForeverPin', meta: PrivatePage },
         lazy: RoutePropsExtensions.page(
           () => import('@/presentation/codes/pages/CodesListPage.vue'),
           (_route, router) => ({
@@ -46,7 +50,7 @@ export const routes: RouteConfig = [
       {
         path: 'new',
         id: 'new-code',
-        handle: { title: 'New code · ForeverPin' },
+        handle: { title: 'New code · ForeverPin', meta: PrivatePage },
         lazy: RoutePropsExtensions.page(
           () => import('@/presentation/codes/pages/CodeBuilderPage.vue'),
           (route, router) => ({
@@ -59,7 +63,7 @@ export const routes: RouteConfig = [
       {
         path: 'billing',
         id: 'billing',
-        handle: { title: 'Billing · ForeverPin' },
+        handle: { title: 'Billing · ForeverPin', meta: PrivatePage },
         lazy: RoutePropsExtensions.page(
           () => import('@/presentation/billing/pages/BillingPage.vue'),
           (route, router) => ({
@@ -71,7 +75,7 @@ export const routes: RouteConfig = [
       {
         path: ':id/edit',
         id: 'edit-code',
-        handle: { title: 'Edit code · ForeverPin' },
+        handle: { title: 'Edit code · ForeverPin', meta: PrivatePage },
         lazy: RoutePropsExtensions.page(
           () => import('@/presentation/codes/pages/CodeBuilderPage.vue'),
           (route, router) => ({
@@ -144,3 +148,5 @@ export const routes: RouteConfig = [
 
 /** Holds the app router — per-route titles and meta, house scroll restoration and the not-found place. */
 export const router = createAppRouter(routes, { notFound: NotFoundPage, routePersistence: false });
+
+installCanonicalLink(router, (path) => path !== AppPaths.codes() && !path.startsWith(`${AppPaths.codes()}/`));

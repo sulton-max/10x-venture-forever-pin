@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { Menu as MenuIcon } from '@lucide/vue';
 import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { RouterLink, RouterView, useRoute } from 'vue-router';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  MenuItem,
+} from '@wow-two-beta/ui-vue/presentation/nav';
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
 import { AppPaths, ColorModeButton } from '@/presentation/common';
 import { BrandGlyph, MarketingFooterSection } from '@/presentation/marketing';
@@ -14,6 +21,10 @@ const NavigationEntries = [
 /** Renders the public marketing shell — frosted header, routed page and footer. */
 defineOptions({ name: 'MarketingLayout' });
 const route = useRoute();
+const router = useRouter();
+
+/** Holds the phone menu's destinations: the page links, then the app. */
+const PhoneEntries = [...NavigationEntries, { to: AppPaths.codes(), label: 'Open app' }] as const;
 
 function isActive(to: string): boolean {
   return route.path === to || route.path.startsWith(`${to}/`);
@@ -42,6 +53,18 @@ function isActive(to: string): boolean {
           </RouterLink>
         </nav>
         <div class="flex items-center gap-2">
+          <DropdownMenu placement="bottom-end">
+            <DropdownMenuTrigger as-child>
+              <Button variant="ghost" tone="neutral" shape="square" aria-label="Open the site menu" class="sm:hidden">
+                <MenuIcon :size="18" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <MenuItem v-for="entry in PhoneEntries" :key="entry.to" @select="() => void router.push(entry.to)">
+                {{ entry.label }}
+              </MenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <ColorModeButton />
           <Button as-child variant="ghost" tone="neutral" size="sm" class="hidden sm:inline-flex">
             <RouterLink :to="AppPaths.codes()">Open app</RouterLink>
