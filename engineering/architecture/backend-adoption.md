@@ -107,12 +107,16 @@ SDK record: [ForeverPin extractions](../../../../wow-two-sdk-beta/wow-two-sdk.ba
 | Stripe webhooks | The EF inbox applies each event id once; `last_event_at` ignores events older than the applied one. |
 | Warnings | URL destinations raise non-blocking warnings; create and update return them as `warnings`, shown after save. |
 | Antiforgery | Cookie writes echo `XSRF-TOKEN` as `X-XSRF-TOKEN`; the signed Stripe webhook is exempt. |
+| Environment | Both hosts read only listed variables through `UseEnvironmentAliases`; an empty variable no longer overrides. |
+| Proxy trust | Both hosts bind `Deployment:TrustedProxies` and `TrustedNetworks` with `TrustProxiesFrom`. |
+| SPA hosting | `UseSpaHosting` and `MapSpaFallback` serve the shell; unknown `/api` routes stay JSON 404s. |
+| Sign-in popups | `AllowCrossOriginOpenerPopups` replaces the HTML header rewrite; the embedder policy is off for Google's script. |
 
 Migration `012-billing-events` adds `inbox_messages` and `subscriptions.last_event_at`; stored payloads are unchanged.
 The owner-lock key hash changed with the SDK helper, so every management instance must run the same release.
 Forwarded headers are trusted only from loopback, `Deployment:TrustedProxies` and `Deployment:TrustedNetworks`.
-The React client refreshes a stale antiforgery token once through `/api/runtime-config`, after sign-in or sign-out.
-The Vue migration needs the same echo and `warnings` exposure in `@wow-two-beta/ui-vue`'s HTTP client.
+The Vue client refreshes a stale antiforgery token once through `/api/runtime-config`, after sign-in or sign-out.
+`@wow-two-beta/ui-vue` gained the same echo and `decodeWarned`; the product drops its bridges after the next publish.
 
 Verification against local candidate `10.0.60-beta.local.20260927.3`, built from the SDK's committed HEAD:
 
@@ -132,6 +136,10 @@ A browser smoke ran the management host from candidate `.3`, serving the built S
 all 12 migrations applied; guest creation, previews and saves passed antiforgery; the insecure-URL warning
 rendered after save; the country-rule and footer DB-IP credits linked to `db-ip.com`.
 Development runs serve the project's `wwwroot` through static web assets, so the smoke used a non-Development environment.
+
+Candidate `.4` adds environment aliases, configured proxy trust and popup-safe opener headers; the same 238 tests pass.
+A second smoke served the Vue build: the shell carried `same-origin-allow-popups` without an embedder policy,
+unknown API paths answered JSON 404s, and a guest's insecure-URL save showed its warning.
 
 ## Remaining acceptance
 
