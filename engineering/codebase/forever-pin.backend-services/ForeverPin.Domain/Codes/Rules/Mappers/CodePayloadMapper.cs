@@ -45,7 +45,9 @@ public sealed class CodePayloadMapper(
     {
         UrlContentValueObject value => HttpUrl(value.Url),
         MobileAppLinkContentValueObject value => HttpUrl(value.Url),
-        TextContentValueObject value => Result<string>.Ok(value.Text ?? string.Empty),
+        TextContentValueObject value => string.IsNullOrEmpty(value.Text)
+            ? Invalid("Text", "Text content is required.")
+            : Result<string>.Ok(value.Text),
         PhoneContentValueObject value => serializer.Serialize(new PhonePayloadModel { Phone = value.Phone }),
         SmsContentValueObject value => serializer.Serialize(new SmsPayloadModel { Phone = value.Phone, Message = value.Message }),
         EmailContentValueObject value => serializer.Serialize(new MailPayloadModel { Recipient = value.To, Subject = value.Subject, Body = value.Body }),

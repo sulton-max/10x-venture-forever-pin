@@ -64,6 +64,12 @@ public sealed class CodeContentEncodeTests
         Assert.False(_mapper.Map(new MobileAppLinkContentValueObject { Store = MobileAppStoreType.AppStore, Url = url }).IsSuccess);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public void Empty_text_fails_instead_of_baking_an_empty_symbol(string? text) =>
+        Assert.False(_mapper.Map(new TextContentValueObject { Text = text! }).IsSuccess);
+
     [Fact]
     public void Contact_maps_organization_and_optional_fields_to_the_exporter()
     {
