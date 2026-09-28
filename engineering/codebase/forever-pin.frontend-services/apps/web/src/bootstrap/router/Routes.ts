@@ -3,7 +3,7 @@ import { createAppRouter, lazyRoute, type RouteConfig, type RouteHandle } from '
 import { ContentMode } from '@/domain/codes';
 import { AppPaths } from '@/presentation/common';
 import NotFoundPage from '@/presentation/common/pages/NotFoundPage.vue';
-import { BlogPosts } from '@/presentation/marketing';
+import { BlogPosts, PublicPageHeads, type PublicPageHead } from '@/presentation/marketing';
 
 import AppLayout from '../AppLayout.vue';
 import MarketingLayout from '../MarketingLayout.vue';
@@ -15,7 +15,7 @@ import { RoutePropsExtensions } from './RoutePropsExtensions';
 const CheckoutReturn = { Success: 'success', Cancelled: 'cancelled' } as const;
 
 /** Builds a public page's title plus its description and Open Graph tags. */
-function publicPage(title: string, description?: string): RouteHandle {
+function publicPage({ title, description }: Pick<PublicPageHead, 'title'> & Partial<PublicPageHead>): RouteHandle {
   return {
     title,
     meta: {
@@ -106,28 +106,19 @@ export const routes: RouteConfig = [
       {
         index: true,
         id: 'home',
-        handle: publicPage(
-          'ForeverPin — programmable codes that never expire',
-          "One QR code, many destinations by context — and you'll never reprint it. Smart routing, every code type, unlimited scans, flat pricing. Your codes, forever.",
-        ),
+        handle: publicPage(PublicPageHeads.home),
         lazy: lazyRoute(() => import('@/presentation/marketing/pages/LandingPage.vue')),
       },
       {
         path: 'pricing',
         id: 'pricing',
-        handle: publicPage(
-          'Pricing — flat plans, unlimited scans · ForeverPin',
-          'Free, $5, $15, or $39 a month — flat. Unlimited scans on every tier, smart routing and a custom domain from $5, and codes that never expire. No scan caps, no surprise bills.',
-        ),
+        handle: publicPage(PublicPageHeads.pricing),
         lazy: lazyRoute(() => import('@/presentation/marketing/pages/PricingPage.vue')),
       },
       {
         path: 'blog',
         id: 'blog',
-        handle: publicPage(
-          'Blog — QR codes, smart routing & best practices · ForeverPin',
-          'Guides on why and how to use QR codes: dynamic vs. static, how smart routing works, best practices for codes that actually scan, and why your codes should never expire.',
-        ),
+        handle: publicPage(PublicPageHeads.blog),
         lazy: lazyRoute(() => import('@/presentation/marketing/pages/BlogIndexPage.vue')),
       },
       {
@@ -136,13 +127,13 @@ export const routes: RouteConfig = [
         handle: {
           title: (route) => {
             const post = BlogPosts.find(RoutePropsExtensions.toText(route.params.slug));
-            return post ? `${post.title} · ForeverPin` : 'Post not found · ForeverPin';
+            return post ? PublicPageHeads.post(post).title : 'Post not found · ForeverPin';
           },
           meta: (route) => {
             const post = BlogPosts.find(RoutePropsExtensions.toText(route.params.slug));
-            return post
-              ? { description: post.description, 'og:title': post.title, 'og:description': post.description }
-              : { 'og:title': 'Post not found · ForeverPin' };
+            if (!post) return { 'og:title': 'Post not found · ForeverPin' };
+            const head = PublicPageHeads.post(post);
+            return { description: head.description, 'og:title': head.title, 'og:description': head.description };
           },
         },
         lazy: RoutePropsExtensions.page(
@@ -154,7 +145,7 @@ export const routes: RouteConfig = [
         path: ':pathMatch(.*)*',
         id: 'not-found',
         component: NotFoundPage,
-        handle: publicPage('Page not found · ForeverPin'),
+        handle: publicPage({ title: 'Page not found · ForeverPin' }),
       },
     ],
   },

@@ -42,3 +42,14 @@ test.describe('marketing', () => {
     await expect(page).toHaveURL(/\/blog$/);
   });
 });
+
+test.describe('page documents', () => {
+  test('serve each public page its own head before any script runs', async ({ request }) => {
+    const pricing = await (await request.get('/pricing')).text();
+    const article = await (await request.get('/blog/dynamic-vs-static-qr-codes')).text();
+
+    expect(pricing).toContain('<title>Pricing — flat plans, unlimited scans · ForeverPin</title>');
+    expect(pricing).toContain('Free, $5, $15, or $39 a month');
+    expect(article).toContain('<title>Dynamic vs static QR codes: which should you use? · ForeverPin</title>');
+  });
+});

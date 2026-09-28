@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import mkcert from 'vite-plugin-mkcert';
 
+import { publicPageDocuments } from './scripts/PublicPageDocuments';
+
 // The app calls same-origin /api; in development Vite proxies it, and /health, to the management API.
 export default defineConfig(({ command, mode }) => {
   const https = mode !== 'http' && process.env.VITE_HTTPS !== 'false';
@@ -11,7 +13,7 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     base: '/',
-    plugins: [vue(), tailwindcss(), ...(command === 'serve' && https ? [mkcert()] : [])],
+    plugins: [vue(), tailwindcss(), publicPageDocuments(), ...(command === 'serve' && https ? [mkcert()] : [])],
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
     build: { outDir: 'dist', emptyOutDir: true, target: 'es2022' },
     server: {
