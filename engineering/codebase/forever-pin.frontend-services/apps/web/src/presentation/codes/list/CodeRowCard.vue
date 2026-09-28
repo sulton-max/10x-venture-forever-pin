@@ -4,8 +4,7 @@ import { Button, CopyButton } from '@wow-two-beta/ui-vue/presentation/actions';
 import { Badge, Card, Text } from '@wow-two-beta/ui-vue/presentation/display';
 import { computed } from 'vue';
 
-import { oppositeMode } from '@/application/codes';
-import { CodeRuleType, ContentMode, ContentType, type CodeDto } from '@/domain/codes';
+import { CodeRuleType, ContentType, type CodeDto } from '@/domain/codes';
 
 import { ContentModeDisplays } from '../content/ContentModeDisplays';
 
@@ -21,8 +20,8 @@ export interface CodeRowCardProps {
 export interface CodeRowCardEmits {
   /** Asks to open the code in the builder. */
   (event: 'edit'): void;
-  /** Asks to copy the code into the opposite mode. */
-  (event: 'copy', mode: ContentMode): void;
+  /** Asks to copy the code; the copy's mode is chosen next. */
+  (event: 'copy'): void;
   /** Asks to pause or resume the code. */
   (event: 'toggle-active'): void;
   /** Asks to delete the code. */
@@ -38,9 +37,6 @@ const props = defineProps<CodeRowCardProps>();
 const emit = defineEmits<CodeRowCardEmits>();
 
 const mode = computed(() => ContentModeDisplays[props.code.mode]);
-const copyMode = computed(() => oppositeMode(props.code.mode));
-// A static copy holds one rule, so only single-rule codes can become static.
-const canCopy = computed(() => copyMode.value === ContentMode.Dynamic || props.code.rules.length === 1);
 const destination = computed(() => {
   for (const rule of props.code.rules)
     if (rule.type !== CodeRuleType.DefaultPointer && rule.content.type === ContentType.Url) return rule.content.url;
@@ -85,16 +81,9 @@ const destination = computed(() => {
       </div>
 
       <div class="flex flex-wrap items-center justify-end gap-1">
-        <Button
-          v-if="canCopy"
-          size="sm"
-          variant="ghost"
-          tone="neutral"
-          :is-disabled="isBusy"
-          @click="emit('copy', copyMode)"
-        >
+        <Button size="sm" variant="ghost" tone="neutral" :is-disabled="isBusy" @click="emit('copy')">
           <template #leading><CopyPlus :size="15" aria-hidden="true" /></template>
-          Copy as {{ ContentModeDisplays[copyMode].label.toLowerCase() }}
+          Copy
         </Button>
         <Button size="sm" variant="ghost" tone="neutral" :is-disabled="isBusy" @click="emit('edit')">
           <template #leading><Pencil :size="15" aria-hidden="true" /></template>

@@ -12,6 +12,7 @@ import { FailureMessages, useSettledValue } from '@/application/common';
 import type { CodeDto, ContentMode } from '@/domain/codes';
 
 import CodeRowCard from '../list/CodeRowCard.vue';
+import CopyCodeModal from '../list/CopyCodeModal.vue';
 import DeleteCodeModal from '../list/DeleteCodeModal.vue';
 
 /** Defines the props of {@link CodesListPage}. */
@@ -37,6 +38,7 @@ const list = useCodes(settledSearch);
 const commands = useCodeCommands();
 const busyIds = reactive(new Set<string>());
 const pendingDelete = shallowRef<CodeDto | null>(null);
+const pendingCopy = shallowRef<CodeDto | null>(null);
 const commandFailure = ref<string | null>(null);
 
 const listFailure = computed(() =>
@@ -123,12 +125,17 @@ async function confirmDelete(): Promise<void> {
         :code="code"
         :is-busy="busyIds.has(code.id)"
         @edit="props.onEdit(code.id)"
-        @copy="(mode) => props.onCopy(code.id, mode)"
+        @copy="pendingCopy = code"
         @toggle-active="toggleActive(code)"
         @delete="pendingDelete = code"
       />
     </div>
 
+    <CopyCodeModal
+      :code="pendingCopy"
+      @confirm="(mode) => pendingCopy && props.onCopy(pendingCopy.id, mode)"
+      @cancel="pendingCopy = null"
+    />
     <DeleteCodeModal
       :code="pendingDelete"
       :is-deleting="pendingDelete !== null && busyIds.has(pendingDelete.id)"
