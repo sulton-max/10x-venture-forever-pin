@@ -1,6 +1,6 @@
 # ForeverPin frontend source audit and comparison candidate
 
-*Last updated: 2026-09-26*
+*Last updated: 2026-09-28*
 
 ## Evidence boundary
 
@@ -179,14 +179,16 @@ Only `tests/domain/codes/content/operations.test.ts` exists in the inspected fro
 
 ## Entry links
 
-- [Builder](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/common/createCode/screens/CreateCodeScreen.tsx)
-- [Request mappings](../codebase/forever-pin.frontend-services/apps/web/src/application/codes/createCodeForm.ts)
-- [Rule editor](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/routing/components/RuleControls.tsx)
-- [Preview](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/common/createCode/components/QrPreview.tsx)
+The React files above are readable at `ae04e2b`; their Vue successors:
+
+- [Builder](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/pages/CodeBuilderPage.vue) · [lifecycle](../codebase/forever-pin.frontend-services/apps/web/src/application/codes/hooks/UseCodeBuilder.ts)
+- [Request mappings](../codebase/forever-pin.frontend-services/apps/web/src/application/codes/CodeForm.ts)
+- [Rule editor](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/routing/RuleEditor.vue)
+- [Preview](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/preview/CodePreview.vue)
 - [Theme](../codebase/forever-pin.frontend-services/apps/web/src/bootstrap/index.css)
 - [Historical design spec](../research/design-research/design-research.md)
-- [Dashboard](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/common/listCodes/screens/CodesListScreen.tsx)
-- [Billing](../codebase/forever-pin.frontend-services/apps/web/src/presentation/billing/screens/BillingScreen.tsx)
+- [Dashboard](../codebase/forever-pin.frontend-services/apps/web/src/presentation/codes/pages/CodesListPage.vue)
+- [Billing](../codebase/forever-pin.frontend-services/apps/web/src/presentation/billing/pages/BillingPage.vue)
 
 ## Captured comparison — 2026-09-26
 

@@ -21,7 +21,7 @@ Lazy document index. Paths below are relative to the repository root.
 - `engineering/architecture/redirect-and-scaling.md`: persistence and scan collection.
 - `engineering/architecture/code-generation.md`: SDK rendering boundary.
 - `engineering/architecture/billing.md`: plan limits and Stripe configuration.
-- `engineering/architecture/frontend.md`: current React structure.
+- `engineering/architecture/frontend.md`: current Vue structure and SDK bridges.
 
 ## Product
 

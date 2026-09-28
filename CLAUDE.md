@@ -7,13 +7,13 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 - Workspace conventions live in `wow-two-ws/conventions/`; repo-specific details follow here.
 - `.claude/rules/file-references.md` is a lazy document index.
 - Preserve existing edits; coordinate by disjoint file sets in the shared checkout.
-- Vue application adoption is active in `v0.10`; backend migration belongs to a separate chat.
+- The frontend runs on Vue since `v0.10`; backend migration belongs to a separate chat.
 
 ## Codebase
 
 - Backend: `engineering/codebase/forever-pin.backend-services/` — .NET 10.
 - Frontend workspace: `engineering/codebase/forever-pin.frontend-services/`; product source lives in `apps/web/`.
-- Current app: React 19, Vite, Tailwind 4, `@wow-two-beta/ui`; Vue adoption is active in `v0.10`.
+- Current app: Vue 3, Vite, Tailwind 4, `@wow-two-beta/ui-vue`.
 - Namespace: `ForeverPin`; product folder: `10x-venture-forever-pin`.
 - Management host: `ForeverPin.Api`, HTTPS/HTTP `7020`/`7021`.
 - Redirect host: `ForeverPin.Redirect.Api`, HTTPS/HTTP `7022`/`7023`.
