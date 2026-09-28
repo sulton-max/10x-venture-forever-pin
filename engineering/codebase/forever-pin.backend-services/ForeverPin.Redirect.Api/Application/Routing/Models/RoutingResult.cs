@@ -11,5 +11,6 @@ public abstract record RoutingResult
     public sealed record Redirect(string Destination, int? MatchedRuleOrder) : RoutingResult;
 
     /// <summary>Represents a scan with no destination.</summary>
-    public sealed record NotFound : RoutingResult;
+    /// <param name="Miss">Why the scan has no destination.</param>
+    public sealed record NotFound(RoutingMiss Miss = RoutingMiss.Unmatched) : RoutingResult;
 }

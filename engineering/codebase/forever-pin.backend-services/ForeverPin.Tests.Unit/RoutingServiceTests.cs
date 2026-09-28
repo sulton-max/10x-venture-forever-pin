@@ -95,7 +95,7 @@ public class RoutingServiceTests
 
         var result = _routingService.Evaluate(code, Context(DeviceType.Desktop));
 
-        Assert.IsType<RoutingResult.NotFound>(result);
+        Assert.Equal(RoutingMiss.Unmatched, Assert.IsType<RoutingResult.NotFound>(result).Miss);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class RoutingServiceTests
 
         var result = _routingService.Evaluate(code, Context(DeviceType.Ios));
 
-        Assert.IsType<RoutingResult.NotFound>(result);
+        Assert.Equal(RoutingMiss.Paused, Assert.IsType<RoutingResult.NotFound>(result).Miss);
     }
 
     [Theory]
@@ -142,7 +142,8 @@ public class RoutingServiceTests
     public void Text_documents_are_not_interpreted_as_redirect_locations(string text)
     {
         var code = Code(new DefaultRuleValueObject { Content = new TextContentValueObject { Text = text } });
-        Assert.IsType<RoutingResult.NotFound>(_routingService.Evaluate(code, Context(DeviceType.Desktop)));
+        var miss = Assert.IsType<RoutingResult.NotFound>(_routingService.Evaluate(code, Context(DeviceType.Desktop)));
+        Assert.Equal(RoutingMiss.Undeliverable, miss.Miss);
     }
 
     [Theory]

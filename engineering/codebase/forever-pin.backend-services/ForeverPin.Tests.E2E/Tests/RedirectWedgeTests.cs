@@ -114,7 +114,19 @@ public sealed class RedirectWedgeTests(AppFixture fixture) : E2EBase(fixture)
         var scan = await PollingExtensions.UntilAsync(
             probe: () => ScanAsync(code.Slug!, IosUserAgent),
             predicate: response => response.StatusCode != HttpStatusCode.Found);
-        scan.StatusCode.Should().NotBe(HttpStatusCode.Found);
+        scan.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        scan.Content.Headers.ContentType!.MediaType.Should().Be("text/html");
+        WebUtility.HtmlDecode(await scan.Content.ReadAsStringAsync()).Should().Contain("This code is paused");
+    }
+
+    [Fact]
+    public async Task Scan_OfAnUnknownSlug_ShowsAPageInsteadOfABlankError()
+    {
+        var scan = await ScanAsync("no-such-code", IosUserAgent);
+
+        scan.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        scan.Headers.CacheControl!.NoStore.Should().BeTrue();
+        WebUtility.HtmlDecode(await scan.Content.ReadAsStringAsync()).Should().Contain("This code doesn't exist");
     }
 
     [Fact]

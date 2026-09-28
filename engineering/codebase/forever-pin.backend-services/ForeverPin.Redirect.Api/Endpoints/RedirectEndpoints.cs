@@ -29,7 +29,7 @@ public static class RedirectEndpoints
     {
         var code = await store.GetAsync(slug, ct);
         if (code is null)
-            return Results.NotFound();
+            return ScanPages.Unknown();
 
         var userAgent = http.Request.Headers.UserAgent.ToString();
         var ip = http.Connection.RemoteIpAddress?.ToString();
@@ -47,8 +47,11 @@ public static class RedirectEndpoints
             IpAddress = ip,
         };
 
-        if (routingService.Evaluate(code, context) is not RoutingResult.Redirect redirect)
-            return Results.NotFound();
+        var routed = routingService.Evaluate(code, context);
+        if (routed is RoutingResult.NotFound miss)
+            return ScanPages.For(miss.Miss);
+        if (routed is not RoutingResult.Redirect redirect)
+            return ScanPages.For(RoutingMiss.Unmatched);
 
         // Fire-and-forget — the redirect never waits on analytics; a full queue drops the record.
         scans.TryWrite(new ScanRecordModel

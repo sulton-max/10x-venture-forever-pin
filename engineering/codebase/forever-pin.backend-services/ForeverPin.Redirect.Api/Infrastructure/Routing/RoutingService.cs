@@ -24,7 +24,7 @@ public sealed class RoutingService(CodePayloadMapper payloads) : IRoutingService
     public RoutingResult Evaluate(CodeEntity code, ScanContextModel context)
     {
         if (!code.IsActive)
-            return new RoutingResult.NotFound();
+            return new RoutingResult.NotFound(RoutingMiss.Paused);
 
         var conditional = code.Rules.OfType<ConditionalRuleValueObject>().OrderBy(rule => rule.Order);
         foreach (var rule in conditional)
@@ -58,7 +58,7 @@ public sealed class RoutingService(CodePayloadMapper payloads) : IRoutingService
     {
         if (content is not (UrlContentValueObject or MobileAppLinkContentValueObject or PhoneContentValueObject
             or SmsContentValueObject or EmailContentValueObject or GeoContentValueObject))
-            return new RoutingResult.NotFound();
+            return new RoutingResult.NotFound(RoutingMiss.Undeliverable);
 
         var payload = payloads.Map(content);
         if (payload is not Result<string>.Success success || string.IsNullOrWhiteSpace(success.Value))
@@ -67,7 +67,7 @@ public sealed class RoutingService(CodePayloadMapper payloads) : IRoutingService
         // Existing URI payloads retain their schemes; document/text delivery has no redirect representation.
         if (!Uri.TryCreate(success.Value, UriKind.Absolute, out var destination)
             || destination.Scheme is not ("http" or "https" or "tel" or "mailto" or "smsto" or "geo"))
-            return new RoutingResult.NotFound();
+            return new RoutingResult.NotFound(RoutingMiss.Undeliverable);
 
         return new RoutingResult.Redirect(success.Value, matchedRuleOrder);
     }
