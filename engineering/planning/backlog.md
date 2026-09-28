@@ -1,6 +1,6 @@
 # Backlog
 
-*Last updated: 2026-09-26*
+*Last updated: 2026-09-28*
 
 Active adoption tasks live in [v0.10](version-track/v0.10/v0.10.md).
 Planned feature tasks live in [v0.11](version-track/v0.11/v0.11.md).
@@ -35,10 +35,10 @@ Guest accounts, Google login, guest-code claiming, and cross-device ownership al
 
 ## Routing and analytics
 
-- [ ] Activate country lookup
+- [x] Activate country lookup — free DB-IP Lite, refreshed monthly (SDK `10.0.60-beta`)
 - [ ] Add customer analytics and aggregation endpoints
 - [ ] Decide total-versus-unique scan semantics without fingerprinting
-- [ ] Add routing cache with edit invalidation
+- [x] Add routing cache with edit invalidation — commit-aware eviction over PostgreSQL notifications
 - [ ] Complete the Redis configuration read/write path
 - [ ] Add per-code timezones and scheduled windows
 - [ ] Add A/B weights and grouped conditions

@@ -1,6 +1,6 @@
 # ForeverPin — Engineering planning
 
-*Last updated: 2026-09-26*
+*Last updated: 2026-09-28*
 
 ## Versions
 
@@ -29,7 +29,8 @@ The owner explicitly authorized the planned `v0.11` track alongside active `v0.1
 2. Preserve product API, form, session, rendering, and routing contracts during migration.
 3. Verify frontend runtimes and compare the migrated product visually.
 4. Integrate the separate backend migration chat's verified result.
-5. Keep `v0.10` open until both adoption lanes and owner acceptance are complete.
+5. Publish SDK `10.0.60-beta`, then verify the pinned extraction cut without the candidate feed.
+6. Keep `v0.10` open until both adoption lanes and owner acceptance are complete.
 
 [Current work](current-work.md) defines ownership, dependencies, and acceptance boundaries.
 Task checkboxes live in [v0.10](version-track/v0.10/v0.10.md) and [v0.11](version-track/v0.11/v0.11.md).

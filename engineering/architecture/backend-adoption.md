@@ -1,6 +1,6 @@
 # Backend SDK adoption
 
-*Last updated: 2026-09-26*
+*Last updated: 2026-09-28*
 
 ## Status
 
@@ -91,12 +91,54 @@ The temporary NuGet configuration maps `WoW2.Sdk.Backend.Beta*` to the candidate
 NuGet. No repository feed or global NuGet configuration is changed. Native execution is required for Docker,
 test-runner sockets and restricted restores; successful native retries establish the actual result.
 
+## Extraction cut — 10.0.60-beta
+
+The SDK extracted nine mechanisms from this product; this cut replaces the local copies.
+SDK record: [ForeverPin extractions](../../../../wow-two-sdk-beta/wow-two-sdk.backend.beta/engineering/planning/foreverpin-extractions/foreverpin-extractions.md).
+
+| Area | Result |
+|---|---|
+| Locks | `Database.AcquireTransactionLocksAsync("owner", ids)` replaces the product helper; Google subjects use the same call. |
+| Unique saves | The slug insert uses `TrySaveChangesUniqueAsync("ix_codes_slug")`; the handler keeps its bounded retry. |
+| Hosting | Both hosts drop their `DeploymentHosting` copies: SDK proxy trust, persistent keys and database readiness. |
+| Scans | `AddBatchPipeline<ScanRecordModel, ScanBatchHandler>` replaces the channel recorder and flush worker. |
+| Country routing | The redirect host locates scans with DB-IP Lite in `IP_LOCATION_DIRECTORY`, refreshed monthly. |
+| Redirect cache | Scanned codes cache in memory; update, deactivate and delete evict them on commit through `pg_notify`. |
+| Stripe webhooks | The EF inbox applies each event id once; `last_event_at` ignores events older than the applied one. |
+| Warnings | URL destinations raise non-blocking warnings; create and update return them as `warnings`, shown after save. |
+| Antiforgery | Cookie writes echo `XSRF-TOKEN` as `X-XSRF-TOKEN`; the signed Stripe webhook is exempt. |
+
+Migration `012-billing-events` adds `inbox_messages` and `subscriptions.last_event_at`; stored payloads are unchanged.
+The owner-lock key hash changed with the SDK helper, so every management instance must run the same release.
+Forwarded headers are trusted only from loopback, `Deployment:TrustedProxies` and `Deployment:TrustedNetworks`.
+The React client refreshes a stale antiforgery token once through `/api/runtime-config`, after sign-in or sign-out.
+The Vue migration needs the same echo and `warnings` exposure in `@wow-two-beta/ui-vue`'s HTTP client.
+
+Verification against local candidate `10.0.60-beta.local.20260927.3`, built from the SDK's committed HEAD:
+
+| Suite | Passed | Skipped |
+|---|---:|---:|
+| Both HTTP hosts | 89 | 0 |
+| PostgreSQL integration | 29 | 0 |
+| Embedded product migrations | 1 | 0 |
+| Unit and stored-contract regressions | 119 | 0 |
+| Frontend unit tests | 7 | 0 |
+
+New coverage: country routing from a located client, eviction after edit and deactivation, redelivered and
+out-of-order Stripe events, warning envelopes, and a forged cookie write rejected while the SPA client passes.
+The SDK-owned queue overflow test moved to the SDK. Publication must precede the final restore check.
+
+A browser smoke ran the management host from candidate `.3`, serving the built SPA on a fresh PostgreSQL:
+all 12 migrations applied; guest creation, previews and saves passed antiforgery; the insecure-URL warning
+rendered after save; the country-rule and footer DB-IP credits linked to `db-ip.com`.
+Development runs serve the project's `wwwroot` through static web assets, so the smoke used a non-Development environment.
+
 ## Remaining acceptance
 
-The published-package backend acceptance is complete. The adoption commit remains pending.
+The published-package backend acceptance for `10.0.59-beta` is complete; `10.0.60-beta` awaits publication.
 The frontend lane owns its verifier, browser comparison and manual product-flow acceptance.
 
-The database migration adds owner/creation and subscription-ID indexes without changing stored payload formats.
+The database migrations add indexes, the webhook inbox and an event watermark without changing stored payloads.
 Production deployment, real Google/Stripe credentials, browser QA and physical code scanning are unverified.
-Cache invalidation, country-provider selection, non-HTTP delivery, calendar timezone meaning, durable analytics,
-complete payments state, full browser CSRF/identity redesign and translation catalogs remain explicit deferred work.
+Non-HTTP delivery, calendar timezone meaning, durable analytics, complete payments state, identity redesign and
+translation catalogs remain explicit deferred work.
