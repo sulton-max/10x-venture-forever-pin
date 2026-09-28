@@ -14,6 +14,7 @@ import type { CodeDto, ContentMode } from '@/domain/codes';
 import CodeRowCard from '../list/CodeRowCard.vue';
 import CopyCodeModal from '../list/CopyCodeModal.vue';
 import DeleteCodeModal from '../list/DeleteCodeModal.vue';
+import DownloadCodeModal from '../list/DownloadCodeModal.vue';
 
 /** Defines the props of {@link CodesListPage}. */
 export interface CodesListPageProps {
@@ -41,6 +42,7 @@ const commands = useCodeCommands();
 const busyIds = reactive(new Set<string>());
 const pendingDelete = shallowRef<CodeDto | null>(null);
 const pendingCopy = shallowRef<CodeDto | null>(null);
+const pendingDownload = shallowRef<CodeDto | null>(null);
 const commandFailure = ref<string | null>(null);
 
 const listFailure = computed(() =>
@@ -128,6 +130,7 @@ async function confirmDelete(): Promise<void> {
         :is-busy="busyIds.has(code.id)"
         @edit="props.onEdit(code.id)"
         @analytics="props.onAnalytics(code.id)"
+        @download="pendingDownload = code"
         @copy="pendingCopy = code"
         @toggle-active="toggleActive(code)"
         @delete="pendingDelete = code"
@@ -139,6 +142,7 @@ async function confirmDelete(): Promise<void> {
       @confirm="(mode) => pendingCopy && props.onCopy(pendingCopy.id, mode)"
       @cancel="pendingCopy = null"
     />
+    <DownloadCodeModal :code="pendingDownload" @close="pendingDownload = null" />
     <DeleteCodeModal
       :code="pendingDelete"
       :is-deleting="pendingDelete !== null && busyIds.has(pendingDelete.id)"

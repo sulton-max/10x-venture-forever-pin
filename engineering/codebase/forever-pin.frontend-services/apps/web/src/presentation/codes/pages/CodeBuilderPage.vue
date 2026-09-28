@@ -24,6 +24,7 @@ import DesignPanel from '../builder/DesignPanel.vue';
 import { ContentModeDisplays } from '../content/ContentModeDisplays';
 import ContrastCallout from '../design/ContrastCallout.vue';
 import CodePreview from '../preview/CodePreview.vue';
+import DownloadCodeModal from '../list/DownloadCodeModal.vue';
 import SavedCodePanel from '../preview/SavedCodePanel.vue';
 
 /** Defines the props of {@link CodeBuilderPage}. */
@@ -52,6 +53,7 @@ const builder = useCodeBuilder(() => ({
 }));
 const { form } = builder;
 const tab = ref<(typeof BuilderTab)[keyof typeof BuilderTab]>(BuilderTab.Content);
+const isDownloading = ref(false);
 
 const isDirty = computed(() => form.state.isDirty);
 const blocker = useNavigationBlocker(() => isDirty.value && !form.state.isSubmitting);
@@ -181,7 +183,9 @@ const loadFailure = computed(() =>
           :revision="builder.savedRevision.value"
           @done="props.onBack"
           @start-another="builder.startAnother"
+          @download="isDownloading = true"
         />
+        <DownloadCodeModal :code="isDownloading ? builder.saved.value : null" @close="isDownloading = false" />
       </Card>
     </div>
 

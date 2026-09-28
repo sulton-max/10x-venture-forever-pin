@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChartColumn, CopyPlus, Pencil, Trash2 } from '@lucide/vue';
+import { ChartColumn, CopyPlus, Download, Pencil, Trash2 } from '@lucide/vue';
 import { Button, CopyButton } from '@wow-two-beta/ui-vue/presentation/actions';
 import { Badge, Card, Text } from '@wow-two-beta/ui-vue/presentation/display';
 import { computed } from 'vue';
@@ -22,6 +22,8 @@ export interface CodeRowCardEmits {
   (event: 'edit'): void;
   /** Asks to open a dynamic code's scan analytics. */
   (event: 'analytics'): void;
+  /** Asks to download the code's image. */
+  (event: 'download'): void;
   /** Asks to copy the code; the copy's mode is chosen next. */
   (event: 'copy'): void;
   /** Asks to pause or resume the code. */
@@ -92,6 +94,10 @@ const destination = computed(() => {
         >
           <template #leading><ChartColumn :size="15" aria-hidden="true" /></template>
           Analytics
+        </Button>
+        <Button size="sm" variant="ghost" tone="neutral" @click="emit('download')">
+          <template #leading><Download :size="15" aria-hidden="true" /></template>
+          Download
         </Button>
         <Button size="sm" variant="ghost" tone="neutral" :is-disabled="isBusy" @click="emit('copy')">
           <template #leading><CopyPlus :size="15" aria-hidden="true" /></template>

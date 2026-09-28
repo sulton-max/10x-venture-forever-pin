@@ -43,6 +43,8 @@ export interface FakeApiOptions {
   readonly codes?: FakeCode[];
   /** Seeds recorded scans per code id. */
   readonly scans?: Record<string, FakeScans>;
+  /** Seeds rendered SVG markup per code id; others render a small sample. */
+  readonly images?: Record<string, string>;
 }
 
 const PreviewSvg =
@@ -85,6 +87,7 @@ export function fakeCode(overrides: Partial<FakeCode> = {}): FakeCode {
 export class FakeApi {
   readonly codes: FakeCode[];
   readonly scans: Record<string, FakeScans>;
+  readonly images: Record<string, string>;
   readonly analyticsReads: number[] = [];
   isGuest: boolean;
   failMe: number | undefined;
@@ -92,6 +95,7 @@ export class FakeApi {
   constructor(options: FakeApiOptions = {}) {
     this.codes = options.codes ?? [];
     this.scans = options.scans ?? {};
+    this.images = options.images ?? {};
     this.isGuest = options.isGuest ?? false;
     this.failMe = options.failMe;
   }
@@ -148,7 +152,8 @@ export class FakeApi {
       this.analyticsReads.push(days);
       return this.json(route, 200, { data: this.analytics(code, days) });
     }
-    if (match[2] === '/image') return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: PreviewSvg });
+    if (match[2] === '/image')
+      return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: this.images[code.id] ?? PreviewSvg });
     if (match[2] === '/active') {
       code.isActive = (request.postDataJSON() as { isActive: boolean }).isActive;
       return this.json(route, 200, { data: code });

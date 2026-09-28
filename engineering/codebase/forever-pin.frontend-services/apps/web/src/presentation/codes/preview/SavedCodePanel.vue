@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Download } from '@lucide/vue';
 import { Button, CopyButton } from '@wow-two-beta/ui-vue/presentation/actions';
 import { Text } from '@wow-two-beta/ui-vue/presentation/display';
 import { SurfaceLayout } from '@wow-two-beta/ui-vue/presentation/layout';
@@ -25,6 +26,8 @@ export interface SavedCodePanelEmits {
   (event: 'done'): void;
   /** Asks to start another code from these values (create). */
   (event: 'start-another'): void;
+  /** Asks to download the saved code's image. */
+  (event: 'download'): void;
 }
 
 /** Renders the saved code itself — its image, short link and downloads — apart from the draft preview. */
@@ -68,11 +71,9 @@ const image = computed(() => codeImageUrl(props.code, ImageFormat.Svg, props.rev
       >
         Copy link
       </CopyButton>
-      <Button as-child size="sm" variant="outline" tone="neutral">
-        <a :href="codeImageUrl(code, ImageFormat.Svg, revision)" target="_blank" rel="noreferrer">SVG</a>
-      </Button>
-      <Button as-child size="sm" variant="outline" tone="neutral">
-        <a :href="codeImageUrl(code, ImageFormat.Png, revision)" target="_blank" rel="noreferrer">PNG</a>
+      <Button size="sm" variant="outline" tone="neutral" @click="emit('download')">
+        <template #leading><Download :size="15" aria-hidden="true" /></template>
+        Download
       </Button>
       <Button v-if="isEdit" size="sm" variant="ghost" tone="neutral" @click="emit('done')">Done</Button>
       <Button v-else size="sm" variant="ghost" tone="neutral" @click="emit('start-another')">Create another</Button>

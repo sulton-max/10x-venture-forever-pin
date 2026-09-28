@@ -10,6 +10,7 @@ export {
   toCopyCodeForm,
 } from './CodeForm';
 export { codeImageUrl } from './CodeImages';
+export { useCodeDownload } from './hooks/UseCodeDownload';
 export { CodeQueryKeys } from './CodeQueryKeys';
 export { useCode } from './hooks/UseCode';
 export { useCodeAnalytics } from './hooks/UseCodeAnalytics';

@@ -6,6 +6,8 @@ export const CodeQueryKeys = {
   list: (search: string) => ['codes', 'list', search.trim().toLowerCase()] as const,
   /** The key of one code. */
   detail: (id: string) => ['codes', 'detail', id] as const,
+  /** The key of one code's rendered SVG. */
+  svg: (id: string) => ['codes', 'svg', id] as const,
   /** The key of one code's scan window. */
   analytics: (id: string, days: number) => ['codes', 'analytics', id, days] as const,
 } as const;

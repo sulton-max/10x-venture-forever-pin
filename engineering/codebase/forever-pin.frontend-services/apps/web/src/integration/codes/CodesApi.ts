@@ -89,6 +89,26 @@ export const codesApi = {
     });
   },
 
+  /** `GET /api/codes/{id}/image?format=svg` — a saved code's vector image as SVG markup. */
+  svg(id: string, signal?: AbortSignal) {
+    return apiClient.get(`/api/codes/${encodeURIComponent(id)}/image`, {
+      query: { format: 'svg' },
+      signal,
+      headers: { Accept: 'image/svg+xml' },
+      response: 'text',
+    });
+  },
+
+  /** `GET /api/codes/{id}/image?format=png` — a saved code's raster image. */
+  png(id: string, signal?: AbortSignal) {
+    return apiClient.get(`/api/codes/${encodeURIComponent(id)}/image`, {
+      query: { format: 'png' },
+      signal,
+      headers: { Accept: 'image/png' },
+      response: 'blob',
+    });
+  },
+
   /** Builds the download address of a saved code's rendered image. */
   imageUrl(id: string, format: ImageFormat): string {
     return `/api/codes/${encodeURIComponent(id)}/image?format=${format}`;
