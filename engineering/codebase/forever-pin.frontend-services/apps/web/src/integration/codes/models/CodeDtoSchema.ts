@@ -1,3 +1,4 @@
+import { ExactNumber } from '@wow-two-beta/ui-vue/foundation/numbers';
 import { Temporal } from 'temporal-polyfill';
 import { z } from 'zod';
 
@@ -43,6 +44,28 @@ const instant = z.string().transform((value, context) => {
   }
 });
 
+/**
+ * Decodes a measurement — a coordinate, an order, a ratio. Lossless reads deliver every number exactly, so a
+ * measurement is converted to the nearest double, which is what native JSON would have produced.
+ */
+const measurement = z.preprocess((value) => {
+  if (!ExactNumber.isExactNumber(value)) return value;
+  const approximate = value.toApproximateNumber();
+  return approximate.ok ? approximate.value : Number.NaN;
+}, z.number());
+
+/** Decodes an Int64 count exactly: a lossless read keeps every digit; a native read is exact up to 2^53. */
+const exactCount = z.unknown().transform((value, context) => {
+  if (ExactNumber.isExactNumber(value)) {
+    const integer = value.toBigInt();
+    if (integer.ok) return integer.value;
+  } else if (typeof value === 'number' && Number.isInteger(value)) {
+    return BigInt(value);
+  }
+  context.addIssue({ code: 'custom', message: 'Expected an integer count.' });
+  return z.NEVER;
+});
+
 const optionalText = z
   .string()
   .nullish()
@@ -56,7 +79,7 @@ export const CodeContentDtoSchema: z.ZodType<CodeContent> = z.discriminatedUnion
   z.object({ type: z.literal(ContentType.Email), to: z.string(), subject: optionalText, body: optionalText }),
   z.object({ type: z.literal(ContentType.Sms), phone: z.string(), message: optionalText }),
   z.object({ type: z.literal(ContentType.Phone), phone: z.string() }),
-  z.object({ type: z.literal(ContentType.Geo), latitude: z.number(), longitude: z.number() }),
+  z.object({ type: z.literal(ContentType.Geo), latitude: measurement, longitude: measurement }),
   z.object({
     type: z.literal(ContentType.Wifi),
     ssid: z.string(),
@@ -90,16 +113,16 @@ export const CodeContentDtoSchema: z.ZodType<CodeContent> = z.discriminatedUnion
 export const CodeRuleDtoSchema: z.ZodType<CodeRuleDto> = z.discriminatedUnion('type', [
   z.object({
     type: z.literal(CodeRuleType.Conditional),
-    order: z.number(),
+    order: measurement,
     condition: oneOf(RuleConditionType),
     conditionValue: z.string(),
     content: CodeContentDtoSchema,
   }),
   z.object({ type: z.literal(CodeRuleType.Default), content: CodeContentDtoSchema }),
-  z.object({ type: z.literal(CodeRuleType.DefaultPointer), targetOrder: z.number() }),
+  z.object({ type: z.literal(CodeRuleType.DefaultPointer), targetOrder: measurement }),
 ]);
 
-const gradientStop = z.object({ color: z.string(), offset: z.number() });
+const gradientStop = z.object({ color: z.string(), offset: measurement });
 
 /** Validates a wire visual style. */
 export const CodeStyleDtoSchema: z.ZodType<CodeStyleDto> = z.object({
@@ -107,9 +130,9 @@ export const CodeStyleDtoSchema: z.ZodType<CodeStyleDto> = z.object({
   backgroundColor: z.string(),
   transparentBackground: z.boolean(),
   eccLevel: oneOf(EccLevel),
-  quietZoneModules: z.number(),
+  quietZoneModules: measurement,
   logo: z
-    .object({ dataUrl: z.string(), sizeRatio: z.number() })
+    .object({ dataUrl: z.string(), sizeRatio: measurement })
     .nullish()
     .transform((value) => value ?? undefined),
   moduleShape: oneOf(ModuleShape),
@@ -117,13 +140,13 @@ export const CodeStyleDtoSchema: z.ZodType<CodeStyleDto> = z.object({
   finderDotShape: oneOf(FinderShape),
   gradient: z
     .discriminatedUnion('type', [
-      z.object({ type: z.literal('linear'), angle: z.number(), stops: z.array(gradientStop) }),
-      z.object({ type: z.literal('radial'), radius: z.number(), stops: z.array(gradientStop) }),
+      z.object({ type: z.literal('linear'), angle: measurement, stops: z.array(gradientStop) }),
+      z.object({ type: z.literal('radial'), radius: measurement, stops: z.array(gradientStop) }),
     ])
     .nullish()
     .transform((value) => value ?? undefined),
   emoji: z
-    .object({ glyph: z.string(), sizeRatio: z.number() })
+    .object({ glyph: z.string(), sizeRatio: measurement })
     .nullish()
     .transform((value) => value ?? undefined),
 });
@@ -138,7 +161,7 @@ export const CodeDtoSchema: z.ZodType<CodeDto> = z.object({
   mode: oneOf(ContentMode),
   contentType: oneOf(ContentType),
   isActive: z.boolean(),
-  scanCount: z.number(),
+  scanCount: exactCount,
   createdAt: instant,
   rules: z.array(CodeRuleDtoSchema),
   style: CodeStyleDtoSchema,

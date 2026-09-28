@@ -1,3 +1,5 @@
+import { LosslessJson } from '@wow-two-beta/ui-vue/foundation/json';
+
 import type { CodeDto, ImageFormat } from '@/domain/codes';
 import { apiClient, DecoderExtensions, warnedEnvelopeSchema } from '@/integration/common';
 
@@ -10,17 +12,29 @@ const decodeCode = DecoderExtensions.from(CodeDtoSchema);
 const decodeCodes = DecoderExtensions.from(CodeDtoSchema.array());
 const decodeSavedCode = DecoderExtensions.from(warnedEnvelopeSchema(CodeDtoSchema));
 
-/** Provides the owner-scoped code endpoints and the server-side renderer. */
+/**
+ * Provides the owner-scoped code endpoints and the server-side renderer. Reads decode losslessly so an Int64 scan
+ * count keeps every digit; writes send native JSON, whose style and geometry numbers are ordinary doubles.
+ */
 export const codesApi = {
   /** `GET /api/codes` — the owner's codes, newest first, filtered case-insensitively by `q`. */
   list(search: string, signal?: AbortSignal) {
     const q = search.trim();
-    return apiClient.get<CodeDto[]>('/api/codes', { query: q ? { q } : undefined, signal, decode: decodeCodes });
+    return apiClient.get<CodeDto[]>('/api/codes', {
+      query: q ? { q } : undefined,
+      signal,
+      json: LosslessJson,
+      decode: decodeCodes,
+    });
   },
 
   /** `GET /api/codes/{id}` — one owned code; 404 when missing or owned by someone else. */
   get(id: string, signal?: AbortSignal) {
-    return apiClient.get<CodeDto>(`/api/codes/${encodeURIComponent(id)}`, { signal, decode: decodeCode });
+    return apiClient.get<CodeDto>(`/api/codes/${encodeURIComponent(id)}`, {
+      signal,
+      json: LosslessJson,
+      decode: decodeCode,
+    });
   },
 
   /** `POST /api/codes` — creates a code; the answer carries destination warnings that did not block it. */
@@ -43,6 +57,7 @@ export const codesApi = {
     return apiClient.patch<CodeDto>(`/api/codes/${encodeURIComponent(id)}/active`, {
       body: { isActive },
       signal,
+      json: LosslessJson,
       decode: decodeCode,
     });
   },

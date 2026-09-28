@@ -1,3 +1,4 @@
+import { LosslessJson } from '@wow-two-beta/ui-vue/foundation/json';
 import { Temporal } from 'temporal-polyfill';
 import { describe, expect, it } from 'vitest';
 
@@ -45,6 +46,21 @@ describe('CodeDtoSchema', () => {
     expect(rule.content.start.equals(Temporal.PlainDateTime.from('2026-10-01T18:30'))).toBe(true);
     expect(rule.content).not.toHaveProperty('end', null);
     expect(code.style.gradient).toBeUndefined();
+  });
+
+  it('keeps an Int64 scan count exact and reads measurements as doubles on a lossless read', () => {
+    const text = JSON.stringify({ ...wireCode, scanCount: 0 }).replace('"scanCount":0', '"scanCount":9007199254740993');
+    const parsed = LosslessJson.parse(text);
+    if (!parsed.ok) throw new Error('Expected lossless JSON.');
+
+    const code = CodeDtoSchema.parse(parsed.value);
+
+    expect(code.scanCount).toBe(9007199254740993n);
+    expect(code.style.quietZoneModules).toBe(2);
+  });
+
+  it('rejects a fractional scan count', () => {
+    expect(CodeDtoSchema.safeParse({ ...wireCode, scanCount: 1.5 }).success).toBe(false);
   });
 
   it('reads save warnings beside the data, defaulting to none', () => {

@@ -30,8 +30,8 @@ export interface CodeDto {
   /** Whether the code is active. */
   isActive: boolean;
 
-  /** The recorded scan count. */
-  scanCount: number;
+  /** The recorded scan count — an Int64 on the server, so it stays exact as a bigint. */
+  scanCount: bigint;
 
   /** The creation timestamp. */
   createdAt: Temporal.Instant;
