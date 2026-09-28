@@ -19,6 +19,8 @@ import {
   type CodeStyleDto,
 } from '@/domain/codes';
 
+import { exactCount } from './CountSchemas';
+
 /** Builds a schema accepting one of an enum's string values. */
 function oneOf<T extends Record<string, string>>(source: T) {
   return z.enum(Object.values(source) as [T[keyof T], ...T[keyof T][]]);
@@ -53,18 +55,6 @@ const measurement = z.preprocess((value) => {
   const approximate = value.toApproximateNumber();
   return approximate.ok ? approximate.value : Number.NaN;
 }, z.number());
-
-/** Decodes an Int64 count exactly: a lossless read keeps every digit; a native read is exact up to 2^53. */
-const exactCount = z.unknown().transform((value, context) => {
-  if (ExactNumber.isExactNumber(value)) {
-    const integer = value.toBigInt();
-    if (integer.ok) return integer.value;
-  } else if (typeof value === 'number' && Number.isInteger(value)) {
-    return BigInt(value);
-  }
-  context.addIssue({ code: 'custom', message: 'Expected an integer count.' });
-  return z.NEVER;
-});
 
 const optionalText = z
   .string()

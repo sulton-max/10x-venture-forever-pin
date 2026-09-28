@@ -12,6 +12,7 @@ export {
 export { codeImageUrl } from './CodeImages';
 export { CodeQueryKeys } from './CodeQueryKeys';
 export { useCode } from './hooks/UseCode';
+export { useCodeAnalytics } from './hooks/UseCodeAnalytics';
 export { useCodeBuilder, type CodeBuilderForm, type CodeBuilderSource } from './hooks/UseCodeBuilder';
 export { useCodeCommands } from './hooks/UseCodeCommands';
 export { useCodePreview, type CodePreviewModel } from './hooks/UseCodePreview';

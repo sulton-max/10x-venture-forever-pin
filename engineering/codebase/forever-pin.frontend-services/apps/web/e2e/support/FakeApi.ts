@@ -16,6 +16,23 @@ export interface FakeCode {
   style: Record<string, unknown>;
 }
 
+/** Represents one attribute share as the fake API answers it. */
+export interface FakeShare {
+  readonly key: string | null;
+  readonly scans: number;
+}
+
+/** Represents a code's recorded scans; `daily` ends today, oldest first. */
+export interface FakeScans {
+  readonly daily: number[];
+  readonly devices?: FakeShare[];
+  readonly operatingSystems?: FakeShare[];
+  readonly countries?: FakeShare[];
+}
+
+/** Holds the day the fake API treats as today. */
+const FakeToday = '2026-09-28';
+
 /** Holds the options a scenario starts the fake API with. */
 export interface FakeApiOptions {
   /** Whether the visitor already has a guest session. */
@@ -24,6 +41,8 @@ export interface FakeApiOptions {
   readonly failMe?: number;
   /** Seeds the guest's codes. */
   readonly codes?: FakeCode[];
+  /** Seeds recorded scans per code id. */
+  readonly scans?: Record<string, FakeScans>;
 }
 
 const PreviewSvg =
@@ -65,11 +84,14 @@ export function fakeCode(overrides: Partial<FakeCode> = {}): FakeCode {
  */
 export class FakeApi {
   readonly codes: FakeCode[];
+  readonly scans: Record<string, FakeScans>;
+  readonly analyticsReads: number[] = [];
   isGuest: boolean;
   failMe: number | undefined;
 
   constructor(options: FakeApiOptions = {}) {
     this.codes = options.codes ?? [];
+    this.scans = options.scans ?? {};
     this.isGuest = options.isGuest ?? false;
     this.failMe = options.failMe;
   }
@@ -118,9 +140,14 @@ export class FakeApi {
       return this.json(route, 200, { data: code, warnings: [] });
     }
 
-    const match = /^\/api\/codes\/([^/]+)(\/active|\/image)?$/.exec(path);
+    const match = /^\/api\/codes\/([^/]+)(\/active|\/image|\/analytics)?$/.exec(path);
     const code = match ? this.codes.find((candidate) => candidate.id === match[1]) : undefined;
     if (!match || !code) return this.json(route, 404, { title: 'Not Found' });
+    if (match[2] === '/analytics') {
+      const days = Number(url.searchParams.get('days') ?? '30');
+      this.analyticsReads.push(days);
+      return this.json(route, 200, { data: this.analytics(code, days) });
+    }
     if (match[2] === '/image') return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: PreviewSvg });
     if (match[2] === '/active') {
       code.isActive = (request.postDataJSON() as { isActive: boolean }).isActive;
@@ -136,6 +163,28 @@ export class FakeApi {
       return route.fulfill({ status: 204 });
     }
     return this.json(route, 405, { title: 'Method Not Allowed' });
+  }
+
+  /** Builds a code's scan window the way the real host does: every day of the window, oldest first. */
+  private analytics(code: FakeCode, days: number) {
+    const seeded = this.scans[code.id] ?? { daily: [] };
+    const recent = seeded.daily.slice(-days);
+    const today = new Date(`${FakeToday}T00:00:00Z`);
+    const daily = Array.from({ length: days }, (_, index) => {
+      const date = new Date(today);
+      date.setUTCDate(today.getUTCDate() - (days - 1 - index));
+      return { date: date.toISOString().slice(0, 10), scans: recent[index - (days - recent.length)] ?? 0 };
+    });
+    return {
+      from: daily[0]?.date,
+      to: FakeToday,
+      totalScans: code.scanCount,
+      rangeScans: daily.reduce((sum, day) => sum + day.scans, 0),
+      daily,
+      devices: seeded.devices ?? [],
+      operatingSystems: seeded.operatingSystems ?? [],
+      countries: seeded.countries ?? [],
+    };
   }
 
   private json(route: Route, status: number, body: unknown): Promise<void> {

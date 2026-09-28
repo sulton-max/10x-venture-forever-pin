@@ -1,4 +1,6 @@
+using ForeverPin.Api.Codes.Analytics.Models;
 using ForeverPin.Api.Configurations;
+using ForeverPin.Application.Codes.Analytics.Queries;
 using Microsoft.AspNetCore.RateLimiting;
 using ForeverPin.Common.Domain.Codes.Core.Enums;
 using ForeverPin.Application.Codes.Rules.Models;
@@ -205,6 +207,25 @@ public sealed class CodesController(
 
         return result.Match<IActionResult>(
             NoContent,
+            fail => this.ToProblem(fail.Error));
+    }
+
+    /// <summary>Gets a code's scan analytics over its most recent UTC calendar days.</summary>
+    [HttpGet("{id:guid}/analytics")]
+    [ProducesResponseType<ApiResponse<CodeAnalyticsDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAnalyticsById(Guid id, CancellationToken ct, [FromQuery] int days = 30)
+    {
+        if (currentUser.Id is not { } userId)
+            return Unauthorized();
+
+        var query = new CodeAnalyticsQuery { Id = id, UserId = userId, Days = days };
+        var result = await sender.SendAsync(query, ct);
+
+        return result.Match<IActionResult>(
+            ok => Ok(ApiResponse<CodeAnalyticsDto>.Ok(ok.Data.Analytics.ToDto())),
             fail => this.ToProblem(fail.Error));
     }
 

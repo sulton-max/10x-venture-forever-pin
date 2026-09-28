@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { CopyPlus, Pencil, Trash2 } from '@lucide/vue';
+import { ChartColumn, CopyPlus, Pencil, Trash2 } from '@lucide/vue';
 import { Button, CopyButton } from '@wow-two-beta/ui-vue/presentation/actions';
 import { Badge, Card, Text } from '@wow-two-beta/ui-vue/presentation/display';
 import { computed } from 'vue';
 
-import { CodeRuleType, ContentType, type CodeDto } from '@/domain/codes';
+import { CodeRuleType, ContentMode, ContentType, type CodeDto } from '@/domain/codes';
 
 import { ContentModeDisplays } from '../content/ContentModeDisplays';
 
@@ -20,6 +20,8 @@ export interface CodeRowCardProps {
 export interface CodeRowCardEmits {
   /** Asks to open the code in the builder. */
   (event: 'edit'): void;
+  /** Asks to open a dynamic code's scan analytics. */
+  (event: 'analytics'): void;
   /** Asks to copy the code; the copy's mode is chosen next. */
   (event: 'copy'): void;
   /** Asks to pause or resume the code. */
@@ -81,6 +83,16 @@ const destination = computed(() => {
       </div>
 
       <div class="flex flex-wrap items-center justify-end gap-1">
+        <Button
+          v-if="code.mode === ContentMode.Dynamic"
+          size="sm"
+          variant="ghost"
+          tone="neutral"
+          @click="emit('analytics')"
+        >
+          <template #leading><ChartColumn :size="15" aria-hidden="true" /></template>
+          Analytics
+        </Button>
         <Button size="sm" variant="ghost" tone="neutral" :is-disabled="isBusy" @click="emit('copy')">
           <template #leading><CopyPlus :size="15" aria-hidden="true" /></template>
           Copy

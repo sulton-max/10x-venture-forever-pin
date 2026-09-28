@@ -1,8 +1,9 @@
 import { LosslessJson } from '@wow-two-beta/ui-vue/foundation/json';
 
-import type { CodeDto, ImageFormat } from '@/domain/codes';
+import type { CodeAnalyticsDto, CodeDto, ImageFormat } from '@/domain/codes';
 import { apiClient, DecoderExtensions, warnedEnvelopeSchema } from '@/integration/common';
 
+import { CodeAnalyticsDtoSchema } from './models/CodeAnalyticsDtoSchema';
 import type { CodeCreateUpdateApiRequest, CodeUpdateApiRequest } from './models/CodeCreateUpdateApiRequest';
 import { CodeDtoSchema } from './models/CodeDtoSchema';
 import type { CodePreviewApiRequest } from './models/CodePreviewApiRequest';
@@ -11,6 +12,7 @@ import type { CodePreviewApiRequest } from './models/CodePreviewApiRequest';
 const decodeCode = DecoderExtensions.from(CodeDtoSchema);
 const decodeCodes = DecoderExtensions.from(CodeDtoSchema.array());
 const decodeSavedCode = DecoderExtensions.from(warnedEnvelopeSchema(CodeDtoSchema));
+const decodeAnalytics = DecoderExtensions.from(CodeAnalyticsDtoSchema);
 
 /**
  * Provides the owner-scoped code endpoints and the server-side renderer. Reads decode losslessly so an Int64 scan
@@ -34,6 +36,16 @@ export const codesApi = {
       signal,
       json: LosslessJson,
       decode: decodeCode,
+    });
+  },
+
+  /** `GET /api/codes/{id}/analytics` — the owned code's scans per UTC day and per attribute over `days` days. */
+  analytics(id: string, days: number, signal?: AbortSignal) {
+    return apiClient.get<CodeAnalyticsDto>(`/api/codes/${encodeURIComponent(id)}/analytics`, {
+      query: { days },
+      signal,
+      json: LosslessJson,
+      decode: decodeAnalytics,
     });
   },
 

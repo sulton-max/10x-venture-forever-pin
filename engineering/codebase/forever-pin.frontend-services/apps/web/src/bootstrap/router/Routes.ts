@@ -44,6 +44,7 @@ export const routes: RouteConfig = [
             onCreate: () => void router.push(AppPaths.newCode()),
             onEdit: (id: string) => void router.push(AppPaths.editCode(id)),
             onCopy: (id: string, mode: ContentMode) => void router.push(AppPaths.copyCode(id, mode)),
+            onAnalytics: (id: string) => void router.push(AppPaths.codeAnalytics(id)),
           }),
         ),
       },
@@ -69,6 +70,19 @@ export const routes: RouteConfig = [
           (route, router) => ({
             checkoutReturn: RoutePropsExtensions.toMember(route.query.status, CheckoutReturn),
             onClearCheckoutReturn: () => void router.replace({ query: {} }),
+          }),
+        ),
+      },
+      {
+        path: ':id/analytics',
+        id: 'code-analytics',
+        handle: { title: 'Analytics · ForeverPin', meta: PrivatePage },
+        lazy: RoutePropsExtensions.page(
+          () => import('@/presentation/codes/pages/CodeAnalyticsPage.vue'),
+          (route, router) => ({
+            codeId: RoutePropsExtensions.toText(route.params.id),
+            onBack: () => void router.push(AppPaths.codes()),
+            onEdit: (id: string) => void router.push(AppPaths.editCode(id)),
           }),
         ),
       },

@@ -23,6 +23,8 @@ export interface CodesListPageProps {
   readonly onEdit: (id: string) => void;
   /** Opens the builder prefilled from a code, in the chosen mode. */
   readonly onCopy: (id: string, mode: ContentMode) => void;
+  /** Opens a dynamic code's scan analytics. */
+  readonly onAnalytics: (id: string) => void;
 }
 
 /** Holds how long typing must pause before a search runs. */
@@ -125,6 +127,7 @@ async function confirmDelete(): Promise<void> {
         :code="code"
         :is-busy="busyIds.has(code.id)"
         @edit="props.onEdit(code.id)"
+        @analytics="props.onAnalytics(code.id)"
         @copy="pendingCopy = code"
         @toggle-active="toggleActive(code)"
         @delete="pendingDelete = code"

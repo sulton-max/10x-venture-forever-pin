@@ -8,5 +8,6 @@ export const AppPaths = {
   newCode: () => '/app/new',
   copyCode: (id: string, mode: string) => `/app/new?copyOf=${encodeURIComponent(id)}&mode=${mode}`,
   editCode: (id: string) => `/app/${encodeURIComponent(id)}/edit`,
+  codeAnalytics: (id: string) => `/app/${encodeURIComponent(id)}/analytics`,
   billing: () => '/app/billing',
 } as const;

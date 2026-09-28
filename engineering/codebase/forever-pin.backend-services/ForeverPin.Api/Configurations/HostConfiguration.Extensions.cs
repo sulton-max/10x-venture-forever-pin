@@ -6,6 +6,7 @@ using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using ForeverPin.Application.Billing.Core.Services;
+using ForeverPin.Application.Codes.Analytics.Services;
 using ForeverPin.Domain.Codes.Content;
 using ForeverPin.Domain.Codes.Rules.Models;
 using ForeverPin.Application.Codes.Core.Services;
@@ -116,6 +117,7 @@ public static partial class HostConfiguration
         builder.Services.AddMediatorValidatingInterceptor();
 
         builder.Services.AddScoped<ICodeRepository, CodeRepository>();
+        builder.Services.AddScoped<IScanAnalyticsRepository, ScanAnalyticsRepository>();
         builder.Services.AddSingleton<ISlugGenerator, SlugGenerator>();
         return builder;
     }
