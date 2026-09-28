@@ -161,12 +161,18 @@ public static partial class HostConfiguration
     private static WebApplicationBuilder AddBilling(this WebApplicationBuilder builder)
     {
         builder.Services.AddValidatedSettings<BillingSettings>(builder.Configuration, "Billing",
-            options => options.Validate(settings => string.IsNullOrWhiteSpace(settings.SecretKey)
-                || (!string.IsNullOrWhiteSpace(settings.WebhookSecret)
-                    && settings.Prices is { } prices && !string.IsNullOrWhiteSpace(prices.Solo)
-                    && !string.IsNullOrWhiteSpace(prices.Pro) && !string.IsNullOrWhiteSpace(prices.Agency)
-                    && IsHttpUrl(settings.SuccessUrl) && IsHttpUrl(settings.CancelUrl) && IsHttpUrl(settings.PortalReturnUrl)),
-                "Enabled billing requires a webhook secret, all price IDs, and absolute HTTP(S) return URLs."));
+            options => options
+                .Validate(settings => string.IsNullOrWhiteSpace(settings.SecretKey)
+                    || (!string.IsNullOrWhiteSpace(settings.WebhookSecret)
+                        && settings.Prices is { } prices && !string.IsNullOrWhiteSpace(prices.Solo)
+                        && !string.IsNullOrWhiteSpace(prices.Pro) && !string.IsNullOrWhiteSpace(prices.Agency)
+                        && IsHttpUrl(settings.SuccessUrl) && IsHttpUrl(settings.CancelUrl) && IsHttpUrl(settings.PortalReturnUrl)),
+                    "Enabled billing requires a webhook secret, all price IDs, and absolute HTTP(S) return URLs.")
+                // The file defaults point at localhost; a paying customer must never be sent there.
+                .Validate<IHostEnvironment>((settings, environment) => !environment.IsProduction()
+                    || string.IsNullOrWhiteSpace(settings.SecretKey)
+                    || !new[] { settings.SuccessUrl, settings.CancelUrl, settings.PortalReturnUrl }.Any(IsLoopbackUrl),
+                    "Production billing must return customers to the public origin, not a loopback address."));
         builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         builder.Services.AddScoped<IBillingBroker, StripeBillingBroker>();
 
@@ -195,4 +201,6 @@ public static partial class HostConfiguration
     }
     private static bool IsHttpUrl(string? value) => Uri.TryCreate(value, UriKind.Absolute, out var uri)
         && uri.Scheme is "http" or "https" && !string.IsNullOrWhiteSpace(uri.Host);
+
+    private static bool IsLoopbackUrl(string? value) => Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.IsLoopback;
 }

@@ -1,6 +1,6 @@
 # Billing
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-09-28*
 
 ## Flow
 
@@ -46,6 +46,7 @@ The free-static proposal in marketing requires a later change to this counting p
 
 Prices map to Stripe price IDs; display amounts are not authoritative provider configuration.
 Return URLs land on `/app/billing`: Checkout adds `?status=success` or `?status=cancelled`, the portal adds nothing.
+Defaults return to the single-host origin `https://localhost:7020`; Development returns to the Vite origin `https://localhost:7024`.
 The SPA treats `success` as provisional and re-reads the snapshot until the webhook confirms a paid plan.
 Use ignored local overrides or environment configuration for secrets.
 

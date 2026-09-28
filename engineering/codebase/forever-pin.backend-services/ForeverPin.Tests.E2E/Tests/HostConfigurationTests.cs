@@ -6,6 +6,7 @@ using ForeverPin.Application.Settings;
 using ForeverPin.Tests.E2E.Harness;
 using ForeverPin.Tests.E2E.Support;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,32 @@ public sealed class HostConfigurationTests(AppFixture fixture) : E2EBase(fixture
         redirect["DatabaseSettings:ConnectionString"].Should().Be(Fixture.Postgres.ConnectionString);
         Fixture.ApiHost.Services.GetRequiredService<IOptions<DataProtectionOptions>>()
             .Value.ApplicationDiscriminator.Should().Be("ForeverPin");
+    }
+
+    [Fact]
+    public void Billing_ShouldFailTheProductionStart_WhenCustomersWouldReturnToLoopback()
+    {
+        using var production = Fixture.ApiHost.WithWebHostBuilder(builder => EnableBilling(builder)
+            .UseEnvironment(Environments.Production));
+
+        var start = () => production.CreateClient();
+
+        start.Should().Throw<OptionsValidationException>().WithMessage("*not a loopback address*");
+    }
+
+    [Fact]
+    public async Task Billing_ShouldStartInProduction_WhenCustomersReturnToThePublicOrigin()
+    {
+        using var production = Fixture.ApiHost.WithWebHostBuilder(builder => EnableBilling(builder)
+            .UseEnvironment(Environments.Production)
+            .UseSetting("Billing:SuccessUrl", "https://foreverpin.test/app/billing?status=success")
+            .UseSetting("Billing:CancelUrl", "https://foreverpin.test/app/billing?status=cancelled")
+            .UseSetting("Billing:PortalReturnUrl", "https://foreverpin.test/app/billing"));
+        using var client = production.CreateClient();
+
+        using var health = await client.GetAsync("/health");
+
+        health.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -112,4 +139,11 @@ public sealed class HostConfigurationTests(AppFixture fixture) : E2EBase(fixture
         await using var context = Fixture.NewDbContext();
         (await context.Subscriptions.CountAsync()).Should().Be(0);
     }
+
+    private static IWebHostBuilder EnableBilling(IWebHostBuilder builder) => builder
+        .UseSetting("Billing:SecretKey", "sk_test_fake")
+        .UseSetting("Billing:WebhookSecret", "whsec_fake")
+        .UseSetting("Billing:Prices:Solo", AppFixture.PriceSolo)
+        .UseSetting("Billing:Prices:Pro", AppFixture.PricePro)
+        .UseSetting("Billing:Prices:Agency", AppFixture.PriceAgency);
 }

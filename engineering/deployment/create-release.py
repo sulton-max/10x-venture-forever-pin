@@ -55,6 +55,7 @@ def create_bundle(output, management, redirect, release, commit, platform, rollb
                 "Billing:Prices:Agency",
                 "Billing:SuccessUrl",
                 "Billing:CancelUrl",
+                "Billing:PortalReturnUrl",
                 "AllowedHosts",
                 "Deployment:TrustedProxies",
             ],
