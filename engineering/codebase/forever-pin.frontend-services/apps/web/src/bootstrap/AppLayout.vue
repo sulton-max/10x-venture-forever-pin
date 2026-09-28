@@ -7,7 +7,7 @@ import { RouterLink, RouterView } from 'vue-router';
 
 import { SessionPhase, useSessionGate } from '@/application/identity';
 import { AppPaths, ColorModeButton } from '@/presentation/common';
-import { SessionFailureState, SignInGate } from '@/presentation/identity';
+import { GuestKeepBanner, SessionFailureState, SignInGate } from '@/presentation/identity';
 import { BrandGlyph } from '@/presentation/marketing';
 
 /**
@@ -87,7 +87,10 @@ const gate = useSessionGate();
         :failure="gate.signInFailure.value"
         @continue-as-guest="gate.continueAsGuest"
       />
-      <RouterView v-else />
+      <template v-else>
+        <GuestKeepBanner v-if="gate.isGuest.value" :is-google-enabled="gate.isGoogleEnabled.value" />
+        <RouterView />
+      </template>
     </main>
   </div>
 </template>
