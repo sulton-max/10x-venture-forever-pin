@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ColorTone, SizePreset, SurfaceVariant } from "@wow-two-beta/ui/foundation/utils";
 import { Button, ButtonVariant } from "@wow-two-beta/ui/presentation/actions";
-import { Accordion, AccordionType, Badge, BadgeVariant, Card, FeatureCard as UiFeatureCard, Heading, HeadingSize, PricingCard as UiPricingCard, StepCard as UiStepCard, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, Text } from "@wow-two-beta/ui/presentation/display";
+import { Accordion, AccordionType, Badge, BadgeVariant, Card, FeatureCard as UiFeatureCard, Heading, HeadingSize, PricingCard as UiPricingCard, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, Text } from "@wow-two-beta/ui/presentation/display";
 import { Container, ContainerSize, Grid, HStack, Section as UiSection, Surface, VStack } from "@wow-two-beta/ui/presentation/layout";
 import {
   ArrowRight,
@@ -124,14 +124,35 @@ export function SectionHeading({
   );
 }
 
-export function FeatureCard({ feature }: { feature: Feature }) {
+/** Formats a tile's position as its background numeral: `01`, `02`, … */
+function tileNumber(index: number): string {
+  return String(index + 1).padStart(2, "0");
+}
+
+export function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
   const { icon: Icon, title, body } = feature;
-  return <UiFeatureCard icon={<Icon size={22} />} title={title} description={body} />;
+  return (
+    <UiFeatureCard
+      icon={<Icon size={22} />}
+      title={title}
+      description={body}
+      data-number={tileNumber(index)}
+      className="numbered-card"
+    />
+  );
 }
 
 export function StepCard({ step, index }: { step: Step; index: number }) {
   const { icon: Icon, title, body } = step;
-  return <UiStepCard step={index + 1} icon={<Icon size={22} />} title={title} description={body} />;
+  return (
+    <UiFeatureCard
+      icon={<Icon size={22} />}
+      title={title}
+      description={body}
+      data-number={tileNumber(index)}
+      className="numbered-card"
+    />
+  );
 }
 
 /** Pricing tier grid. Marketing stays backend-independent — no API calls; paid CTAs defer Checkout to the in-app billing screen. */
@@ -231,10 +252,10 @@ export function FaqList({ items }: { items: Faq[] }) {
   );
 }
 
-/** Closing call-to-action band. */
-export function CtaBand() {
+/** Closing call-to-action band. Pass top padding when it follows a tinted section, which ends flush. */
+export function CtaBand({ className = "" }: { className?: string }) {
   return (
-    <Container size={ContainerSize.Full} className="max-w-6xl px-6 pb-20">
+    <Container size={ContainerSize.Full} className={`max-w-6xl px-6 pb-20 ${className}`}>
       <Surface
         variant={SurfaceVariant.Subtle}
         tone={ColorTone.Primary}

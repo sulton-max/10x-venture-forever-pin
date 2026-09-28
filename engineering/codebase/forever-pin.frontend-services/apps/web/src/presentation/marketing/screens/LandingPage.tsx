@@ -73,8 +73,8 @@ export function LandingPage() {
           description="The genuinely useful parts of a QR platform — unbundled from the up-sell and made the default."
         />
         <Grid columns="1" gap="5" className="mt-12 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((feature) => (
-            <FeatureCard key={feature.title} feature={feature} />
+          {FEATURES.map((feature, i) => (
+            <FeatureCard key={feature.title} feature={feature} index={i} />
           ))}
         </Grid>
       </Section>
@@ -143,8 +143,8 @@ export function LandingPage() {
         </div>
       </Section>
 
-      {/* ── Closing CTA ── */}
-      <CtaBand />
+      {/* ── Closing CTA ── (the tinted FAQ band above ends flush, so the CTA brings its own top space) */}
+      <CtaBand className="pt-16 sm:pt-20" />
     </>
   );
 }

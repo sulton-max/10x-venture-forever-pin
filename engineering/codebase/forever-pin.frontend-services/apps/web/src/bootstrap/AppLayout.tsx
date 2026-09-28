@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 import { ColorTone, SizePreset } from "@wow-two-beta/ui/foundation/utils";
 import { Button, ButtonVariant } from "@wow-two-beta/ui/presentation/actions";
@@ -111,9 +112,12 @@ export function AppLayout() {
                 </Button>
               </>
             )}
-            <Link to="/" className="whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground">
-              ← Back to site
-            </Link>
+            <Button asChild variant={ButtonVariant.Ghost} tone={ColorTone.Neutral}>
+              <Link to="/" className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                <ArrowLeft size={16} />
+                Back to site
+              </Link>
+            </Button>
           </HStack>
         </Container>
       </header>

@@ -36,7 +36,7 @@ export function LoginScreen({ onAuthenticated }: LoginScreenProps) {
     <Center className="min-h-[60vh]">
       <Card className="surface-soft w-full max-w-sm p-8">
         <Stack gap="5">
-          <div>
+          <div className="text-center">
             <Heading level={1} size={SizePreset.Xl} weight="bold">
               Welcome to ForeverPin
             </Heading>
