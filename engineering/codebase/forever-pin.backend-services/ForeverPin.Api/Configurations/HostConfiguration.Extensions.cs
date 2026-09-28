@@ -54,6 +54,7 @@ public static partial class HostConfiguration
             ["BILLING_WEBHOOK_SECRET"] = "Billing:WebhookSecret",
             ["BILLING_SUCCESS_URL"] = "Billing:SuccessUrl",
             ["BILLING_CANCEL_URL"] = "Billing:CancelUrl",
+            ["BILLING_PORTAL_RETURN_URL"] = "Billing:PortalReturnUrl",
             ["BILLING_PRICE_SOLO"] = "Billing:Prices:Solo",
             ["BILLING_PRICE_PRO"] = "Billing:Prices:Pro",
             ["BILLING_PRICE_AGENCY"] = "Billing:Prices:Agency",
@@ -65,6 +66,13 @@ public static partial class HostConfiguration
     /// <summary>Registers persistent cookie keys, the database readiness probe and the application settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
     {
+        // A controller naming a budget configuration lacks would fail every such request; fail the start instead.
+        var missing = RateLimitPolicies.All
+            .Where(name => !builder.Configuration.GetSection($"RateLimits:Policies:{name}").Exists())
+            .ToArray();
+        if (missing.Length > 0)
+            throw new InvalidOperationException($"RateLimits:Policies lacks {string.Join(", ", missing)}.");
+
         // Keys outlive container replacement, so guest capabilities and sign-ins stay valid; read lazily for test hosts.
         builder.Services.AddPersistentDataProtection(options =>
         {
@@ -157,7 +165,7 @@ public static partial class HostConfiguration
                 || (!string.IsNullOrWhiteSpace(settings.WebhookSecret)
                     && settings.Prices is { } prices && !string.IsNullOrWhiteSpace(prices.Solo)
                     && !string.IsNullOrWhiteSpace(prices.Pro) && !string.IsNullOrWhiteSpace(prices.Agency)
-                    && IsHttpUrl(settings.SuccessUrl) && IsHttpUrl(settings.CancelUrl)),
+                    && IsHttpUrl(settings.SuccessUrl) && IsHttpUrl(settings.CancelUrl) && IsHttpUrl(settings.PortalReturnUrl)),
                 "Enabled billing requires a webhook secret, all price IDs, and absolute HTTP(S) return URLs."));
         builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         builder.Services.AddScoped<IBillingBroker, StripeBillingBroker>();

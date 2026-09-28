@@ -39,11 +39,14 @@ The free-static proposal in marketing requires a later change to this counting p
 | `Billing:WebhookSecret` | `BILLING_WEBHOOK_SECRET` |
 | `Billing:SuccessUrl` | `BILLING_SUCCESS_URL` |
 | `Billing:CancelUrl` | `BILLING_CANCEL_URL` |
+| `Billing:PortalReturnUrl` | `BILLING_PORTAL_RETURN_URL` |
 | `Billing:Prices:Solo` | Configuration value |
 | `Billing:Prices:Pro` | Configuration value |
 | `Billing:Prices:Agency` | Configuration value |
 
 Prices map to Stripe price IDs; display amounts are not authoritative provider configuration.
+Return URLs land on `/app/billing`: Checkout adds `?status=success` or `?status=cancelled`, the portal adds nothing.
+The SPA treats `success` as provisional and re-reads the snapshot until the webhook confirms a paid plan.
 Use ignored local overrides or environment configuration for secrets.
 
 ---

@@ -1,3 +1,5 @@
+using ForeverPin.Api.Configurations;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using ForeverPin.Api.Identity.Core.Models;
@@ -39,6 +41,7 @@ public sealed class IdentityController(ICurrentUserService currentUser, IGuestSe
     }
 
     /// <summary>Provisions a guest session.</summary>
+    [EnableRateLimiting(RateLimitPolicies.Sessions)]
     [HttpPost("guest")]
     [ProducesResponseType<ApiResponse<CurrentUserDto>>(StatusCodes.Status200OK)]
     public IActionResult Guest()

@@ -25,7 +25,7 @@ public sealed class BillingPortalCommandHandler(
         if (subscription is null || string.IsNullOrWhiteSpace(subscription.StripeCustomerId))
             return Failure("No billing customer to manage — start a subscription first.", AppErrorType.NotFound);
 
-        var url = await gateway.CreatePortalSessionAsync(subscription.StripeCustomerId, settings.CancelUrl, ct);
+        var url = await gateway.CreatePortalSessionAsync(subscription.StripeCustomerId, settings.PortalReturnUrl, ct);
 
         return AppResult<BillingPortalResult.Success>.Ok(
             new BillingPortalResult.Success(new PortalSessionModel { Url = url }));

@@ -81,6 +81,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         var session = await response.ReadEnvelopeAsync<SessionUrlDtoModel>();
         session.Url.Should().Be("https://billing.stripe.com/p/session/test_fake"); // the fake gateway's canned URL
         Fixture.Gateway.LastPortalCustomerId.Should().Be("cus_portal");
+        Fixture.Gateway.LastPortalReturnUrl.Should().Be("https://app.example/app/billing", "a portal return carries no Checkout status");
     }
 
     // ── /me snapshot ──

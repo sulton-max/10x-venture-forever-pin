@@ -1,3 +1,5 @@
+using ForeverPin.Api.Configurations;
+using Microsoft.AspNetCore.RateLimiting;
 using WoW.Two.Sdk.Backend.Beta.Web.ExceptionHandling.Extensions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
@@ -23,6 +25,7 @@ public sealed class AuthController(
     IGuestSessionService guestSession) : ControllerBase
 {
     /// <summary>Signs in with a Google ID token, claiming the guest's codes and issuing the session cookie.</summary>
+    [EnableRateLimiting(RateLimitPolicies.Sessions)]
     [HttpPost("google")]
     [ProducesResponseType<ApiResponse<CurrentUserDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

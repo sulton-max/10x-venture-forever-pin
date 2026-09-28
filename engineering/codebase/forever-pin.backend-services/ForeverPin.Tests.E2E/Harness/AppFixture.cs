@@ -92,6 +92,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
                     Prices = new BillingPricesSettings { Solo = PriceSolo, Pro = PricePro, Agency = PriceAgency },
                     SuccessUrl = "https://app.example/ok",
                     CancelUrl = "https://app.example/cancel",
+                    PortalReturnUrl = "https://app.example/app/billing",
                 });
             },
         });

@@ -13,9 +13,12 @@ public sealed record BillingSettings
     /// <summary>Gets the Stripe price ids per paid plan.</summary>
     public BillingPricesSettings Prices { get; init; } = new();
 
-    /// <summary>Gets the hosted Checkout success-redirect URL.</summary>
-    public string SuccessUrl { get; init; } = "http://localhost:7020/billing/success";
+    /// <summary>Gets the hosted Checkout success-redirect URL; the SPA reads <c>status=success</c> as provisional.</summary>
+    public string SuccessUrl { get; init; } = "http://localhost:7020/app/billing?status=success";
 
-    /// <summary>Gets the hosted Checkout cancel-redirect URL, reused as the Portal return URL.</summary>
-    public string CancelUrl { get; init; } = "http://localhost:7020/billing/cancel";
+    /// <summary>Gets the hosted Checkout cancel-redirect URL.</summary>
+    public string CancelUrl { get; init; } = "http://localhost:7020/app/billing?status=cancelled";
+
+    /// <summary>Gets the Customer Portal return URL; it carries no Checkout status.</summary>
+    public string PortalReturnUrl { get; init; } = "http://localhost:7020/app/billing";
 }

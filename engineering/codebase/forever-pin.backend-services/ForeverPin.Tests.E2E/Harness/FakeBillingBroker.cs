@@ -35,6 +35,9 @@ public sealed class FakeBillingBroker : IBillingBroker
     /// <summary>Gets the Stripe customer id captured from the last portal call.</summary>
     public string? LastPortalCustomerId { get; private set; }
 
+    /// <summary>Gets the return URL of the last Customer Portal session.</summary>
+    public string? LastPortalReturnUrl { get; private set; }
+
     /// <inheritdoc />
     public Task<string> CreateCheckoutSessionAsync(
         Guid userId,
@@ -51,6 +54,7 @@ public sealed class FakeBillingBroker : IBillingBroker
     public Task<string> CreatePortalSessionAsync(string stripeCustomerId, string returnUrl, CancellationToken ct)
     {
         LastPortalCustomerId = stripeCustomerId;
+        LastPortalReturnUrl = returnUrl;
         return Task.FromResult(PortalUrl);
     }
 

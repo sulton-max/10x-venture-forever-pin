@@ -1,3 +1,5 @@
+using ForeverPin.Api.Configurations;
+using Microsoft.AspNetCore.RateLimiting;
 using ForeverPin.Common.Domain.Codes.Core.Enums;
 using ForeverPin.Application.Codes.Rules.Models;
 using ForeverPin.Domain.Codes.Content;
@@ -46,6 +48,7 @@ public sealed class CodesController(
 
     /// <summary>Renders an unsaved SVG preview from the supplied style.</summary>
     /// <remarks>Anonymous-or-guest allowed: it is a pure render with no ownership.</remarks>
+    [EnableRateLimiting(RateLimitPolicies.Previews)]
     [HttpPost("preview")]
     [Produces("image/svg+xml")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -92,6 +95,7 @@ public sealed class CodesController(
     }
 
     /// <summary>Creates a code.</summary>
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPost]
     [ProducesResponseType<ApiResponse<CodeDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -145,6 +149,7 @@ public sealed class CodesController(
     }
 
     /// <summary>Updates a code by id.</summary>
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPut("{id:guid}")]
     [ProducesResponseType<ApiResponse<CodeDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -163,6 +168,7 @@ public sealed class CodesController(
     }
 
     /// <summary>Sets a code's active state by id.</summary>
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpPatch("{id:guid}/active")]
     [ProducesResponseType<ApiResponse<CodeDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -184,6 +190,7 @@ public sealed class CodesController(
     }
 
     /// <summary>Deletes a code by id.</summary>
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -202,6 +209,7 @@ public sealed class CodesController(
     }
 
     /// <summary>Gets a code's rendered image by id.</summary>
+    [EnableRateLimiting(RateLimitPolicies.Images)]
     [HttpGet("{id:guid}/image")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
