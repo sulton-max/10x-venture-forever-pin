@@ -6,11 +6,12 @@
 
 | Check | Result |
 |---|---|
-| Backend on SDK candidate `10.0.60-beta.local.20260927.8` | 251 passed: 102 HTTP, 29 integration, 1 migration, 119 unit |
+| Backend on SDK candidate `10.0.60-beta.local.20260927.8` | 253 passed: 102 HTTP, 29 integration, 1 migration, 121 unit |
 | Backend SDK suites at `80aeb63` | 971 passed, 1 skipped |
 | Frontend typecheck, lint, format | Passed |
 | Frontend unit tests | 35 passed |
-| Browser checks, desktop and phone | 33 passed; the phone-menu check skips on desktop |
+| Browser checks, desktop and phone | 55 passed; the phone-menu check skips on desktop |
+| Accessibility, axe WCAG 2.1 AA | Nine pages and the download dialog: zero violations |
 | Two-host smoke | Device routing, fallback, edit eviction, scan counting, paused-code page |
 | Analytics smoke | Eight real scans split by day, device, OS and country |
 | Download smoke | Live SVG sized at 30 mm reads 37 modules, 0.81 mm each |

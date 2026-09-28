@@ -35,6 +35,7 @@
 - A dynamic code's analytics show scans per UTC day, device, OS and country, with the DB-IP credit.
 - Guests see a dismissible notice that their codes live in this browser.
 - Leaving a dirty builder asks first.
+- Each builder control has an info button; its popover opens by click or tap.
 - A Checkout return stays provisional until the billing snapshot confirms a paid plan.
 - Public pages ship their own documents: the build writes each page's title, description and social tags.
 - `/app` pages are `noindex`; public pages carry a canonical link; `robots.txt` and `sitemap.xml` ship.
@@ -47,6 +48,7 @@
 - Node 24.11+; pnpm only.
 - `pnpm typecheck`, `pnpm test`, and `pnpm build` are independent checks; typecheck covers tests and SFCs.
 - `pnpm test:browser` builds, then runs Playwright on desktop and phone against an in-memory fake API.
+- The browser checks include axe WCAG 2.1 AA scans of nine pages and the download dialog.
 - `vite preview` serves a route's own document like the host does.
 - `pnpm --filter @foreverpin/web lint` runs ESLint, including the boundary rule.
 - Only dev serving initializes mkcert; `VITE_HTTPS=false` serves HTTP.
