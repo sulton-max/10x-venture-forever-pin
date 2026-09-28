@@ -1,6 +1,7 @@
 using WoW.Two.Sdk.Backend.Beta.Data;
 using WoW.Two.Sdk.Backend.Beta.Meta;
 using WoW.Two.Sdk.Backend.Beta.Web.Antiforgery;
+using WoW.Two.Sdk.Backend.Beta.Web.Hosting;
 
 namespace ForeverPin.Api.Configurations;
 
@@ -20,7 +21,11 @@ public static partial class HostConfiguration
             o.ServiceName = "forever-pin-api";
             o.EnableOutputCache = false;
             o.EnableRateLimiting = false;
-            o.TrustDeploymentProxies(builder.Configuration);
+            o.TrustProxiesFrom(builder.Configuration.GetSection("Deployment"));
+
+            // Google sign-in popups keep their opener; its cross-origin script ships no CORP opt-in.
+            o.AllowCrossOriginOpenerPopups = true;
+            o.EnableCrossOriginEmbedderPolicy = false;
 
             // Register application validators through the SDK adapter.
             o.ValidatorAssemblies.Add(typeof(ForeverPin.Application.ApplicationAssembly).Assembly);
@@ -47,13 +52,8 @@ public static partial class HostConfiguration
         // Apply pending migrations before serving — advisory-locked, blocks once at startup.
         await app.Services.MigrateBespokeOnStartupAsync(app.Lifetime.ApplicationStopping);
 
-        // Google sign-in popups need their opener, so SPA HTML overrides the SDK isolation headers.
-        // Register before static files and SDK middleware: OnStarting runs in reverse registration order.
-        app.UseGisFriendlyOpenerPolicy();
-
-        // Serve the built React SPA before the SDK pipeline so static assets short-circuit.
-        app.UseDefaultFiles();
-        app.UseStaticFiles();
+        // Serve the built SPA before the SDK pipeline so static assets short-circuit.
+        app.UseSpaHosting();
 
         app.UseApiDefaults(pipeline =>
         {
@@ -64,35 +64,8 @@ public static partial class HostConfiguration
 
         app.MapControllers();
 
-        // Keep unknown API requests as JSON errors; use the SPA shell only for client routes.
-        app.MapFallback("/api/{**slug}", () => Results.Problem(
-            statusCode: StatusCodes.Status404NotFound,
-            title: "Not Found")).AllowAnonymous();
-        app.MapFallbackToFile("index.html").AllowAnonymous();
-
-        return app;
-    }
-
-    /// <summary>Overrides the SDK secure-headers floor on SPA HTML so Google Identity Services works.</summary>
-    private static WebApplication UseGisFriendlyOpenerPolicy(this WebApplication app)
-    {
-        app.Use(async (context, next) =>
-        {
-            context.Response.OnStarting(static state =>
-            {
-                var response = ((HttpContext)state).Response;
-                var contentType = response.ContentType;
-                if (contentType is not null && contentType.Contains("text/html", StringComparison.OrdinalIgnoreCase))
-                {
-                    response.Headers["Cross-Origin-Opener-Policy"] = "same-origin-allow-popups";
-                    response.Headers.Remove("Cross-Origin-Embedder-Policy");
-                }
-
-                return Task.CompletedTask;
-            }, context);
-
-            await next();
-        });
+        // Unknown API requests stay JSON errors; every other unmatched route gets the SPA shell.
+        app.MapSpaFallback();
 
         return app;
     }

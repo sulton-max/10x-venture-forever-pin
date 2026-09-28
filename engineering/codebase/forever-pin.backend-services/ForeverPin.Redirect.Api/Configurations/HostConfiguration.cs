@@ -20,7 +20,7 @@ public static partial class HostConfiguration
             o.ServiceName = "forever-pin-redirect";
             o.EnableOutputCache = false;
             o.EnableRateLimiting = false;
-            o.TrustDeploymentProxies(builder.Configuration);
+            o.TrustProxiesFrom(builder.Configuration.GetSection("Deployment"));
         });
 
         builder

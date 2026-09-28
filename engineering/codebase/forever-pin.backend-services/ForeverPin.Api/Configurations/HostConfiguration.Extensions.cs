@@ -1,7 +1,6 @@
 using ForeverPin.Domain.Codes.Rules.Mappers;
 using WoW.Two.Sdk.Backend.Beta.Codes.Payloads;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Identifiers.Generators;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using ForeverPin.Domain.Codes.Serialization.Factories;
 using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -38,17 +37,11 @@ namespace ForeverPin.Api.Configurations;
 
 public static partial class HostConfiguration
 {
-    /// <summary>Configures file settings and explicitly supported deployment aliases.</summary>
+    /// <summary>Configures file settings and the supported deployment variables; no other variable reaches configuration.</summary>
     private static WebApplicationBuilder AddConfiguration(this WebApplicationBuilder builder)
     {
-        var hosting = new Dictionary<string, string?>();
-        foreach (var key in new[] { "urls", "http_ports", "https_ports" })
-            if (builder.Configuration[key] is { } value) hosting[key] = value;
-        foreach (var source in builder.Configuration.Sources.OfType<EnvironmentVariablesConfigurationSource>().ToArray())
-            builder.Configuration.Sources.Remove(source);
         builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
-        builder.Configuration.AddInMemoryCollection(hosting);
-        var aliases = new Dictionary<string, string>
+        builder.Configuration.UseEnvironmentAliases(new Dictionary<string, string>
         {
             ["DB_CONNECTION"] = "DB_CONNECTION",
             ["REDIRECT_BASE_URL"] = "ApiSettings:RedirectBaseUrl",
@@ -64,23 +57,10 @@ public static partial class HostConfiguration
             ["BILLING_PRICE_SOLO"] = "Billing:Prices:Solo",
             ["BILLING_PRICE_PRO"] = "Billing:Prices:Pro",
             ["BILLING_PRICE_AGENCY"] = "Billing:Prices:Agency",
-        };
-        var overrides = new Dictionary<string, string?>();
-        foreach (var alias in aliases)
-            if (Environment.GetEnvironmentVariable(alias.Key) is { } value) overrides[alias.Value] = value;
-        builder.Configuration.AddInMemoryCollection(overrides);
+        });
         return builder;
     }
 
-
-    /// <summary>Trusts forwarded headers from the configured ingress addresses and networks, besides loopback.</summary>
-    private static void TrustDeploymentProxies(this ApiDefaultsOptions options, IConfiguration configuration)
-    {
-        foreach (var proxy in configuration.GetSection("Deployment:TrustedProxies").Get<string[]>() ?? [])
-            options.TrustedProxies.Add(proxy);
-        foreach (var network in configuration.GetSection("Deployment:TrustedNetworks").Get<string[]>() ?? [])
-            options.TrustedNetworks.Add(network);
-    }
 
     /// <summary>Registers persistent cookie keys, the database readiness probe and the application settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
