@@ -1,7 +1,6 @@
 using WoW.Two.Sdk.Backend.Beta.Data;
 using WoW.Two.Sdk.Backend.Beta.Meta;
 using WoW.Two.Sdk.Backend.Beta.Web.Antiforgery;
-using WoW.Two.Sdk.Backend.Beta.Web.Hosting;
 
 namespace ForeverPin.Api.Configurations;
 
@@ -29,6 +28,9 @@ public static partial class HostConfiguration
 
             // Register application validators through the SDK adapter.
             o.ValidatorAssemblies.Add(typeof(ForeverPin.Application.ApplicationAssembly).Assembly);
+
+            // Serve the built SPA behind the secure headers and compression; each route may ship its own document.
+            o.SpaHosting = _ => { };
         });
 
         builder
@@ -52,9 +54,6 @@ public static partial class HostConfiguration
         // Apply pending migrations before serving — advisory-locked, blocks once at startup.
         await app.Services.MigrateBespokeOnStartupAsync(app.Lifetime.ApplicationStopping);
 
-        // Serve the built SPA before the SDK pipeline so static assets short-circuit.
-        app.UseSpaHosting();
-
         app.UseApiDefaults(pipeline =>
         {
             pipeline.UseAuthentication();
@@ -62,10 +61,8 @@ public static partial class HostConfiguration
             pipeline.UseSpaAntiforgery();   // after authentication: tokens bind to the signed-in user
         });
 
+        // Unknown API requests stay JSON errors; every other unmatched route gets its document or the SPA shell.
         app.MapControllers();
-
-        // Unknown API requests stay JSON errors; every other unmatched route gets the SPA shell.
-        app.MapSpaFallback();
 
         return app;
     }
