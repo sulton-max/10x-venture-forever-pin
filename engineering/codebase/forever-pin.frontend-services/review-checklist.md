@@ -1,6 +1,6 @@
 # v0.9 model re-design — frontend review checklist
 
-> Historical review snapshot from 2026-07-28; links follow current filenames.
+> Historical review snapshot from 2026-07-28 of the React app, replaced by Vue on 2026-09-28; read linked files at `ae04e2b`.
 > Current tasks: [v0.10](../../planning/version-track/v0.10/v0.10.md) and [v0.11](../../planning/version-track/v0.11/v0.11.md). Historical verdicts do not establish current completion.
 
 *Last updated: 2026-07-28*

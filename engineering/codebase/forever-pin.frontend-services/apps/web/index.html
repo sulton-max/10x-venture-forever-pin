@@ -13,6 +13,7 @@
       name="description"
       content="One QR code, many destinations by context — and you'll never have to reprint it. Smart routing, every code type, unlimited scans, flat pricing. Your codes, forever."
     />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#7040d7" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ForeverPin" />
@@ -22,9 +23,18 @@
       content="One QR code, many destinations by context — and you'll never have to reprint it. Smart routing from $5, unlimited scans on every tier."
     />
     <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Applies the saved color mode before first paint; the app's color-mode provider owns it afterwards.
+      try {
+        const saved = localStorage.getItem('color-mode');
+        const dark = saved === 'dark' || (saved !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      } catch {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/bootstrap/main.tsx"></script>
+    <script type="module" src="/src/bootstrap/main.ts"></script>
   </body>
 </html>

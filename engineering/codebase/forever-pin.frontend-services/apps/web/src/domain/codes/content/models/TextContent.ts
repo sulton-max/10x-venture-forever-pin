@@ -1,4 +1,4 @@
-import { ContentType } from "../enums/ContentType";
+import { ContentType } from '../enums/ContentType';
 
 /** Represents free-form text. */
 export interface TextContent {

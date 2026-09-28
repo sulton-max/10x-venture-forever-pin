@@ -1,4 +1,4 @@
-import { ContentType } from "../enums/ContentType";
+import { ContentType } from '../enums/ContentType';
 
 /** Represents a destination URL. */
 export interface UrlContent {

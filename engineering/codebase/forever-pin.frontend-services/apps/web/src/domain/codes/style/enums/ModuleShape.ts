@@ -1,19 +1,19 @@
 /** Defines the QR data-module shape. */
 export const ModuleShape = {
   /** Refers to a plain square module. */
-  Square: "square",
+  Square: 'square',
   /** Refers to a module with rounded corners. */
-  Rounded: "rounded",
+  Rounded: 'rounded',
   /** Refers to detached circular dots. */
-  Dots: "dots",
+  Dots: 'dots',
   /** Refers to a stylized module with a subtle corner cut. */
-  Classy: "classy",
+  Classy: 'classy',
   /** Refers to the classy module with softened (rounded) corners. */
-  ClassyRounded: "classyRounded",
+  ClassyRounded: 'classyRounded',
   /** Refers to modules fused into vertical bars. */
-  VerticalBars: "verticalBars",
+  VerticalBars: 'verticalBars',
   /** Refers to modules fused into horizontal bars. */
-  HorizontalBars: "horizontalBars",
+  HorizontalBars: 'horizontalBars',
 } as const;
 
 export type ModuleShape = (typeof ModuleShape)[keyof typeof ModuleShape];

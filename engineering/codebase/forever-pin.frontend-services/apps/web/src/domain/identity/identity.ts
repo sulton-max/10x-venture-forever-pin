@@ -1,4 +1,4 @@
-import type { UserKind } from "./enums/UserKind";
+import type { UserKind } from './enums/UserKind';
 
 /** Represents a registered user's profile. */
 export interface UserSummary {

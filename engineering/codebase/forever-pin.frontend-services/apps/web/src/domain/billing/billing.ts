@@ -1,13 +1,13 @@
 /** Defines the subscription tiers. */
 export const Plan = {
   /** Refers to the free tier. */
-  Free: "free",
+  Free: 'free',
   /** Refers to the paid Solo tier. */
-  Solo: "solo",
+  Solo: 'solo',
   /** Refers to the paid Pro tier. */
-  Pro: "pro",
+  Pro: 'pro',
   /** Refers to the paid Dev / Agency tier. */
-  Agency: "agency",
+  Agency: 'agency',
 } as const;
 
 export type Plan = (typeof Plan)[keyof typeof Plan];

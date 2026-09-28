@@ -1,6 +1,6 @@
-import { Temporal } from "temporal-polyfill";
+import { Temporal } from 'temporal-polyfill';
 
-import { ContentType } from "../enums/ContentType";
+import { ContentType } from '../enums/ContentType';
 
 /** Represents a calendar event. */
 export interface CalendarContent {

@@ -1,34 +1,34 @@
 /** Defines the kind of content a code carries. */
 export const ContentType = {
   /** Refers to a destination URL. */
-  Url: "url",
+  Url: 'url',
 
   /** Refers to an app-store link. */
-  MobileApp: "mobileApp",
+  MobileApp: 'mobileApp',
 
   /** Refers to free-form text. */
-  Text: "text",
+  Text: 'text',
 
   /** Refers to an email recipient and draft. */
-  Email: "email",
+  Email: 'email',
 
   /** Refers to an SMS recipient and message. */
-  Sms: "sms",
+  Sms: 'sms',
 
   /** Refers to a telephone number. */
-  Phone: "phone",
+  Phone: 'phone',
 
   /** Refers to a geographic location. */
-  Geo: "geo",
+  Geo: 'geo',
 
   /** Refers to Wi-Fi network credentials. */
-  Wifi: "wifi",
+  Wifi: 'wifi',
 
   /** Refers to a contact card. */
-  VCard: "vCard",
+  VCard: 'vCard',
 
   /** Refers to a calendar event. */
-  Calendar: "calendar",
+  Calendar: 'calendar',
 } as const;
 
 export type ContentType = (typeof ContentType)[keyof typeof ContentType];

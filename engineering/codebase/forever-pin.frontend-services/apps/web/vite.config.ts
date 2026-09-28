@@ -1,37 +1,28 @@
-import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
-import mkcert from "vite-plugin-mkcert";
-import path from "node:path";
+import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vite';
+import mkcert from 'vite-plugin-mkcert';
 
-// ForeverPin frontend build and development server.
-export default defineConfig(({ command, mode }) => ({
-  // Use HTTPS for secure cookies in development; VITE_HTTPS=false opts into HTTP.
-  plugins: [
-    react(),
-    tailwindcss(),
-    ...(command === "serve" && mode !== "test" && process.env.VITE_HTTPS !== "false" ? [mkcert()] : []),
-  ],
-  server: {
-    port: 7024,
-    // Proxy to the local HTTPS API, accepting its dev certificate and preserving the browser origin.
-    proxy: {
-      "/api": { target: "https://localhost:7020", changeOrigin: false, secure: false },
-      "/health": { target: "https://localhost:7020", changeOrigin: false, secure: false },
+// The app calls same-origin /api; in development Vite proxies it, and /health, to the management API.
+export default defineConfig(({ command, mode }) => {
+  const https = mode !== 'http' && process.env.VITE_HTTPS !== 'false';
+  const api = process.env.VITE_API_TARGET ?? 'https://localhost:7020';
+
+  return {
+    base: '/',
+    plugins: [vue(), tailwindcss(), ...(command === 'serve' && https ? [mkcert()] : [])],
+    resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+    build: { outDir: 'dist', emptyOutDir: true, target: 'es2022' },
+    server: {
+      host: 'localhost',
+      port: Number(process.env.VITE_PORT ?? 7024),
+      strictPort: true,
+      https: https ? {} : undefined,
+      proxy: {
+        '/api': { target: api, changeOrigin: false, secure: false },
+        '/health': { target: api, changeOrigin: false, secure: false },
+      },
     },
-  },
-  // App-local artifact; workspace deployment copies it into the API host.
-  build: {
-    outDir: "dist",
-    emptyOutDir: true,
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "./src"),
-    },
-  },
-  // Unit tests mirror the source tree.
-  test: {
-    include: ["tests/**/*.test.{ts,tsx}"],
-  },
-}));
+  };
+});

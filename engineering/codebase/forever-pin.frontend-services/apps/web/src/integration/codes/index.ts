@@ -1,3 +1,3 @@
-// integration/codes — the codes API client (CRUD + image + server-rendered preview) + its request bodies.
-export * from "./models";
-export * from "./codes";
+export { codesApi } from './CodesApi';
+export type { CodeCreateUpdateApiRequest, CodeUpdateApiRequest } from './models/CodeCreateUpdateApiRequest';
+export type { CodePreviewApiRequest } from './models/CodePreviewApiRequest';

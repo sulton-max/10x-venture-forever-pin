@@ -1,4 +1,4 @@
-import { ContentType } from "../enums/ContentType";
+import { ContentType } from '../enums/ContentType';
 
 /** Represents a telephone number to dial. */
 export interface PhoneContent {

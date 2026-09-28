@@ -1,8 +1,8 @@
-import type { Temporal } from "temporal-polyfill";
+import type { Temporal } from 'temporal-polyfill';
 
-import type { BarcodeFormat, ContentMode, ContentType } from "../../content";
-import type { CodeRuleDto } from "../../rules";
-import type { CodeStyleDto } from "../../style";
+import type { BarcodeFormat, ContentMode, ContentType } from '../../content';
+import type { CodeRuleDto } from '../../rules';
+import type { CodeStyleDto } from '../../style';
 
 /** Represents an issued code. */
 export interface CodeDto {

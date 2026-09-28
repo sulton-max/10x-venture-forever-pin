@@ -1,5 +1,5 @@
-import type { CodeContent } from "../../content/models";
-import type { CodeRuleType } from "../enums/CodeRuleType";
+import type { CodeContent } from '../../content/models';
+import type { CodeRuleType } from '../enums/CodeRuleType';
 
 /** Represents a catch-all serving its own content. */
 export interface DefaultRuleDto {

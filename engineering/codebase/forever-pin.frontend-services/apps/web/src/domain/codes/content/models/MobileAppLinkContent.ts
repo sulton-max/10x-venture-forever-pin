@@ -1,5 +1,5 @@
-import { ContentType } from "../enums/ContentType";
-import { MobileAppStoreType } from "../enums/MobileAppStoreType";
+import { ContentType } from '../enums/ContentType';
+import { MobileAppStoreType } from '../enums/MobileAppStoreType';
 
 /** Represents an app-store link. */
 export interface MobileAppLinkContent {

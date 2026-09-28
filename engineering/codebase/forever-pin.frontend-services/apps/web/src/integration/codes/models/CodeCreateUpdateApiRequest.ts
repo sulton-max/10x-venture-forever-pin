@@ -1,4 +1,4 @@
-import type { BarcodeFormat, ContentMode, ContentType, CodeRuleDto, CodeStyleDto } from "@/domain/codes";
+import type { BarcodeFormat, ContentMode, ContentType, CodeRuleDto, CodeStyleDto } from '@/domain/codes';
 
 /** Defines the builder request; omit `mode` when submitting an update. */
 export interface CodeCreateUpdateApiRequest {
@@ -22,4 +22,4 @@ export interface CodeCreateUpdateApiRequest {
 }
 
 /** Defines an update request without the immutable content mode. */
-export type CodeUpdateApiRequest = Omit<CodeCreateUpdateApiRequest, "mode">;
+export type CodeUpdateApiRequest = Omit<CodeCreateUpdateApiRequest, 'mode'>;

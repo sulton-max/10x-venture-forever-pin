@@ -1,13 +1,13 @@
 /** Defines the QR error-correction level. */
 export const EccLevel = {
   /** Refers to ~7% recovery (Low). */
-  L: "l",
+  L: 'l',
   /** Refers to ~15% recovery (Medium). */
-  M: "m",
+  M: 'm',
   /** Refers to ~25% recovery (Quartile). */
-  Q: "q",
+  Q: 'q',
   /** Refers to ~30% recovery (High). */
-  H: "h",
+  H: 'h',
 } as const;
 
 export type EccLevel = (typeof EccLevel)[keyof typeof EccLevel];

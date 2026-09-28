@@ -1,4 +1,4 @@
-import type { BarcodeFormat, ContentMode, CodeRuleDto, CodeStyleDto } from "@/domain/codes";
+import type { BarcodeFormat, ContentMode, CodeRuleDto, CodeStyleDto } from '@/domain/codes';
 
 /** Defines the live-preview request body — renders a code without persisting it. */
 export interface CodePreviewApiRequest {

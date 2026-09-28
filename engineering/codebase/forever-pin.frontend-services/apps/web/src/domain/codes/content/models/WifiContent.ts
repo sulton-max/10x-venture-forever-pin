@@ -1,5 +1,5 @@
-import { ContentType } from "../enums/ContentType";
-import { WifiEncryption } from "../enums/WifiEncryption";
+import { ContentType } from '../enums/ContentType';
+import { WifiEncryption } from '../enums/WifiEncryption';
 
 /** Represents Wi-Fi network credentials. */
 export interface WifiContent {

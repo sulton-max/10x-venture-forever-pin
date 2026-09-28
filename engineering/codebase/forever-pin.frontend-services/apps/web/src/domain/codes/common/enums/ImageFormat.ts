@@ -1,9 +1,9 @@
 /** Defines the downloadable code image format. */
 export const ImageFormat = {
   /** Refers to a vector SVG render. */
-  Svg: "svg",
+  Svg: 'svg',
   /** Refers to a raster PNG render. */
-  Png: "png",
+  Png: 'png',
 } as const;
 
 export type ImageFormat = (typeof ImageFormat)[keyof typeof ImageFormat];

@@ -1,4 +1,4 @@
-import { ContentType } from "../enums/ContentType";
+import { ContentType } from '../enums/ContentType';
 
 /** Represents a selectable content type — its id and display label. */
 export interface ContentTypeDescriptor {
@@ -14,20 +14,20 @@ export interface ContentTypeDescriptor {
 
 /** The exhaustive content-type catalog — one descriptor per selectable type. */
 export const contentTypeCatalog: ContentTypeDescriptor[] = [
-  { id: ContentType.Url, label: "URL" },
+  { id: ContentType.Url, label: 'URL' },
   {
     id: ContentType.MobileApp,
-    label: "Mobile app link",
-    note: "Add at least one. iPhone opens the App Store, Android opens Google Play; choose which link every other device opens.",
+    label: 'Mobile app link',
+    note: 'Choose the store this rule opens. To send iPhone and Android to different stores, add a Device rule for each.',
   },
-  { id: ContentType.Text, label: "Text" },
-  { id: ContentType.Email, label: "Email" },
-  { id: ContentType.Sms, label: "SMS" },
-  { id: ContentType.Phone, label: "Phone" },
-  { id: ContentType.Geo, label: "Location" },
-  { id: ContentType.Wifi, label: "WiFi" },
-  { id: ContentType.VCard, label: "Contact card" },
-  { id: ContentType.Calendar, label: "Event" },
+  { id: ContentType.Text, label: 'Text' },
+  { id: ContentType.Email, label: 'Email' },
+  { id: ContentType.Sms, label: 'SMS' },
+  { id: ContentType.Phone, label: 'Phone' },
+  { id: ContentType.Geo, label: 'Location' },
+  { id: ContentType.Wifi, label: 'WiFi' },
+  { id: ContentType.VCard, label: 'Contact card' },
+  { id: ContentType.Calendar, label: 'Event' },
 ];
 
 const byId: Record<ContentType, ContentTypeDescriptor> = Object.fromEntries(

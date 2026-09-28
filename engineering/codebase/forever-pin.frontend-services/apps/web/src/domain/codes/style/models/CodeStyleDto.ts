@@ -1,8 +1,7 @@
-import type { Gradient } from "@wow-two-beta/ui/domain/color";
-
-import type { EccLevel } from "../enums/EccLevel";
-import type { FinderShape } from "../enums/FinderShape";
-import type { ModuleShape } from "../enums/ModuleShape";
+import type { CodeGradientDto } from './CodeGradientDto';
+import type { EccLevel } from '../enums/EccLevel';
+import type { FinderShape } from '../enums/FinderShape';
+import type { ModuleShape } from '../enums/ModuleShape';
 
 /** Represents a center logo overlay baked into the code render. */
 export interface CodeLogoDto {
@@ -52,7 +51,7 @@ export interface CodeStyleDto {
   finderDotShape: FinderShape;
 
   /** The foreground gradient; the solid foreground renders when absent. */
-  gradient?: Gradient;
+  gradient?: CodeGradientDto;
 
   /** The center emoji overlay. */
   emoji?: CodeEmojiDto;

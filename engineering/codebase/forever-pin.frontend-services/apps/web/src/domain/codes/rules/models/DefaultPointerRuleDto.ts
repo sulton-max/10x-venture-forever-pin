@@ -1,4 +1,4 @@
-import type { CodeRuleType } from "../enums/CodeRuleType";
+import type { CodeRuleType } from '../enums/CodeRuleType';
 
 /** Represents a catch-all delegating to another rule's content. */
 export interface DefaultPointerRuleDto {

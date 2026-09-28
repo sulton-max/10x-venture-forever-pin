@@ -1,6 +1,6 @@
-import type { CodeContent } from "../../content/models";
-import type { CodeRuleType } from "../enums/CodeRuleType";
-import type { RuleConditionType } from "../enums/RuleConditionType";
+import type { CodeContent } from '../../content/models';
+import type { CodeRuleType } from '../enums/CodeRuleType';
+import type { RuleConditionType } from '../enums/RuleConditionType';
 
 /** Represents a rule matched against a scan signal. */
 export interface ConditionalRuleDto {
