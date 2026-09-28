@@ -34,9 +34,7 @@ defineOptions({ name: 'PricingPage' });
       title="How we compare"
       description="The same three things people actually want — smart routing, a custom domain, and un-capped scans — without the $30+ paywall."
     />
-    <div class="mt-12 overflow-x-auto">
-      <ComparisonTable />
-    </div>
+    <ComparisonTable class="mt-12" />
   </MarketingSection>
 
   <MarketingSection>

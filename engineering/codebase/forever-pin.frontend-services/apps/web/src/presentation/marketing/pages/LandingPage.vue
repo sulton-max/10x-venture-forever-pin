@@ -117,9 +117,7 @@ defineOptions({ name: 'LandingPage' });
       title="Why we're different"
       description="The calm cut of a crowded category. Here's what changes when codes are treated as infrastructure, not hostages."
     />
-    <div class="mt-12 overflow-x-auto">
-      <ComparisonTable />
-    </div>
+    <ComparisonTable class="mt-12" />
   </MarketingSection>
 
   <MarketingSection is-muted>
