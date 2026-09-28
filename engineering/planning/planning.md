@@ -25,12 +25,11 @@ The owner explicitly authorized the planned `v0.11` track alongside active `v0.1
 
 ## Current work
 
-1. Adopt the Vue SDK in a private pnpm workspace with the product in `apps/web`.
-2. Preserve product API, form, session, rendering, and routing contracts during migration.
-3. Verify frontend runtimes and compare the migrated product visually.
-4. Integrate the separate backend migration chat's verified result.
-5. Publish SDK `10.0.60-beta`, then verify the pinned extraction cut without the candidate feed.
-6. Keep `v0.10` open until both adoption lanes and owner acceptance are complete.
+1. Publish backend SDK `10.0.60-beta` from `80aeb63` or later; verify the pin without the candidate feed.
+2. Publish `@wow-two-beta/ui-vue`, then drop the product's antiforgery and warning bridges.
+3. Compare the migrated product visually; runtime smoke and browser checks already pass.
+4. Take the `v0.11` Iteration 1 decisions that gate non-URL content delivery.
+5. Keep `v0.10` open until owner acceptance of both adoption lanes.
 
 [Current work](current-work.md) defines ownership, dependencies, and acceptance boundaries.
 Task checkboxes live in [v0.10](version-track/v0.10/v0.10.md) and [v0.11](version-track/v0.11/v0.11.md).

@@ -1,6 +1,26 @@
 # Verification
 
-*Last updated: 2026-09-26*
+*Last updated: 2026-09-28*
+
+## Release sweep — 2026-09-28
+
+| Check | Result |
+|---|---|
+| Backend on SDK candidate `10.0.60-beta.local.20260927.8` | 251 passed: 102 HTTP, 29 integration, 1 migration, 119 unit |
+| Backend SDK suites at `80aeb63` | 971 passed, 1 skipped |
+| Frontend typecheck, lint, format | Passed |
+| Frontend unit tests | 35 passed |
+| Browser checks, desktop and phone | 33 passed; the phone-menu check skips on desktop |
+| Two-host smoke | Device routing, fallback, edit eviction, scan counting, paused-code page |
+| Analytics smoke | Eight real scans split by day, device, OS and country |
+| Download smoke | Live SVG sized at 30 mm reads 37 modules, 0.81 mm each |
+| Route documents | `/pricing`, `/blog` and every article served their own title with HTTP 200 |
+| Response headers | Documents: `no-cache`, frame denial, `nosniff`, Brotli; hashed assets: immutable |
+
+The smoke hosts ran from the candidate build against the local development database with a guest identity.
+Real Google sign-in, Stripe test mode, hosted CI and physical print scanning remain unverified.
+
+---
 
 ## Frontend workspace adoption — 2026-09-26
 

@@ -109,7 +109,7 @@ SDK record: [ForeverPin extractions](../../../../wow-two-sdk-beta/wow-two-sdk.ba
 | Antiforgery | Cookie writes echo `XSRF-TOKEN` as `X-XSRF-TOKEN`; the signed Stripe webhook is exempt. |
 | Environment | Both hosts read only listed variables through `UseEnvironmentAliases`; an empty variable no longer overrides. |
 | Proxy trust | Both hosts bind `Deployment:TrustedProxies` and `TrustedNetworks` with `TrustProxiesFrom`. |
-| SPA hosting | `UseSpaHosting` and `MapSpaFallback` serve the shell; unknown `/api` routes stay JSON 404s. |
+| SPA hosting | `ApiDefaultsOptions.SpaHosting` serves the bundle behind secure headers; unknown `/api` routes stay JSON 404s. |
 | Sign-in popups | `AllowCrossOriginOpenerPopups` replaces the HTML header rewrite; the embedder policy is off for Google's script. |
 
 Migration `012-billing-events` adds `inbox_messages` and `subscriptions.last_event_at`; stored payloads are unchanged.
@@ -140,6 +140,10 @@ Development runs serve the project's `wwwroot` through static web assets, so the
 Candidate `.4` adds environment aliases, configured proxy trust and popup-safe opener headers; the same 238 tests pass.
 A second smoke served the Vue build: the shell carried `same-origin-allow-popups` without an embedder policy,
 unknown API paths answered JSON 404s, and a guest's insecure-URL save showed its warning.
+
+Candidates `.5` to `.8` add lazily bound request budgets (`dc74ad7`), route documents from the SPA fallback
+(`158eef4`, `db3bc89`), and the SPA served behind the secure headers with asset caching (`80aeb63`).
+Against `.8` the product passes 251 backend tests; publication must include `80aeb63`.
 
 ## Remaining acceptance
 

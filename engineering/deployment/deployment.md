@@ -4,7 +4,9 @@
 
 ## Implemented shape
 
-- The management host serves the built frontend from `wwwroot`.
+- The management host serves the built frontend from `wwwroot`, behind the SDK secure headers and compression.
+- Hashed assets cache for a year as immutable; every document revalidates, so a deploy reaches returning visitors.
+- Public pages ship their own documents, so link previews read each page's title and description.
 - The redirect host runs separately and shares PostgreSQL.
 - Host startup applies embedded SQL migrations.
 - `Dockerfile` builds management and redirect images from one source revision.
@@ -22,6 +24,7 @@
 
 - The release bundle lists every required setting; Wheelhouse's `transport.py template` prints each service's skeleton.
 - Both hosts read `DatabaseSettings:ConnectionString` or `DB_CONNECTION`; the bundle previously named a dead key.
+- Enabled billing requires `Billing:SuccessUrl`, `CancelUrl` and `PortalReturnUrl`; Production refuses loopback ones.
 - `AllowedHosts` lists the public host; the SDK appends `localhost`, so health checks and smoke probes pass.
 - `Deployment:TrustedProxies` is a JSON array of ingress IPs; a plain string trusts no proxy.
 - `Deployment:TrustedNetworks` is a JSON array of ingress CIDR ranges, such as a Docker network.

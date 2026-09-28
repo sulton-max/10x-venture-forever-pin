@@ -17,17 +17,18 @@ This list holds work outside those tracks; order is pull priority.
 - [ ] Configure and verify deployment, TLS, and redirect domains
 - [ ] Verify database backup and restore
 - [ ] Measure redirect bursts and scan-queue loss
-- [ ] Add destination screening and abuse controls
+- [ ] Add destination screening and abuse controls; request budgets exist since `574a205`
 - [ ] Add reporting and takedown handling
 - [ ] Verify brand clearance and social handles
 - [ ] Validate the never-deactivate value proposition with users
+- [ ] Add account data export and deletion, as the comparison table promises
 
 ---
 
 ## Accounts
 
 - [ ] Design lost-cookie recovery with proof of ownership
-- [ ] Refresh stored Google profile details on login
+- [x] Refresh stored Google profile details on login: `3fa8e7c`
 
 Guest accounts, Google login, guest-code claiming, and cross-device ownership already exist.
 
@@ -36,7 +37,7 @@ Guest accounts, Google login, guest-code claiming, and cross-device ownership al
 ## Routing and analytics
 
 - [x] Activate country lookup — free DB-IP Lite, refreshed monthly (SDK `10.0.60-beta`)
-- [ ] Add customer analytics and aggregation endpoints
+- [x] Add customer analytics and aggregation endpoints: per-code day, device, OS and country, `424b4fb`
 - [ ] Decide total-versus-unique scan semantics without fingerprinting
 - [x] Add routing cache with edit invalidation — commit-aware eviction over PostgreSQL notifications
 - [ ] Complete the Redis configuration read/write path
@@ -92,7 +93,8 @@ Minimal dynamic-content delivery belongs to `v0.11`; a designed hosted-page edit
 - [ ] Verify branded promo exports visually
 - [ ] Build the free-generator entry page
 - [ ] Add content-type and comparison landing pages
-- [ ] Add sitemap and crawlable content delivery
+- [x] Add sitemap and crawlable content delivery: crawl files `edda5b9`, route documents `d8bb4f9`
+- [ ] Add a social preview image for shared links
 - [ ] Prepare short-form launch content
 - [ ] Add a privacy-first acquisition funnel
 - [ ] Evaluate creator integrations and wedding/event channels
@@ -137,6 +139,7 @@ The recorded implementation state is retained; the remaining work is not part of
 - [ ] Finish the remaining polish-track tasks
 - [ ] Simplify E2E DTO mirrors while retaining raw-JSON assertions
 - [ ] Review dependency vulnerability warnings with the SDK lane
+- [ ] Split the Vue SDK build per module; the shared chunks outweigh the product code
 - [ ] Establish product CI/CD and a repeatable deployment configuration
 
 The active SDK-adoption scope is tracked in `v0.10`; implementation and verification remain open.
