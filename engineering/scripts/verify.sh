@@ -24,6 +24,8 @@ if [[ "$suite" == all || "$suite" == frontend ]]; then
   pnpm typecheck
   pnpm test
   pnpm build
+  # Browser checks run the built app against an in-memory fake API; `playwright install chromium` fetches a browser once.
+  pnpm --filter @foreverpin/web exec playwright test
 fi
 
 if [[ "$suite" != frontend ]]; then

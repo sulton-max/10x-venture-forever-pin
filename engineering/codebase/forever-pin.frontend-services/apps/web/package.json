@@ -15,9 +15,10 @@
     "build": "pnpm typecheck && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "format": "prettier --write src tests scripts *.ts *.mjs *.json index.html",
-    "format:check": "prettier --check src tests scripts *.ts *.mjs *.json index.html",
-    "lint": "eslint ."
+    "format": "prettier --write src tests e2e scripts *.ts *.mjs *.json index.html",
+    "format:check": "prettier --check src tests e2e scripts *.ts *.mjs *.json index.html",
+    "lint": "eslint .",
+    "test:browser": "vite build && playwright test"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
+    "@playwright/test": "1.62.1",
     "@tailwindcss/vite": "^4.1.0",
     "@types/node": "^24.0.0",
     "@types/qrcode": "^1.5.6",

@@ -43,6 +43,11 @@ jobs:
         working-directory: engineering/codebase/forever-pin.frontend-services
       - run: pnpm test && pnpm build
         working-directory: engineering/codebase/forever-pin.frontend-services
+      - name: Browser checks
+        run: |
+          pnpm --filter @foreverpin/web exec playwright install --with-deps chromium
+          pnpm --filter @foreverpin/web exec playwright test
+        working-directory: engineering/codebase/forever-pin.frontend-services
       - run: dotnet test engineering/codebase/forever-pin.backend-services/ForeverPin.BackendServices.slnx -p:BuildSpa=false -m:1 --nologo
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
