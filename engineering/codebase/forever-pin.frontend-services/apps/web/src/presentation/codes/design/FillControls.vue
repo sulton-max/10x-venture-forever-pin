@@ -13,6 +13,9 @@ import {
 import { computed, shallowRef } from 'vue';
 
 import { FillType, type CodeGradientDto, type CodeStyleDto } from '@/domain/codes';
+import { InfoPopover } from '@/presentation/common';
+
+import { BuilderHelp } from '../builder/BuilderHelp';
 
 import { GradientPresetRows, PresetIconSize } from './GradientPresets';
 
@@ -76,6 +79,11 @@ function setType(next: unknown): void {
 <template>
   <div class="flex flex-col">
     <ControlGroupField label="Fill">
+      <template #label>
+        <span class="inline-flex items-center gap-1"
+          >Fill <InfoPopover topic="the fill" :text="BuilderHelp.fill"
+        /></span>
+      </template>
       <SegmentedPicker type="single" :model-value="fill" aria-label="Foreground fill" @update:model-value="setFill">
         <ToggleInput variant="soft" :value="FillType.Solid" size="sm">Solid</ToggleInput>
         <ToggleInput variant="soft" :value="FillType.Gradient" size="sm">Gradient</ToggleInput>
@@ -83,6 +91,11 @@ function setType(next: unknown): void {
     </ControlGroupField>
 
     <ControlGroupField label="Colors">
+      <template #label>
+        <span class="inline-flex items-center gap-1"
+          >Colors <InfoPopover topic="the colors" :text="BuilderHelp.colors"
+        /></span>
+      </template>
       <div v-if="style.gradient" class="flex items-center gap-1">
         <ColorPicker
           trigger-variant="swatch"

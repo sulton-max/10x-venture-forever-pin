@@ -17,12 +17,15 @@ import {
 
 import type { CodeBuilderForm } from '@/application/codes';
 import { BarcodeFormat, type CodeStyleDto } from '@/domain/codes';
+import { InfoPopover } from '@/presentation/common';
 
 import BackgroundControls from '../design/BackgroundControls.vue';
 import { BarcodeFormatDisplays } from '../design/BarcodeFormatDisplays';
 import EmojiControls from '../design/EmojiControls.vue';
 import FillControls from '../design/FillControls.vue';
 import ShapeControls from '../design/ShapeControls.vue';
+
+import { BuilderHelp } from './BuilderHelp';
 
 /** Defines the props of {@link DesignPanel}. */
 export interface DesignPanelProps {
@@ -43,23 +46,26 @@ function setStyle(style: CodeStyleDto): void {
 <template>
   <div class="flex flex-col gap-5">
     <FormField v-slot="f" name="barcodeFormat">
-      <Field label="Code type">
-        <SelectPicker
-          :model-value="f.value"
-          :get-option-label="(format: BarcodeFormat) => BarcodeFormatDisplays[format].label"
-          @update:model-value="(value) => value && f.setValue(value)"
-        >
-          <SelectPickerTrigger><SelectPickerValue /></SelectPickerTrigger>
-          <SelectPickerContent>
-            <SelectPickerItem
-              v-for="format in Object.values(BarcodeFormat)"
-              :key="format"
-              :item-key="format"
-              :label="BarcodeFormatDisplays[format].label"
-            />
-          </SelectPickerContent>
-        </SelectPicker>
-      </Field>
+      <div class="relative">
+        <Field label="Code type">
+          <SelectPicker
+            :model-value="f.value"
+            :get-option-label="(format: BarcodeFormat) => BarcodeFormatDisplays[format].label"
+            @update:model-value="(value) => value && f.setValue(value)"
+          >
+            <SelectPickerTrigger><SelectPickerValue /></SelectPickerTrigger>
+            <SelectPickerContent>
+              <SelectPickerItem
+                v-for="format in Object.values(BarcodeFormat)"
+                :key="format"
+                :item-key="format"
+                :label="BarcodeFormatDisplays[format].label"
+              />
+            </SelectPickerContent>
+          </SelectPicker>
+        </Field>
+        <InfoPopover topic="code types" :text="BuilderHelp.codeType" class="absolute top-0 right-0" />
+      </div>
     </FormField>
 
     <Alert

@@ -2,6 +2,9 @@
 import { ColorPicker, ControlGroupField, SegmentedPicker, ToggleInput } from '@wow-two-beta/ui-vue/presentation/forms';
 
 import type { CodeStyleDto } from '@/domain/codes';
+import { InfoPopover } from '@/presentation/common';
+
+import { BuilderHelp } from '../builder/BuilderHelp';
 
 /** Defines the props of {@link BackgroundControls}. */
 export interface BackgroundControlsProps {
@@ -28,6 +31,11 @@ function setFill(next: unknown): void {
 
 <template>
   <ControlGroupField label="Background" class="border-t border-border">
+    <template #label>
+      <span class="inline-flex items-center gap-1"
+        >Background <InfoPopover topic="the background" :text="BuilderHelp.background"
+      /></span>
+    </template>
     <div class="flex items-center gap-2">
       <ColorPicker
         trigger-variant="swatch"

@@ -16,6 +16,21 @@ test.describe('codes', () => {
     expect(api.codes.map((code) => code.name)).toEqual(['Table tent']);
   });
 
+  test('explains builder controls without submitting the form', async ({ page, baseURL }) => {
+    const api = new FakeApi({ isGuest: true });
+    await api.install(page, baseURL!);
+
+    await page.goto('/app/new');
+    await page.getByRole('button', { name: 'About static and dynamic codes' }).click();
+    await expect(page.getByText('Dynamic codes hold a short link you can repoint after printing')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', { name: 'About routing rules' }).click();
+
+    await expect(page.getByText('the first match wins.')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Name', exact: true })).toBeVisible();
+    expect(api.codes).toHaveLength(0);
+  });
+
   test('lists codes with exact scan counts', async ({ page, baseURL }) => {
     await new FakeApi({ isGuest: true, codes: [fakeCode({ name: 'Menu', scanCount: 1234567 })] }).install(
       page,

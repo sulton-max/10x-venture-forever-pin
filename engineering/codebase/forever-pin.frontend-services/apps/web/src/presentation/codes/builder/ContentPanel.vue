@@ -27,9 +27,12 @@ import {
   type CodeDto,
   type CodeRuleDto,
 } from '@/domain/codes';
+import { InfoPopover } from '@/presentation/common';
 
 import { ContentModeDisplays } from '../content/ContentModeDisplays';
 import RuleEditor from '../routing/RuleEditor.vue';
+
+import { BuilderHelp } from './BuilderHelp';
 
 /** Defines the props of {@link ContentPanel}. */
 export interface ContentPanelProps {
@@ -85,61 +88,66 @@ function changeContentType(next: ContentType | null): void {
 <template>
   <div class="flex flex-col gap-5">
     <FormField v-slot="f" name="name">
-      <Field label="Name">
-        <TextInput
-          ring="sm"
-          :model-value="f.value"
-          placeholder="Spring menu table tent"
-          @update:model-value="(value) => f.setValue(String(value ?? ''))"
-          @blur="f.onBlur"
-        />
-      </Field>
+      <div class="relative">
+        <Field label="Name">
+          <TextInput
+            ring="sm"
+            :model-value="f.value"
+            placeholder="Spring menu table tent"
+            @update:model-value="(value) => f.setValue(String(value ?? ''))"
+            @blur="f.onBlur"
+          />
+        </Field>
+        <InfoPopover topic="the name" :text="BuilderHelp.name" class="absolute top-0 right-0" />
+      </div>
     </FormField>
 
-    <Field label="Content type" helper="Switching keeps what you typed for each type.">
-      <SelectPicker
-        :model-value="form.values.contentType"
-        :get-option-label="(id: ContentType) => contentType(id).label"
-        @update:model-value="changeContentType"
-      >
-        <SelectPickerTrigger><SelectPickerValue /></SelectPickerTrigger>
-        <SelectPickerContent>
-          <SelectPickerItem
-            v-for="entry in contentTypeCatalog"
-            :key="entry.id"
-            :item-key="entry.id"
-            :label="entry.label"
-          />
-        </SelectPickerContent>
-      </SelectPicker>
-    </Field>
+    <div class="relative">
+      <Field label="Content type" helper="Switching keeps what you typed for each type.">
+        <SelectPicker
+          :model-value="form.values.contentType"
+          :get-option-label="(id: ContentType) => contentType(id).label"
+          @update:model-value="changeContentType"
+        >
+          <SelectPickerTrigger><SelectPickerValue /></SelectPickerTrigger>
+          <SelectPickerContent>
+            <SelectPickerItem
+              v-for="entry in contentTypeCatalog"
+              :key="entry.id"
+              :item-key="entry.id"
+              :label="entry.label"
+            />
+          </SelectPickerContent>
+        </SelectPicker>
+      </Field>
+      <InfoPopover topic="content types" :text="BuilderHelp.contentType" class="absolute top-0 right-0" />
+    </div>
 
     <!-- Mode is fixed at creation: the two bake different bytes, so a printed code can never switch. -->
-    <Field
-      v-if="!isEdit"
-      label="How it resolves"
-      :helper="isModeLocked ? ModeLockedNote : ContentModeDisplays[mode].note"
-    >
-      <SegmentedPicker
-        type="single"
-        :model-value="mode"
-        aria-label="How the code resolves"
-        @update:model-value="
-          (next) => (next === ContentMode.Static || next === ContentMode.Dynamic) && form.setValue('mode', next)
-        "
-      >
-        <ToggleInput
-          v-for="option in Object.values(ContentMode)"
-          :key="option"
-          variant="soft"
-          :value="option"
-          size="sm"
-          :disabled="isModeLocked && option !== ContentMode.Dynamic"
+    <div v-if="!isEdit" class="relative">
+      <Field label="How it resolves" :helper="isModeLocked ? ModeLockedNote : ContentModeDisplays[mode].note">
+        <SegmentedPicker
+          type="single"
+          :model-value="mode"
+          aria-label="How the code resolves"
+          @update:model-value="
+            (next) => (next === ContentMode.Static || next === ContentMode.Dynamic) && form.setValue('mode', next)
+          "
         >
-          {{ ContentModeDisplays[option].label }}
-        </ToggleInput>
-      </SegmentedPicker>
-    </Field>
+          <ToggleInput
+            v-for="option in Object.values(ContentMode)"
+            :key="option"
+            variant="soft"
+            :value="option"
+            size="sm"
+            :disabled="isModeLocked && option !== ContentMode.Dynamic"
+          >
+            {{ ContentModeDisplays[option].label }}
+          </ToggleInput>
+        </SegmentedPicker>
+      </Field>
+      <InfoPopover topic="static and dynamic codes" :text="BuilderHelp.mode" class="absolute top-0 right-0" />
+    </div>
 
     <Alert
       v-if="!isEdit && mode === ContentMode.Static"
@@ -154,9 +162,12 @@ function changeContentType(next: ContentType | null): void {
       </template>
     </Alert>
 
-    <Field v-if="isEdit && existing?.shortUrl" label="Short link">
-      <TextInput :model-value="existing.shortUrl" readonly disabled class="font-mono" />
-    </Field>
+    <div v-if="isEdit && existing?.shortUrl" class="relative">
+      <Field label="Short link">
+        <TextInput :model-value="existing.shortUrl" readonly disabled class="font-mono" />
+      </Field>
+      <InfoPopover topic="the short link" :text="BuilderHelp.shortLink" class="absolute top-0 right-0" />
+    </div>
 
     <DividerLayout orientation="horizontal" />
 

@@ -2,6 +2,9 @@
 import { ControlGroupField, OptionTileGroupField, OptionTilePicker } from '@wow-two-beta/ui-vue/presentation/forms';
 
 import { FinderShape, ModuleShape, type CodeStyleDto } from '@/domain/codes';
+import { InfoPopover } from '@/presentation/common';
+
+import { BuilderHelp } from '../builder/BuilderHelp';
 
 import { FinderShapeDisplays, ModuleShapeDisplays } from './ShapeDisplays';
 
@@ -36,6 +39,11 @@ function set(patch: Partial<CodeStyleDto>): void {
 <template>
   <div class="flex flex-col gap-2">
     <ControlGroupField label="Body" orientation="vertical" :divided="false">
+      <template #label>
+        <span class="inline-flex items-center gap-1"
+          >Body <InfoPopover topic="the body shape" :text="BuilderHelp.body"
+        /></span>
+      </template>
       <OptionTileGroupField label="Body shape" wrap>
         <OptionTilePicker
           v-for="shape in Object.values(ModuleShape)"
@@ -50,6 +58,11 @@ function set(patch: Partial<CodeStyleDto>): void {
     </ControlGroupField>
 
     <ControlGroupField label="Eyes" orientation="vertical" :divided="false" class="border-t border-border pt-2">
+      <template #label>
+        <span class="inline-flex items-center gap-1"
+          >Eyes <InfoPopover topic="the eyes" :text="BuilderHelp.eyes"
+        /></span>
+      </template>
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div v-for="part in EyeParts" :key="part.key" class="min-w-0">
           <div class="mb-1.5 text-xs text-muted-foreground">{{ part.label }}</div>

@@ -5,6 +5,9 @@ import { DefaultEmojiSize, EmojiPicker, EmojiSizePicker } from '@wow-two-beta/ui
 import { computed } from 'vue';
 
 import type { CodeStyleDto } from '@/domain/codes';
+import { InfoPopover } from '@/presentation/common';
+
+import { BuilderHelp } from '../builder/BuilderHelp';
 
 /** Defines the props of {@link EmojiControls}. */
 export interface EmojiControlsProps {
@@ -39,7 +42,8 @@ function pick(entry: EmojiCatalogEntry | null): void {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <div class="relative flex flex-col gap-3">
+    <InfoPopover topic="the center emoji" :text="BuilderHelp.emoji" class="absolute top-0 right-0 z-10" />
     <EmojiPicker
       :model-value="selected"
       :storage="localStorageStorageBroker"

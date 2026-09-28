@@ -25,7 +25,9 @@ import {
   type ContentType,
   type DefaultPointerRuleDto,
 } from '@/domain/codes';
+import { InfoPopover } from '@/presentation/common';
 
+import { BuilderHelp } from '../builder/BuilderHelp';
 import ContentFieldControls from '../content/ContentFieldControls.vue';
 
 import { RuleConditionTypeDisplays } from './RuleConditionTypeDisplays';
@@ -98,24 +100,29 @@ function reorder(from: number, to: number): void {
       :content="values[0].content"
     />
     <div class="flex flex-col items-start gap-1">
-      <Button
-        variant="ghost"
-        tone="neutral"
-        size="sm"
-        class="-ml-2"
-        :is-disabled="addBlockedReason !== null"
-        @click="addRule"
-      >
-        <template #leading><Plus :size="16" aria-hidden="true" /></template>
-        Add a routing rule
-      </Button>
+      <div class="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          tone="neutral"
+          size="sm"
+          class="-ml-2"
+          :is-disabled="addBlockedReason !== null"
+          @click="addRule"
+        >
+          <template #leading><Plus :size="16" aria-hidden="true" /></template>
+          Add a routing rule
+        </Button>
+        <InfoPopover topic="routing rules" :text="BuilderHelp.rules" />
+      </div>
       <p v-if="addBlockedReason" class="text-xs text-muted-foreground">{{ addBlockedReason }}</p>
     </div>
   </div>
 
   <div v-else class="flex flex-col gap-2.5">
     <div class="flex flex-wrap items-baseline justify-between gap-x-3">
-      <p class="text-sm font-medium">Routing rules</p>
+      <p class="flex items-center gap-1 text-sm font-medium">
+        Routing rules <InfoPopover topic="routing rules" :text="BuilderHelp.rules" />
+      </p>
       <p class="text-xs text-muted-foreground">Matched top-down — the first match wins</p>
     </div>
 
