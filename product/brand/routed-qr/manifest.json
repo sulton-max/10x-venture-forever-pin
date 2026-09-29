@@ -2,7 +2,7 @@
   "schema": 1,
   "identity": "ForeverPin Routed QR",
   "approved_date": "2026-09-29",
-  "status": "approved original artwork; deterministic raster family; no app synchronization performed",
+  "status": "approved original symbol and Nunito Sans wordmark; deterministic raster family",
   "sources": [
     {
       "file": "source/approved-routed-qr.png",
@@ -15,6 +15,14 @@
     {
       "file": "source/Geist-LICENSE",
       "sha256": "71609cbb5c78b5870d712eab73a31d76622635c6ed034ab5cee3b9ecbda8685f"
+    },
+    {
+      "file": "source/NunitoSans-variable.ttf",
+      "sha256": "f934d7142fb4784bf828da485b7dcbd90c0c80d514e9d49a5da0ed3a1ae2491d"
+    },
+    {
+      "file": "source/NunitoSans-OFL.txt",
+      "sha256": "d51d5ca233487ceb30d012c9a97e883ff7449a1fed2cd316871afd4ece4b38d4"
     }
   ],
   "raster_only": true,
@@ -81,12 +89,17 @@
     "alpha_raw_bytes_sha256": "cebded2f737d162e0962fb81983b696d6b47346e3a36689b043322fb7208eb75"
   },
   "lettering": {
-    "font": "Geist",
-    "axis_wght": 700,
-    "font_size_px": 200,
-    "content": "ForeverPin",
-    "tracking_em": -0.025,
-    "tracking_px": -5,
+    "font": "Nunito Sans",
+    "axes": {
+      "wght": 900,
+      "wdth": 100,
+      "opsz": 12,
+      "YTLC": 500
+    },
+    "font_size_px": 160,
+    "content": "foreverpin",
+    "tracking_em": -0.035,
+    "tracking_px": -5.6,
     "tracking_method": "kerning-aware prefix advances plus per-character tracking; no synthetic bold",
     "production_geometry": "rendered raster"
   },
@@ -105,6 +118,10 @@
     "micro_geometry": "none; original gaps retained at all sizes",
     "favicon_16_limitation": "ordinary downsampling merges modules; no 16px separated-module claim",
     "navbar": "56/112px standalone PNGs show 24px visible artwork when displayed at 28 CSS pixels",
+    "live_wordmark_mask_css_px": [
+      94,
+      20
+    ],
     "native_platform_packaging": "circle/squircle artwork containment checked; store packaging not certified"
   },
   "runtime": {
@@ -251,62 +268,62 @@
     {
       "file": "exports/primary-dark.png",
       "size": [
-        1269,
+        982,
         192
       ],
       "mode": "RGBA",
       "alpha_bbox": [
         8,
         8,
-        1248,
+        966,
         184
       ],
-      "sha256": "1817fb03d7edad2b5ac687d1cd6ffac64c998f0e58fca27f29fc25ba870fcb3d"
+      "sha256": "b27b7a6f09ee1fe198e0312b87a16bac8bd93f433bc21e9df29d86b332184111"
     },
     {
       "file": "exports/primary-light.png",
       "size": [
-        1269,
+        982,
         192
       ],
       "mode": "RGBA",
       "alpha_bbox": [
         8,
         8,
-        1248,
+        966,
         184
       ],
-      "sha256": "4a27f34541323c5671f964763cc102262d358a14faf5b2064a754dd5769fd8fa"
+      "sha256": "7af8354ff059442adaa3ba2d211d54aa3d486019f35e98fe20bb96b94c101372"
     },
     {
       "file": "exports/primary-mono-ink.png",
       "size": [
-        1269,
+        982,
         192
       ],
       "mode": "RGBA",
       "alpha_bbox": [
         8,
         8,
-        1248,
+        966,
         184
       ],
-      "sha256": "7b0b50ae8f3f0f9856e1fcae73cf29111aec431d7dac5ae0237dcd2da0513939"
+      "sha256": "1786b0ba7f5a02bb1ae1863460561c52c6cf7335bcc9c3e8494d91345d360539"
     },
     {
       "file": "exports/primary-mono-white.png",
       "size": [
-        1269,
+        982,
         192
       ],
       "mode": "RGBA",
       "alpha_bbox": [
         8,
         8,
-        1248,
+        966,
         184
       ],
-      "sha256": "28f5735f7f92b7e32ac1013bef2873cc13e9f6a7b9b75c93877167f3e757fbc6"
+      "sha256": "451a83f84c0f2aefd54a773bf49abd30bee7c6ee37414e358cec0e82e4a266b6"
     },
     {
       "file": "exports/symbol-ink.png",
@@ -401,32 +418,32 @@
     {
       "file": "exports/wordmark-ink.png",
       "size": [
-        1060,
-        163
+        773,
+        164
       ],
       "mode": "RGBA",
       "alpha_bbox": [
-        23,
+        9,
         8,
-        1039,
-        155
+        757,
+        156
       ],
-      "sha256": "954b02feda97d5bd8c97e12d0be515feb11d8235a170c43b19fbec4cc91f7fff"
+      "sha256": "b10804c66a5d37015f6ab19374f2a92c78f743b96e3cf98a854bfa1e470895ad"
     },
     {
       "file": "exports/wordmark-white.png",
       "size": [
-        1060,
-        163
+        773,
+        164
       ],
       "mode": "RGBA",
       "alpha_bbox": [
-        23,
+        9,
         8,
-        1039,
-        155
+        757,
+        156
       ],
-      "sha256": "c3661df778873dde05f4914e3b158a6905d8faa5f271fcd61d9770947f111c91"
+      "sha256": "19bf7dd53d31c8d2f33fdbc951bf58f25534e6c371642430fe3d8cb76d719eae"
     },
     {
       "file": "exports/favicon.ico",
@@ -624,19 +641,19 @@
     },
     {
       "file": "exports/primary-dark.png",
-      "sha256": "1817fb03d7edad2b5ac687d1cd6ffac64c998f0e58fca27f29fc25ba870fcb3d"
+      "sha256": "b27b7a6f09ee1fe198e0312b87a16bac8bd93f433bc21e9df29d86b332184111"
     },
     {
       "file": "exports/primary-light.png",
-      "sha256": "4a27f34541323c5671f964763cc102262d358a14faf5b2064a754dd5769fd8fa"
+      "sha256": "7af8354ff059442adaa3ba2d211d54aa3d486019f35e98fe20bb96b94c101372"
     },
     {
       "file": "exports/primary-mono-ink.png",
-      "sha256": "7b0b50ae8f3f0f9856e1fcae73cf29111aec431d7dac5ae0237dcd2da0513939"
+      "sha256": "1786b0ba7f5a02bb1ae1863460561c52c6cf7335bcc9c3e8494d91345d360539"
     },
     {
       "file": "exports/primary-mono-white.png",
-      "sha256": "28f5735f7f92b7e32ac1013bef2873cc13e9f6a7b9b75c93877167f3e757fbc6"
+      "sha256": "451a83f84c0f2aefd54a773bf49abd30bee7c6ee37414e358cec0e82e4a266b6"
     },
     {
       "file": "exports/symbol-ink.png",
@@ -664,11 +681,11 @@
     },
     {
       "file": "exports/wordmark-ink.png",
-      "sha256": "954b02feda97d5bd8c97e12d0be515feb11d8235a170c43b19fbec4cc91f7fff"
+      "sha256": "b10804c66a5d37015f6ab19374f2a92c78f743b96e3cf98a854bfa1e470895ad"
     },
     {
       "file": "exports/wordmark-white.png",
-      "sha256": "c3661df778873dde05f4914e3b158a6905d8faa5f271fcd61d9770947f111c91"
+      "sha256": "19bf7dd53d31c8d2f33fdbc951bf58f25534e6c371642430fe3d8cb76d719eae"
     },
     {
       "file": "mask-review.png",
@@ -676,15 +693,23 @@
     },
     {
       "file": "preview.png",
-      "sha256": "3af4f4936c4e94721d11783455d4b68a15456b29cb2a6035af9feaba5a1b2121"
+      "sha256": "168cc163ef63ee5d8a12653efdd4d972b71e07c8206d04f581c7f3f71eae2a84"
     },
     {
       "file": "size-review.png",
-      "sha256": "f7880382bf2e6ca5e2b4fe653fd92ff1c7d5926d1fd03923570eceda4fc1d59f"
+      "sha256": "79c3f1a671cc9de5ebd321b67578d52514a86726dc9259909454fabd8b0bb1a2"
     },
     {
       "file": "source/Geist-LICENSE",
       "sha256": "71609cbb5c78b5870d712eab73a31d76622635c6ed034ab5cee3b9ecbda8685f"
+    },
+    {
+      "file": "source/NunitoSans-OFL.txt",
+      "sha256": "d51d5ca233487ceb30d012c9a97e883ff7449a1fed2cd316871afd4ece4b38d4"
+    },
+    {
+      "file": "source/NunitoSans-variable.ttf",
+      "sha256": "f934d7142fb4784bf828da485b7dcbd90c0c80d514e9d49a5da0ed3a1ae2491d"
     },
     {
       "file": "source/approved-routed-qr.png",

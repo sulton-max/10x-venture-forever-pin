@@ -8,7 +8,7 @@
 - Original gaps and the four-part silhouette are preserved; no extra motif is added.
 - [Canonical family](routed-qr/manifest.json) owns the checksummed original, cleaned alpha and derived exports.
 - [Review sheet](routed-qr/preview.png) shows horizontal, standalone and app-tile compositions.
-- The independent consumer identity keeps violet and Geist; no WoW2 endorsement is used.
+- The independent consumer identity keeps violet and uses Nunito Sans lettering; no WoW2 endorsement is used.
 
 ## Spacing and minimums
 
@@ -32,8 +32,10 @@
 | App-tile glyph | `#ffffff` | `#1d1433` |
 | Canvas | `#f4f5f8` | `#14151a` |
 
-- Wordmark: live Geist Variable `700`, spelling `ForeverPin`, tracking `-0.025em`.
-- Exported lettering uses the same font and tracking; the copied OFL license accompanies the source.
+- Wordmark: Nunito Sans Variable `900`, lowercase `foreverpin`, tracking `-0.035em`.
+- The approved [lettering study](exploration/rounded-identity/typography-01/typography.md) selects `02 Rounded`.
+- The app uses the exact exported wordmark mask; ordinary interface text retains Geist Variable.
+- The canonical source includes the exact variable font and its SIL Open Font License.
 - Light/dark and monochrome versions derive from one alpha mask; internal counters remain transparent.
 - App tiles intentionally add an opaque carrier; it is separate from the standalone symbol.
 
@@ -42,7 +44,7 @@
 - Master type: raster. The unmodified approved ImageGen source is preserved in `routed-qr/source/`.
 - Cleanup removes faint isolated residue and flattens fill; it does not reposition parts or redesign corners.
 - `foreverpin-logo.svg` and `favicon.svg` are self-contained raster wrappers, not editable vector masters.
-- Runtime: Python 3, Pillow `12.3.0`, NumPy `2.3.5`, and FreeType support for WOFF2 variable fonts.
+- Runtime: Python 3, Pillow `12.3.0`, NumPy `2.3.5`, and FreeType support for TrueType and WOFF2 variable fonts.
 
 ```sh
 python3 engineering/scripts/export-brand-logos.py
@@ -63,6 +65,8 @@ python3 engineering/scripts/sync-brand-logos.py --check
 
 | Asset | Dimensions | Purpose |
 |---|---|---|
+| `routed-qr/exports/primary-light.png`, `primary-dark.png` | 982 × 192 | Approved horizontal logo |
+| `routed-qr/exports/wordmark-ink.png`, `wordmark-white.png` | 773 × 164 | Lettering components |
 | `current/foreverpin-logo.svg` | 1024 × 1024 wrapper | Raster compatibility wrapper |
 | `current/foreverpin-logo.png` | 1024 × 1024 | Product logo export |
 | `current/foreverpin-google-logo.png` | 120 × 120 | Google consent logo export |
@@ -73,7 +77,7 @@ python3 engineering/scripts/sync-brand-logos.py --check
 | `current/apple-touch-icon.png` | 180 × 180 | Device shortcut |
 
 - `BrandGlyph.vue` renders the approved symbol as an alpha mask using the existing `primary` theme token.
-- Its colocated asset serves marketing headers, footer and app shell through the shared component.
+- Its colocated symbol and wordmark masks serve marketing headers, footer and app shell through the shared component.
 - Compatibility copies remain under `src/assets/brand/`; browser icons remain under `public/`.
 - The SVG favicon is replaced together with PNG/ICO files, preserving the existing HTML references.
 - The Google consent logo is prepared locally; uploading it to the provider is a separate action.
@@ -83,14 +87,15 @@ python3 engineering/scripts/sync-brand-logos.py --check
 
 ## Adoption verification (2026-09-29)
 
-- All 32 canonical family files, including the manifest, replay byte-for-byte in an independent directory.
-- All 22 active artwork copies match their canonical exports; the sync check verifies source hashes before copying.
+- All 34 canonical family files, including the manifest, replay byte-for-byte in an independent directory.
+- All 23 active artwork copies match their canonical exports; the sync check verifies source hashes before copying.
 - Source contour and original gap checks pass. Circle and squircle tile masks clip zero symbol pixels.
 - Frontend formatting, lint, type checks and production build pass using Node `24.11.0`.
 - Unit tests: 35 passed across 10 files.
 - Marketing and accessibility browser tests: 29 passed, one desktop-inapplicable mobile-menu test skipped.
 - [Integration review](integration-review/results.json) verifies loaded masks, palette and home-link accessibility
   in light/dark themes at desktop and phone viewports; four adjacent screenshots preserve the visual evidence.
+- The live wordmark mask uses `94 × 20px`; the icon uses `28 × 28px`. Both retain the intended theme colors.
 - Runtime checks cover the marketing header and footer. The authenticated app shell imports the same component
   and passes compilation; authenticated navigation was not exercised in this brand review.
 - Provider uploads and production deployment are outside this local asset and application verification.

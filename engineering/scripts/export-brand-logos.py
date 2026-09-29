@@ -30,6 +30,8 @@ SOURCE_HASHES = {
     "approved-routed-qr.png": "932cfd76dcbe7f8d5b49ad98411512f751bf1ec7039944cb9a5bf903c1abfbf1",
     "geist-latin-wght-normal.woff2": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1",
     "Geist-LICENSE": "71609cbb5c78b5870d712eab73a31d76622635c6ed034ab5cee3b9ecbda8685f",
+    "NunitoSans-variable.ttf": "f934d7142fb4784bf828da485b7dcbd90c0c80d514e9d49a5da0ed3a1ae2491d",
+    "NunitoSans-OFL.txt": "d51d5ca233487ceb30d012c9a97e883ff7449a1fed2cd316871afd4ece4b38d4",
 }
 COLORS = {"violet": "#7040d7", "lavender": "#aa8cff", "ink": "#202331", "white": "#ffffff"}
 PADDING = 8
@@ -43,6 +45,12 @@ def digest(path):
 def font(size, weight=700):
     result = ImageFont.truetype(str(SOURCE / "geist-latin-wght-normal.woff2"), size)
     result.set_variation_by_axes([weight])
+    return result
+
+
+def wordmark_font(size):
+    result = ImageFont.truetype(str(SOURCE / "NunitoSans-variable.ttf"), size)
+    result.set_variation_by_axes([900, 100, 12, 500])
     return result
 
 
@@ -160,9 +168,9 @@ def centered(canvas, image):
 
 
 def lettering(color):
-    face = font(200)
-    text = "ForeverPin"
-    tracking = -0.025 * 200
+    face = wordmark_font(160)
+    text = "foreverpin"
+    tracking = -0.035 * 160
     positions = [face.getlength(text[:index + 1]) - face.getlength(character) + index * tracking
                  for index, character in enumerate(text)]
     boxes = [face.getbbox(character) for character in text]
@@ -213,7 +221,7 @@ def preview(assets, output):
     sheet = Image.new("RGBA", (1480, 1140), "#f4f5f8")
     draw = ImageDraw.Draw(sheet)
     label(draw, (28, 22), "ForeverPin / approved Routed QR family", 34)
-    label(draw, (28, 72), "Original geometry and gaps. Flat palette. Real Geist 700. Canonical raster assets.", 21)
+    label(draw, (28, 72), "Original symbol and gaps. Nunito Sans 900 lettering. Canonical raster assets.", 21)
     cells = [
         ("primary-light.png", "Primary / light", (24, 120, 704, 210), False),
         ("primary-dark.png", "Primary / dark", (752, 120, 704, 210), True),
@@ -367,15 +375,16 @@ def main():
     all_paths += [output / name for name in ("source/clean-symbol-alpha.png", "preview.png", "size-review.png", "mask-review.png")]
     manifest = {
         "schema": 1, "identity": "ForeverPin Routed QR", "approved_date": "2026-09-29",
-        "status": "approved original artwork; deterministic raster family; no app synchronization performed",
+        "status": "approved original symbol and Nunito Sans wordmark; deterministic raster family",
         "sources": [{"file": "source/" + name, "sha256": value} for name, value in SOURCE_HASHES.items()],
         "raster_only": True, "svg_wrappers": "embedded PNG wrappers, not vector geometry",
         "palette": COLORS, "primary_dark_lettering": "#f1f3f8",
         "tile_carriers": {"light": "#7040d7", "dark": "#aa8cff"},
         "tile_glyphs": {"light": "#ffffff", "dark": "#1d1433"},
         "symbol_invariants": invariants,
-        "lettering": {"font": "Geist", "axis_wght": 700, "font_size_px": 200, "content": "ForeverPin",
-                      "tracking_em": -0.025, "tracking_px": -5,
+        "lettering": {"font": "Nunito Sans", "axes": {"wght": 900, "wdth": 100, "opsz": 12, "YTLC": 500},
+                      "font_size_px": 160, "content": "foreverpin",
+                      "tracking_em": -0.035, "tracking_px": -5.6,
                       "tracking_method": "kerning-aware prefix advances plus per-character tracking; no synthetic bold",
                       "production_geometry": "rendered raster"},
         "composition": {"primary_symbol_height": 176, "symbol_text_gap": 32, "export_padding": PADDING,
@@ -385,6 +394,7 @@ def main():
                   "micro_geometry": "none; original gaps retained at all sizes",
                   "favicon_16_limitation": "ordinary downsampling merges modules; no 16px separated-module claim",
                   "navbar": "56/112px standalone PNGs show 24px visible artwork when displayed at 28 CSS pixels",
+                  "live_wordmark_mask_css_px": [94, 20],
                   "native_platform_packaging": "circle/squircle artwork containment checked; store packaging not certified"},
         "runtime": {"python": platform.python_version(), "pillow": PILLOW_VERSION, "numpy": np.__version__},
         "assets": inventory, "small_size_metrics": small, "mask_checks": masks,

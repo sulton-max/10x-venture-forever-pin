@@ -48,6 +48,10 @@ def main() -> None:
         "foreverpin-navbar-logo@2x.png",
         APP / "src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png",
     ))
+    destinations.append((
+        "wordmark-ink.png",
+        APP / "src/presentation/marketing/assets/wordmark-ink.png",
+    ))
 
     # Validate the entire source set before replacing any active copy.
     approved = json.loads((BRAND / "routed-qr/manifest.json").read_text())

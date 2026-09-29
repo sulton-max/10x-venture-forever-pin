@@ -7,19 +7,33 @@
         "width": "28px",
         "height": "28px",
         "fill": "rgb(112, 64, 215)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(32, 35, 49)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       },
       {
         "width": "28px",
         "height": "28px",
         "fill": "rgb(112, 64, 215)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(32, 35, 49)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       }
     ],
     "homeLinks": 1
@@ -32,19 +46,33 @@
         "width": "28px",
         "height": "28px",
         "fill": "rgb(112, 64, 215)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(32, 35, 49)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       },
       {
         "width": "28px",
         "height": "28px",
         "fill": "rgb(112, 64, 215)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(32, 35, 49)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       }
     ],
     "homeLinks": 1
@@ -57,19 +85,33 @@
         "width": "28px",
         "height": "28px",
         "fill": "rgb(170, 140, 255)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(241, 243, 248)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       },
       {
         "width": "28px",
         "height": "28px",
         "fill": "rgb(170, 140, 255)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(241, 243, 248)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       }
     ],
     "homeLinks": 1
@@ -82,19 +124,33 @@
         "width": "28px",
         "height": "28px",
         "fill": "rgb(170, 140, 255)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(241, 243, 248)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       },
       {
         "width": "28px",
         "height": "28px",
         "fill": "rgb(170, 140, 255)",
-        "maskSize": "contain",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png\")",
         "ariaHidden": "true",
-        "assetWidth": 112,
-        "assetHeight": 112
+        "loaded": true
+      },
+      {
+        "width": "94px",
+        "height": "20px",
+        "fill": "rgb(241, 243, 248)",
+        "mask": "url(\"http://localhost:7024/src/presentation/marketing/assets/wordmark-ink.png\")",
+        "ariaHidden": "true",
+        "loaded": true
       }
     ],
     "homeLinks": 1

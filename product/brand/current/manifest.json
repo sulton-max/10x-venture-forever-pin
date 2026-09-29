@@ -1,7 +1,7 @@
 {
   "identity": "ForeverPin Routed QR",
   "approved_source": "product/brand/routed-qr/manifest.json",
-  "approved_manifest_sha256": "ae7287af9382a47082d9efb6719e83338ea7bff30a6a08c2980995217c327221",
+  "approved_manifest_sha256": "2b83342ff0a3795485b670591f66e6cca8b19eca6e90d36f9092aa4701c0b821",
   "copies": [
     {
       "source": "product/brand/routed-qr/exports/foreverpin-logo.png",
@@ -112,6 +112,11 @@
       "source": "product/brand/routed-qr/exports/foreverpin-navbar-logo@2x.png",
       "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png",
       "sha256": "689ed3469c839affeb3ad15429f0cc176244dfda6407d96f271ab25b7678c76c"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/wordmark-ink.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/src/presentation/marketing/assets/wordmark-ink.png",
+      "sha256": "b10804c66a5d37015f6ab19374f2a92c78f743b96e3cf98a854bfa1e470895ad"
     }
   ],
   "external_provider_upload_performed": false

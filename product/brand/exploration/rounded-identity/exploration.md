@@ -147,3 +147,6 @@ primary minimum size, symbols at `16`, `20`, `24` and `32` CSS pixels, and app-t
 
 Active exports and application integration are recorded in the owning brand guide. This historical review
 does not provide alternate production artwork; its unselected concepts and gap studies remain unused.
+
+The [lettering study](typography-01/typography.md) records the selected `02 Rounded` wordmark.
+The approved symbol remains unchanged; production exports use Nunito Sans lettering.
