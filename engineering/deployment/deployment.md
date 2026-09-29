@@ -1,6 +1,6 @@
 # Deployment
 
-*Last updated: 2026-09-28*
+*Last updated: 2026-09-29*
 
 ## Implemented shape
 
@@ -10,9 +10,10 @@
 - The redirect host runs separately and shares PostgreSQL.
 - Host startup applies embedded SQL migrations.
 - `Dockerfile` builds management and redirect images from one source revision.
+- `deploy.yml` declares both services for CI, Wheelhouse's `release.py` and the runner.
 - `compose.local.yml` runs both hosts with disposable local PostgreSQL.
-- Main pushes verify disposable images; version tags publish verified release bundles.
-- The release bundle pins both image digests and its generated Compose hash.
+- Every push builds a candidate bundle; a published `vX.Y.Z` release builds a release bundle.
+- A bundle pins each image digest and its generated Compose hash.
 - `/health` checks database readiness on both hosts.
 - The management image persists data-protection keys in `/data/keys`.
 - The SPA loads public environment settings from `/api/runtime-config`.
@@ -22,7 +23,7 @@
 
 ## Settings contract
 
-- The release bundle lists every required setting; Wheelhouse's `transport.py template` prints each service's skeleton.
+- `deploy.yml` lists every required setting; Wheelhouse's `transport.py template` prints each service's skeleton.
 - Both hosts read `DatabaseSettings:ConnectionString` or `DB_CONNECTION`; the bundle previously named a dead key.
 - Enabled billing requires `Billing:SuccessUrl`, `CancelUrl` and `PortalReturnUrl`; Production refuses loopback ones.
 - `AllowedHosts` lists the public host; the SDK appends `localhost`, so health checks and smoke probes pass.
@@ -52,7 +53,7 @@
 
 ## Outstanding evidence
 
-- A successful tag-triggered workflow and verified GHCR artifacts.
+- A successful build workflow run and verified GHCR images.
 - A verified production deployment and operator recovery path.
 - Domain routing, TLS, trusted proxy addresses, and real redirect base URL.
 - Provider secrets and Google/Stripe callback configuration.
@@ -65,14 +66,16 @@ Preserve existing printed redirect URLs when changing domains.
 
 ## Git and CI policy
 
-- `ci.yml`: every push to `main` calls the shared verifier without package-write permission.
-- `verify.yml`: frontend/backend tests, both Linux images, saved-code/SVG/redirect smoke, container replacement.
-- `publish-docker-image.yml`: a `v*` tag on a commit already in `main` calls the same verifier with package publication.
-- Only a successful verifier produces a complete bundle; assets are attached to a draft before publication.
-- Release labels are explicit; deployment uses recorded digests, never `latest`.
-- The external actions are pinned to commit SHAs; `actionlint 1.7.12` passes locally.
-- No workflow or image publication has run remotely; the local changes remain uncommitted.
-- CI requires the intended runtime fixes, `smoke.py`, Dockerfile and workflows to be included in the pushed commit.
+- `ci.yml`: every push to `main` runs frontend, browser and backend tests, then smokes both Linux images.
+- `publish-docker-image.yml` follows the workspace descriptor convention and Wheelhouse's reference workflow.
+- A push builds changed services as `sha-<commit>` and uploads the Actions artifact `bundle-<commit>`.
+- A published `vX.Y.Z` release builds changed services as `X.Y.Z` and attaches `foreverpin-release.tar.gz`.
+- Wheelhouse's Build action dispatches the workflow for a commit that has no build.
+- Unchanged services keep the previous release's images; the base comes from its attached bundle.
+- Images publish as `ghcr.io/sulton-max/10x-venture-forever-pin/<service>`.
+- The workflow fetches `release.py` from Wheelhouse by git blob and checks its SHA-256.
+- A private Wheelhouse needs a `WHEELHOUSE_READ_TOKEN` secret with read access to it.
+- Deployment uses recorded digests, never `latest`; external actions are pinned to commit SHAs.
 
 The full ownership, registry and retention analysis is in Wheelhouse's
 [CI/artifact policy](../../../../wow-two-platform/wow-two-platform.wheelhouse/engineering/planning/ci-artifact-policy.md).

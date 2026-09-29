@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../../../../../conventions/deployment/descriptor/deploy.schema.json
+# ForeverPin's deployable services: this descriptor feeds CI, Wheelhouse's release.py and the runner.
+# Format: wow-two-ws/conventions/deployment/descriptor/deploy-descriptor.md
+descriptor: 1
+product: foreverpin
+platform: linux/amd64
+shared:
+  - codebase/forever-pin.backend-services/Directory.*.props
+  - codebase/forever-pin.backend-services/global.json
+services:
+  management:
+    build:
+      dockerfile: deployment/Dockerfile
+      target: management
+    paths:
+      - codebase/forever-pin.backend-services/**
+      - codebase/forever-pin.frontend-services/**
+    health: /health
+    memory: 768m
+    stopGrace: 45s
+    settings:
+      required:
+        - DatabaseSettings:ConnectionString
+        - ApiSettings:RedirectBaseUrl
+        - Auth:Google:ClientId
+        - Billing:SecretKey
+        - Billing:WebhookSecret
+        - Billing:Prices:Solo
+        - Billing:Prices:Pro
+        - Billing:Prices:Agency
+        - Billing:SuccessUrl
+        - Billing:CancelUrl
+        - Billing:PortalReturnUrl
+        - AllowedHosts
+        - Deployment:TrustedProxies
+    volumes:
+      keys: /data/keys
+    needs: [postgres]
+    sites:
+      app: {}
+  redirect:
+    build:
+      dockerfile: deployment/Dockerfile
+      target: redirect
+    paths:
+      - codebase/forever-pin.backend-services/**
+    health: /health
+    memory: 384m
+    stopGrace: 45s
+    settings:
+      required:
+        - DatabaseSettings:ConnectionString
+        - AllowedHosts
+        - Deployment:TrustedProxies
+    volumes:
+      geo: /data/geo
+    needs: [postgres]
+    sites:
+      go: {}
