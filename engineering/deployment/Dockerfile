@@ -8,7 +8,8 @@ RUN pnpm install --frozen-lockfile
 COPY forever-pin.frontend-services/ ./
 RUN pnpm build
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS source
+# Stays in global.json's 10.0.3xx band; the floating 10.0 tag moved to 10.0.4xx, which the pin refuses.
+FROM mcr.microsoft.com/dotnet/sdk:10.0.302 AS source
 WORKDIR /src
 COPY forever-pin.backend-services/ ./
 
