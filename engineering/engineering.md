@@ -1,6 +1,6 @@
 # Engineering
 
-- [Planning](planning/planning.md): active release and remaining work.
+- [Planning](planning/backlog.md): backlog and feature index; versions in [version-track](planning/version-track/).
 - [Architecture](architecture/architecture.md): current contracts and implementation boundaries.
 - [Codebase](codebase/codebase.md): backend and frontend roots.
 - [Development](development/development.md): checks and permission workflow.

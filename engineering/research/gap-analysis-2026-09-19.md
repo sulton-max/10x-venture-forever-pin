@@ -254,7 +254,7 @@ The audit does not require waiting idle for both SDK upgrades. Product-owned map
 
 ## Sources and task ownership
 
-- [Current work](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/planning/current-work.md).
+- [Backlog](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/planning/backlog.md).
 - [v0.9 task source](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/planning/version-track/v0.9/v0.9.md).
 - [Backend SDK adoption](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/wow-two-sdk-beta/wow-two-sdk.backend.beta/engineering/planning/foreverpin-adoption/foreverpin-adoption.md).
 - [Product verification record](/Users/max/Projects/10x-ws/workbench/career/engineering/wow-two/wow-two-ws/workbench/ventures/10x-venture-forever-pin/engineering/operations/verification.md).

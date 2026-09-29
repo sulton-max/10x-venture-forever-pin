@@ -1,6 +1,6 @@
 # Backend convention updates — forever-pin and the products
 
-> Historical analysis: implementation and active task status are recorded in [the engineering plan](engineering/planning/planning.md).
+> Historical analysis: implementation and active task status are recorded in [the backlog](engineering/planning/backlog.md).
 
 *Last updated: 2026-08-25*
 

@@ -1,12 +1,12 @@
 # Vector Sweep — ForeverPin × SDK capability map
 
-> Historical analysis: implementation and active task status are recorded in [the engineering plan](planning.md).
+> Historical analysis: implementation and active task status are recorded in [the backlog](../planning/backlog.md) and [version track](../planning/version-track/).
 
 *Last updated: 2026-07-13*
 
 > A full-stack completeness sweep of every capability **vector** the app's current logic scope implies —
 > classified by where it lives today (app / SDK / neither) and what to do about it. **Not** an extraction plan.
-> Feeds both tracks: `planning.md` (features), `polish-track/` (quality). Companion to `content-model-rewire.md`.
+> Feeds the backlog (features) and the polish iterations (quality). Companion to the content-model rewire handoff.
 
 ## What a "vector" is
 
@@ -33,7 +33,7 @@ Three sources for any vector, three destinations:
 - **The single biggest win is frontend infra adoption.** The SDK shipped `/router`, `/query` (+ optimistic mutation), `/auth`, `/feedback`, and `createApiClient` days ago — **several designed with forever-pin in mind** (cookie strategy = the guest model; `useOptimisticMutation` = the forever-pin delete). The app adopted **only** `/forms-engine`; it still hand-rolls react-router, has **no query cache**, and calls **raw `fetch()`** in every `integration/*.ts`. Five ADOPT vectors, all pure fit, all sitting unused.
 - **Two app-owned vectors are worth polishing to perfection:** content types (registry is generic on the backend but every frontend form is a bespoke `switch` case) and routing conditions (fixed 5-arm switch). Everything else infrastructural is already SDK-backed.
 - **A handful of vectors fit the logic but exist in neither** — caching (redirect hot-path; SDK `Caching` module is *empty*), geo (MaxMind; `NoopGeoBroker` today), charts (scan-analytics dashboard; SDK has no chart primitives), link primitives (expiring/capped/password). These are the true ADD list.
-- **A pending domain decision reshapes two vectors at once:** *dynamic-by-default* (`polish-track/p0.2`) makes routing a per-code choice, not a per-content-type trait — **every** content type becomes routable. The content-type and routing vectors merge.
+- **A pending domain decision reshapes two vectors at once:** *dynamic-by-default* (the p0.2 builder polish) makes routing a per-code choice, not a per-content-type trait — **every** content type becomes routable. The content-type and routing vectors merge.
 - **Trim before polish** — content types 10→2-3, shapes 7→3, barcodes 7→2, conditions 5→2. Only content types removes components; the rest are enum/catalog shrinks against generic controls.
 
 ---
@@ -107,7 +107,7 @@ App: Clean-Arch (`Domain`/`Application`/`Infrastructure`/`Persistence` + `Common
 
 ## The domain reshape — dynamic-by-default
 
-`polish-track/p0.2` (insight 2026-07-11) overturns the current `isDynamicType(id)` (which hardcodes `url`/`mobileApp` as the only dynamic types) and will remove backend `IsStatic` (`p0.3` Iter 3):
+The p0.2 builder polish (insight 2026-07-11) overturns the current `isDynamicType(id)` (which hardcodes `url`/`mobileApp` as the only dynamic types) and will remove backend `IsStatic` (`p0.3` Iter 3):
 
 - **Static-vs-dynamic is a per-code choice, not a per-content-type trait.** Any type can bake its payload *or* carry routing rules — a `Phone` that routes to person A on even days / B on odd (schedule rules are the hero use case).
 - **Effect: the content-type and routing vectors merge.** Every content type gains the routing layer; the redirect must handle two emit families (`content-type-use-cases.md`): **scheme-redirect** (`tel:`/`mailto:`/`sms:`/`geo:` → 302 straight to scheme) vs **served-payload** (vCard/WiFi/calendar/text → a tiny per-type landing serving the *current* payload). Both reuse the same routing engine; only the final emit differs.
@@ -137,7 +137,7 @@ Only **content types** removes components; the rest are enum/catalog shrinks aga
 
 1. **Adopt the FE infra bundle** — `createApiClient` → `/query` (+ optimistic) → `/auth` (cookie + bridge) → `/router` (typed + `requireAuth` + nav-blocker + `DocumentMeta`) → `/feedback` (+ query-error bridge) → server→field validation. *Biggest foundation win; all SDK-ready.*
 2. **Trim leaves + delete dead code** — content types 10→2-3, shapes/finders/barcodes/conditions to minimal; drop 16 phantom enums, orphan `Common.Persistence`, dead `CachedRepo`.
-3. **Polish the two app-owned vectors on the slice** — content-type spec (schema-driven forms + **dynamic-by-default** merge); routing condition registry. Each type gets its own design pass (mocks + philosophy, per `polish-track`).
+3. **Polish the two app-owned vectors on the slice** — content-type spec (schema-driven forms + **dynamic-by-default** merge); routing condition registry. Each type gets its own design pass (mocks + philosophy, per the polish iterations).
 4. **ADD net-new infra that fits (SDK-first)** — SDK `Caching` vector → wire redirect cache; MaxMind geo; charts (SDK) → scan-analytics dashboard (gate on scan-count-semantics decision); download/export. Later: adopt Messaging webhooks (dev tier), link primitives, custom domain.
 5. **SDK polish + bumps** — unify the error two-model split; complete the Codes vector (barcode styling + formats + per-eye + logo plate); bump backend `.45`→`.50`, keep FE on latest `@wow-two-beta/ui`.
 

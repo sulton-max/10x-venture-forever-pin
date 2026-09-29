@@ -95,5 +95,5 @@
 
 ## Remaining work
 
-The [current-work analysis](../../planning/current-work.md) supersedes the old known-open list.
+The [backlog](../../planning/backlog.md) and the newest [version](../../planning/version-track/) supersede the old known-open list.
 Review checkboxes above remain unchecked; renaming their links does not certify the review.

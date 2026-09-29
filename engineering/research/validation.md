@@ -47,7 +47,7 @@
 
 - the gap is all **10** types, not `url` alone
 - static payloads are server-encoded (`CodeContent.Encode()`) → it's the server's gap for every type
-- already known + deferred on 2026-07-03 — `content-model-rewire.md` header: *"Deferred: per-type validators for the 8 static types"*
+- already known + deferred on 2026-07-03 — the content-model rewire handoff: *"Deferred: per-type validators for the 8 static types"*
 - **verdict: close for all 10 in one pass; one arm each is cheap**
 
 ### V5 · `url` content returns 200 on an empty URL

@@ -4,11 +4,8 @@ Lazy document index. Paths below are relative to the repository root.
 
 ## Current work
 
-- `engineering/planning/current-work.md`: current analysis and dependencies.
-- `engineering/planning/planning.md`: release state and continuation order.
-- `engineering/planning/version-track/v0.10/v0.10.md`: active adoption checkboxes.
-- `engineering/planning/version-track/v0.11/v0.11.md`: planned feature checkboxes.
-- `engineering/planning/backlog.md`: launch and deferred capabilities.
+- `engineering/planning/backlog.md`: every unbuilt item, grouped, plus the Features index.
+- newest `engineering/planning/version-track/v{X.Y}/v{X.Y}.md`: active version checkboxes.
 - `engineering/operations/verification.md`: current executed checks.
 - `engineering/operations/rebrand.md`: names and compatibility exceptions.
 - `engineering/development/development.md`: runtime and permission workflow.
@@ -33,9 +30,10 @@ Lazy document index. Paths below are relative to the repository root.
 
 ## Supporting work
 
-- `engineering/planning/polish-track/`: presentation and naming polish.
-- `engineering/planning/validation.md`: validation design and unresolved seams.
-- `engineering/planning/validation-patterns.md`: validation taxonomy research.
+- `engineering/research/validation.md`: validation design and unresolved seams.
+- `engineering/research/validation-patterns.md`: validation taxonomy research.
+- `engineering/research/gap-analysis-2026-09-19.md`: correctness and release-gap audit.
+- `engineering/research/vector-sweep.md`: app-versus-SDK capability map.
 - `engineering/research/`: design, error-ordering, and persistence experiments.
 - `engineering/operations/documentation-audit.md`: documentation sweep inventory.
 

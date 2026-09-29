@@ -1,6 +1,6 @@
 # Model Conventions — Cross-Product Research
 
-> Historical analysis: implementation and active task status are recorded in [the engineering plan](engineering/planning/planning.md).
+> Historical analysis: implementation and active task status are recorded in [the backlog](engineering/planning/backlog.md) and [version track](engineering/planning/version-track/).
 
 *Last updated: 2026-07-03*
 

@@ -15,7 +15,7 @@ Historical research and review evidence remain identifiable as historical.
 | Question | Document |
 |---|---|
 | What runs and how is it verified? | [Development](../development/development.md), [verification](verification.md) |
-| What is implemented and what remains? | [Current work](../planning/current-work.md) |
+| What is implemented and what remains? | [Version track](../planning/version-track/), [backlog](../planning/backlog.md) |
 | Which tasks are active? | [v0.9](../planning/version-track/v0.9/v0.9.md) |
 | Which capabilities are deferred? | [Backlog](../planning/backlog.md) |
 | What contracts guide the implementation? | [Architecture](../architecture/architecture.md), [content model](../architecture/content-model.md) |

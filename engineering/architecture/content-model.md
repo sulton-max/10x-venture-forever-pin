@@ -1,6 +1,6 @@
 # Content model
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-09-29*
 
 ## Invariants
 
@@ -67,6 +67,8 @@ The default-role invariant prevents pointer chains and cycles.
 - Mobile app content retains a store and URL. Store is not the scanner's device.
 - Backend value-object names and frontend wire names need not match.
 - Member names and optionality must match their wire contract.
+- Rule and content value objects are the domain, wire and stored shape at once.
+- Discriminators are camelCase ids; the serializer tolerates jsonb key reordering.
 - Style is required on create, update, and preview; logo/gradient/emoji are optional.
 - Update omits mode at serialization; the edit form still carries it.
 - Preview uses mode and rules; it has no separate client-supplied payload channel.
@@ -101,5 +103,5 @@ The current content base retains polymorphic encoding; one code-level payload re
 - Removing the only rule stays disabled with the minimum-rule explanation.
 - Control explanations and the union-aware field-array contract remain open.
 
-Validation ordering and persistence probes: [validation analysis](../planning/validation.md).
+Validation ordering and persistence probes: [validation analysis](../research/validation.md).
 Implementation tasks: [v0.11](../planning/version-track/v0.11/v0.11.md).

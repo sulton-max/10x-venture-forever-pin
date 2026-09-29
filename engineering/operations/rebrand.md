@@ -1,6 +1,6 @@
 # ForeverPin rebrand
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-09-29*
 
 ## Names
 
@@ -52,4 +52,4 @@ No push was performed. Changes are being handed over as staged batches; see [sta
 ## Verification
 
 [Full results](verification.md): frontend checks and all four backend suites pass.
-[Current plan](../planning/planning.md): the current release remains open.
+[Version track](../planning/version-track/): the current release remains open.

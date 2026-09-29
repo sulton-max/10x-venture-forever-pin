@@ -7,7 +7,7 @@ Dynamic QR codes, barcodes, and programmable links.
 ## Status
 
 - Implemented: code management, styling, SVG/PNG export, accounts, billing integration, and contextual routing.
-- Active: [v0.9 — content mode](engineering/planning/version-track/v0.9/v0.9.md).
+- Active: the newest [version track](engineering/planning/version-track/) folder.
 - Remaining: dynamic-content delivery, mode/copy UX, validation guarantees, and launch verification.
 - Vue migration is a separate lane; this application still uses React.
 
@@ -65,8 +65,8 @@ The existing physical database remains `smartqr` to retain local data.
 
 ## Project map
 
-- [Engineering plan](engineering/planning/planning.md): current work and release history.
+- [Version track](engineering/planning/version-track/): releases; the newest folder is the active version.
 - [Architecture](engineering/architecture/architecture.md): implemented contracts.
-- [Backlog](engineering/planning/backlog.md): deferred product work.
+- [Backlog](engineering/planning/backlog.md): every unbuilt item and the feature index.
 - [Development](engineering/development/development.md): verification and permissions.
 - [Product](product/product.md): positioning and pricing boundaries.

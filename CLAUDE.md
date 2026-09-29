@@ -29,7 +29,7 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 
 ## Planning
 
-- Active release: `engineering/planning/version-track/v0.10/v0.10.md`.
-- Remaining tasks: `engineering/planning/planning.md` and the active track.
+- Backlog: `engineering/planning/backlog.md` — every unbuilt item plus the Features index.
+- Active version: newest `engineering/planning/version-track/v{X.Y}/v{X.Y}.md`.
 - Durable content decisions: `engineering/architecture/content-model.md`.
 - Rename compatibility: `engineering/operations/rebrand.md`.

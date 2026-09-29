@@ -1,146 +1,188 @@
-# Backlog
+# ForeverPin — Backlog
 
-*Last updated: 2026-09-28*
+*Last updated: 2026-09-29*
 
-Active adoption tasks live in [v0.10](version-track/v0.10/v0.10.md).
-Planned feature tasks live in [v0.11](version-track/v0.11/v0.11.md).
-This list holds work outside those tracks; order is pull priority.
+Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`version-track/`](version-track/).
+
+## Features
+
+| Feature | State | Spec |
+|---|---|---|
+| QR code generation | shipped v0.1 | — |
+| SVG and PNG downloads | shipped v0.1 | — |
+| Rule-based scan routing with a fallback | shipped v0.1 | — |
+| Guest login and private code ownership | shipped v0.1 | — |
+| Code editing, search, enabling, disabling and deletion | shipped v0.1 | — |
+| Marketing site: landing, pricing and blog | shipped v0.1 | — |
+| Paid plans through Stripe Checkout and the customer portal | shipped v0.1 | — |
+| Google sign-in and sign-out | shipped v0.3 | — |
+| Guest-code claim on sign-in | shipped v0.3 | — |
+| Cross-device code access | shipped v0.3 | — |
+| Server-rendered preview matching the download | shipped v0.5 | — |
+| Module and finder-eye shapes | shipped v0.5 | — |
+| Colors, gradients and transparent backgrounds | shipped v0.5 | — |
+| Center emoji | shipped v0.5 | — |
+| Dark mode | shipped v0.5 | — |
+| Content types with per-type forms | shipped v0.7 | — |
+| Barcode symbologies | shipped v0.7 | — |
+| Interactive landing hero | shipped v0.7 | [landing-hero-concept.md](../../product/marketing/landing-hero-concept.md) |
+| Static or dynamic mode per code | shipped v0.9 | — |
+| Dynamic-only short links | shipped v0.9 | — |
+| Device, country, language and time conditions | shipped v0.9 | — |
+| Optional fallback rules and fallback pointers | shipped v0.9 | — |
+| Code copy into the other mode | shipped v0.9 | — |
+| Field-level validation messages | shipped v0.9 | — |
+| Country lookup for country rules | shipped v0.10 | — |
+| Redirect-target warnings on saved codes | shipped v0.10 | — |
+| Builder control help | shipped v0.11 | — |
+| Print-sized SVG export with sizing guidance | shipped v0.11 | — |
+| Per-code scan analytics | shipped v0.11 | — |
+| Scanner pages for unknown, paused and unmatched codes | shipped v0.11 | — |
+| Guest browser-storage notice | shipped v0.11 | — |
+| Crawlable public pages | shipped v0.11 | — |
+| Dynamic non-URL content delivery | planned | — |
+| Phone, SMS, email and geo device actions | planned | — |
+| Lost-cookie recovery | planned | — |
+| Account data export and deletion | planned | — |
+| Destination screening and abuse controls | planned | — |
+| Abuse reporting and takedown | planned | — |
+| Per-code timezones and scheduled windows | planned | — |
+| A/B weights and grouped conditions | planned | — |
+| Deeper language, referrer and UTM routing | planned | — |
+| Custom domains | planned | — |
+| Password-protected content | planned | — |
+| Expiry, scan caps and one-time links | planned | — |
+| Logo and file upload | planned | — |
+| PDF export | planned | — |
+| Frames and call-to-action captions | planned | — |
+| Image-like QR rendering | planned | — |
+| Animated exports | planned | — |
+| Static-content version history | planned | — |
+| Bulk generation and serialized payloads | planned | — |
+| Public API keys and developer endpoints | planned | — |
+| Scan webhooks and exports | planned | — |
+| Agency workspaces and white-label controls | planned | — |
+| GS1 Digital Link | planned | — |
+| Hosted editable content pages | planned | — |
+| NFC pairing | planned | — |
+| Self-host edition | planned | — |
+| Free-generator entry page | planned | — |
+| Content-type and comparison landing pages | planned | — |
+| Social preview image for shared links | planned | — |
 
 ## Launch and product alignment
 
-- [ ] Verify real Google sign-in with the configured OAuth client
-- [ ] Verify Stripe test-mode checkout, portal, and webhooks
-- [ ] Decide the free dynamic allowance and entry pricing
-- [ ] Align static-code limits with the chosen pricing model
-- [ ] Reconcile marketing claims with implemented capabilities
-- [ ] Define guest-subscription merging across accounts
-- [ ] Configure and verify deployment, TLS, and redirect domains
-- [ ] Verify database backup and restore
-- [ ] Measure redirect bursts and scan-queue loss
-- [ ] Add destination screening and abuse controls; request budgets exist since `574a205`
-- [ ] Add reporting and takedown handling
-- [ ] Verify brand clearance and social handles
-- [ ] Validate the never-deactivate value proposition with users
-- [ ] Add account data export and deletion, as the comparison table promises
-
----
+| Item | Type | Notes |
+|---|---|---|
+| Verify real Google sign-in with the configured OAuth client | product | — |
+| Verify Stripe test-mode checkout, portal and webhooks | product | — |
+| Tie paid entitlements to subscription status | fix | every subscription update maps to Active; [gap analysis](../research/gap-analysis-2026-09-19.md) F08 |
+| Decide the free dynamic allowance and entry pricing | product | — |
+| Align static-code limits with the chosen pricing | product | — |
+| Reconcile marketing claims with implemented capabilities | product | — |
+| Define guest-subscription merging across accounts | product | — |
+| Configure and verify deployment, TLS and redirect domains | engineering | — |
+| Verify database backup and restore | engineering | — |
+| Measure redirect bursts and scan-queue loss | engineering | — |
+| Add destination screening and abuse controls | feature | request budgets exist |
+| Add reporting and takedown handling | feature | — |
+| Add account data export and deletion | feature | promised in the comparison table |
+| Verify brand clearance and social handles | product | — |
+| Validate the never-deactivate value proposition with users | product | — |
 
 ## Accounts
 
-- [ ] Design lost-cookie recovery with proof of ownership
-- [x] Refresh stored Google profile details on login: `3fa8e7c`
-
-Guest accounts, Google login, guest-code claiming, and cross-device ownership already exist.
-
----
+| Item | Type | Notes |
+|---|---|---|
+| Design lost-cookie recovery with proof of ownership | feature | — |
 
 ## Routing and analytics
 
-- [x] Activate country lookup — free DB-IP Lite, refreshed monthly (SDK `10.0.60-beta`)
-- [x] Add customer analytics and aggregation endpoints: per-code day, device, OS and country, `424b4fb`
-- [ ] Decide total-versus-unique scan semantics without fingerprinting
-- [x] Add routing cache with edit invalidation — commit-aware eviction over PostgreSQL notifications
-- [ ] Complete the Redis configuration read/write path
-- [ ] Add per-code timezones and scheduled windows
-- [ ] Add A/B weights and grouped conditions
-- [ ] Add language/referrer/UTM routing depth where required
-
-The redirect remains plan-agnostic. No scan limit is enabled by a subscription tier.
-
----
+| Item | Type | Notes |
+|---|---|---|
+| Decide total-versus-unique scan semantics without fingerprinting | product | — |
+| Complete the Redis configuration read/write path | engineering | — |
+| Derive the scan counter from scan events | engineering | the async denormalized counter stays until then |
+| Add per-code timezones and scheduled windows | feature | — |
+| Add A/B weights and grouped conditions | feature | — |
+| Add language, referrer and UTM routing depth where required | feature | — |
 
 ## Domains and link controls
 
-- [ ] Add custom-domain ownership, TLS, and host-aware resolution
-- [ ] Design password-protected content delivery
-- [ ] Add explicit expiry, scan caps, and one-time links
-
-Expiry and passwords need complete authoring and delivery flows; dormant database columns are insufficient.
-
----
+| Item | Type | Notes |
+|---|---|---|
+| Add custom-domain ownership, TLS and host-aware resolution | feature | — |
+| Design password-protected content delivery | feature | needs complete authoring and delivery flows, not dormant columns |
+| Add explicit expiry, scan caps and one-time links | feature | needs complete authoring and delivery flows, not dormant columns |
 
 ## Styling and files
 
-- [ ] Add file upload and logo controls
-- [ ] Add PDF export
-- [ ] Research frames and call-to-action captions
-- [ ] Add versioned style upgrades at the first breaking change
-- [ ] Complete shape/eye controls and remaining color-panel polish
-- [ ] Explore image-like QR rendering without reducing scan reliability
-- [ ] Add animated exports if the product demand supports them
+| Item | Type | Notes |
+|---|---|---|
+| Add file upload and logo controls | feature | — |
+| Add PDF export | feature | — |
+| Research frames and call-to-action captions | feature | — |
+| Add versioned style upgrades at the first breaking change | engineering | — |
+| Complete shape/eye controls and remaining color-panel polish | feature | — |
+| Explore image-like QR rendering without reducing scan reliability | feature | — |
+| Add animated exports if product demand supports them | feature | — |
 
-SVG/PNG download, module/finder shapes, gradients, and emoji already exist.
+## Builder
 
----
+| Item | Type | Notes |
+|---|---|---|
+| Review the content labels against the current models | engineering | — |
+| Explain content-type replacement while editing | feature | — |
+| Map field kinds to native input types | feature | — |
+| Draw per-content design alternatives | product | — |
+| Review the fill, shape, emoji, contrast and preview controls | engineering | — |
+| Evaluate extracting the background controls | engineering | — |
+| Unify builder separators and label spacing | engineering | — |
+| Verify gradient-stop and emoji-layer rendering | engineering | — |
+| Review the rule controls for presentation polish | engineering | — |
 
 ## Content and developer features
 
-- [ ] Add static-content version history
-- [ ] Add bulk generation and serialized payloads
-- [ ] Add public API keys and developer endpoints
-- [ ] Add scan webhooks and exports
-- [ ] Add agency workspaces and white-label controls
-- [ ] Evaluate GS1 Digital Link
-- [ ] Integrate hosted editable content pages as a separate product
-- [ ] Evaluate NFC pairing and a self-host edition
-
-Minimal dynamic-content delivery belongs to `v0.11`; a designed hosted-page editor does not.
-
----
+| Item | Type | Notes |
+|---|---|---|
+| Add static-content version history | feature | — |
+| Add bulk generation and serialized payloads | feature | — |
+| Add public API keys and developer endpoints | feature | — |
+| Add scan webhooks and exports | feature | — |
+| Add agency workspaces and white-label controls | feature | — |
+| Evaluate GS1 Digital Link | feature | — |
+| Integrate hosted editable content pages as a separate product | product | minimal non-URL delivery comes first |
+| Evaluate NFC pairing and a self-host edition | feature | — |
 
 ## Marketing
 
-- [ ] Verify branded promo exports visually
-- [ ] Build the free-generator entry page
-- [ ] Add content-type and comparison landing pages
-- [x] Add sitemap and crawlable content delivery: crawl files `edda5b9`, route documents `d8bb4f9`
-- [ ] Add a social preview image for shared links
-- [ ] Prepare short-form launch content
-- [ ] Add a privacy-first acquisition funnel
-- [ ] Evaluate creator integrations and wedding/event channels
+| Item | Type | Notes |
+|---|---|---|
+| Verify branded promo exports visually | product | — |
+| Build the free-generator entry page | feature | — |
+| Add content-type and comparison landing pages | feature | — |
+| Add a social preview image for shared links | feature | — |
+| Prepare short-form launch content | product | — |
+| Add a privacy-first acquisition funnel | product | — |
+| Evaluate creator integrations and wedding/event channels | product | — |
 
----
+## Engineering
 
-## Parked hero experiment
+| Item | Type | Notes |
+|---|---|---|
+| Reconcile frontend naming forks against settled conventions | engineering | — |
+| Complete backend convention adoption | engineering | rows in [foreverpin-be-update.md](../../foreverpin-be-update.md) |
+| Simplify E2E DTO mirrors while retaining raw-JSON assertions | engineering | — |
+| Review dependency vulnerability warnings with the SDK lane | engineering | — |
+| Establish product CI/CD and a repeatable deployment configuration | engineering | — |
 
-Parked outside the release sequence. Concept and specification:
-[interactive landing hero](../../product/marketing/landing-hero-concept.md).
-The recorded implementation state is retained; the remaining work is not part of SDK adoption.
+## Landing hero
 
-- [x] Add a `<HeroSim>` canvas behind the landing hero.
-- [x] Bake real scannable QR card sprites from `qrcode`.
-- [x] Add a scrim that keeps the hero headline legible.
-- [x] Keep clash detection on so codes never overlap.
-- [x] Add a drift mode with wall bounce and click push-away.
-- [x] Add a bump mode with weight-based ramming and rests.
-- [x] Add a mouse-chase mode that packs around the cursor.
-- [x] Cap DPR and frame rate.
-- [x] Pause the sim off-screen and on a hidden tab.
-- [x] Auto-reduce the sprite count on narrow viewports.
-- [x] Add the temporary dev control bar with live sliders.
-- [x] Encode the daily theme and app links into the sprites.
-- [x] Fall back to a static scatter on `prefers-reduced-motion`.
-- [x] Cap the sprite count.
-- [ ] Run the deferred mobile responsive pass.
-- [ ] Polish each mode with the sliders.
-- [ ] Bake the chosen slider values as defaults.
-- [ ] Remove the whole dev bar.
-- [ ] Add random-mode-per-refresh.
-- [ ] Add swarm, route, and assemble modes.
-- [ ] Add scannable Easter-egg codes.
-- [ ] Wire real ForeverPin short links into the sprites.
-
----
-
-## Engineering follow-ups
-
-- [ ] Reconcile frontend naming forks against settled conventions
-- [ ] Complete backend convention adoption
-- [ ] Finish the remaining polish-track tasks
-- [ ] Simplify E2E DTO mirrors while retaining raw-JSON assertions
-- [ ] Review dependency vulnerability warnings with the SDK lane
-- [ ] Split the Vue SDK build per module; the shared chunks outweigh the product code
-- [ ] Establish product CI/CD and a repeatable deployment configuration
-
-The active SDK-adoption scope is tracked in `v0.10`; implementation and verification remain open.
-Backend convention work beyond that migration stays in this backlog.
+| Item | Type | Notes |
+|---|---|---|
+| Run the deferred mobile responsive pass | feature | parked; [concept](../../product/marketing/landing-hero-concept.md) |
+| Tune each hero mode and bake the chosen defaults | feature | — |
+| Add random-mode-per-refresh | feature | — |
+| Add swarm, route and assemble modes | feature | — |
+| Add scannable Easter-egg codes | feature | — |
+| Wire real ForeverPin short links into the sprites | feature | — |
