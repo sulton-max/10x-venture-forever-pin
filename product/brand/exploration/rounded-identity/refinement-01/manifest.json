@@ -1,0 +1,372 @@
+{
+  "schema": 1,
+  "status": "refinement candidates; original 01 direction selected; no candidate approved",
+  "sources": [
+    {
+      "label": "Original 01",
+      "file": "../source/01-routed-qr.png",
+      "sha256": "932cfd76dcbe7f8d5b49ad98411512f751bf1ec7039944cb9a5bf903c1abfbf1",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_pixels": 1104766,
+      "alpha_partial_pixels": 463652,
+      "alpha_opaque_pixels": 4098,
+      "alpha_nonzero_bounds": [
+        57,
+        21,
+        1234,
+        1254
+      ],
+      "crop_bounds_alpha_greater_than_16": [
+        193,
+        208,
+        1061,
+        1069
+      ],
+      "crop_size": [
+        868,
+        861
+      ],
+      "preserved_crop_rgba_sha256": "40a35c6e6529cfa1cc08daaf05cc48d52fec4ca87b0de5e2850a746ce0b3ffdc"
+    },
+    {
+      "label": "A Regularized",
+      "file": "source/01a-refined-v2.png",
+      "sha256": "48080631dc9a54e7c83b6dd17aeac22c0a5a2d5c0bb103c5d170359555e1ab69",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_pixels": 1079239,
+      "alpha_partial_pixels": 488657,
+      "alpha_opaque_pixels": 4620,
+      "alpha_nonzero_bounds": [
+        172,
+        203,
+        1194,
+        1198
+      ],
+      "crop_bounds_alpha_greater_than_16": [
+        176,
+        205,
+        1078,
+        1067
+      ],
+      "crop_size": [
+        902,
+        862
+      ],
+      "preserved_crop_rgba_sha256": "6ce057e19ed78eb5abb21febd8b7399adf050ebd8aaac0838a19e00f9ed1c58f"
+    },
+    {
+      "label": "B Open spacing",
+      "file": "source/01b-micro.png",
+      "sha256": "7d5fbc568daf8893dcc9ec880e1e8b6e57d67b2aa609f53244fb8f11732a39fe",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_pixels": 1303523,
+      "alpha_partial_pixels": 266226,
+      "alpha_opaque_pixels": 2767,
+      "alpha_nonzero_bounds": [
+        49,
+        53,
+        1202,
+        1198
+      ],
+      "crop_bounds_alpha_greater_than_16": [
+        290,
+        311,
+        965,
+        968
+      ],
+      "crop_size": [
+        675,
+        657
+      ],
+      "preserved_crop_rgba_sha256": "5f9f4cfa988ec1bfb4f699eed07b6f330855b57ce4fcf96ca2c3256e369509b5"
+    }
+  ],
+  "font": {
+    "file": "../fonts/geist-latin-wght-normal.woff2",
+    "sha256": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1",
+    "weight_axis": 700,
+    "license": "../fonts/LICENSE",
+    "license_sha256": "71609cbb5c78b5870d712eab73a31d76622635c6ed034ab5cee3b9ecbda8685f"
+  },
+  "transforms": {
+    "bounds": "alpha > 16; crop retains original RGBA inside those bounds",
+    "resampling": "LANCZOS",
+    "scale": "equal maximum visible extent",
+    "artwork_recolored": false,
+    "artwork_redrawn": false,
+    "palette": "original source values; generated colors are not certified brand tokens",
+    "detail": "nearest-neighbor enlargement labeled per row",
+    "lettering": "real Geist normal variable font, wght=700; no synthetic weight"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "pillow": "12.3.0"
+  },
+  "requested_spacing_targets": {
+    "A": "approximately 1/24 maximum visible extent; requires measurement",
+    "B": "approximately 1/12 maximum visible extent; micro optical exception requiring review",
+    "compliance_claimed": false
+  },
+  "small_size_metrics": [
+    {
+      "label": "Original 01",
+      "maximum_extent_px": 16,
+      "render_size": [
+        16,
+        16
+      ],
+      "foreground_component_areas_alpha_128": [
+        159
+      ]
+    },
+    {
+      "label": "Original 01",
+      "maximum_extent_px": 20,
+      "render_size": [
+        20,
+        20
+      ],
+      "foreground_component_areas_alpha_128": [
+        260
+      ]
+    },
+    {
+      "label": "Original 01",
+      "maximum_extent_px": 24,
+      "render_size": [
+        24,
+        24
+      ],
+      "foreground_component_areas_alpha_128": [
+        94,
+        93,
+        93,
+        54
+      ]
+    },
+    {
+      "label": "Original 01",
+      "maximum_extent_px": 32,
+      "render_size": [
+        32,
+        32
+      ],
+      "foreground_component_areas_alpha_128": [
+        166,
+        166,
+        166,
+        95
+      ]
+    },
+    {
+      "label": "A Regularized",
+      "maximum_extent_px": 16,
+      "render_size": [
+        16,
+        15
+      ],
+      "foreground_component_areas_alpha_128": [
+        82,
+        65
+      ]
+    },
+    {
+      "label": "A Regularized",
+      "maximum_extent_px": 20,
+      "render_size": [
+        20,
+        19
+      ],
+      "foreground_component_areas_alpha_128": [
+        130,
+        102
+      ]
+    },
+    {
+      "label": "A Regularized",
+      "maximum_extent_px": 24,
+      "render_size": [
+        24,
+        23
+      ],
+      "foreground_component_areas_alpha_128": [
+        92,
+        92,
+        92,
+        55
+      ]
+    },
+    {
+      "label": "A Regularized",
+      "maximum_extent_px": 32,
+      "render_size": [
+        32,
+        31
+      ],
+      "foreground_component_areas_alpha_128": [
+        165,
+        165,
+        165,
+        99
+      ]
+    },
+    {
+      "label": "B Open spacing",
+      "maximum_extent_px": 16,
+      "render_size": [
+        16,
+        16
+      ],
+      "foreground_component_areas_alpha_128": [
+        39,
+        37,
+        37,
+        22
+      ]
+    },
+    {
+      "label": "B Open spacing",
+      "maximum_extent_px": 20,
+      "render_size": [
+        20,
+        19
+      ],
+      "foreground_component_areas_alpha_128": [
+        60,
+        59,
+        59,
+        35
+      ]
+    },
+    {
+      "label": "B Open spacing",
+      "maximum_extent_px": 24,
+      "render_size": [
+        24,
+        23
+      ],
+      "foreground_component_areas_alpha_128": [
+        90,
+        90,
+        90,
+        52
+      ]
+    },
+    {
+      "label": "B Open spacing",
+      "maximum_extent_px": 32,
+      "render_size": [
+        32,
+        31
+      ],
+      "foreground_component_areas_alpha_128": [
+        154,
+        154,
+        154,
+        91
+      ]
+    }
+  ],
+  "measured_separator_widths": [
+    {
+      "label": "Original 01",
+      "threshold": "alpha >= 128",
+      "normalization": "maximum cropped visible extent",
+      "sample_fractions": "17% through 33% of the perpendicular extent",
+      "vertical": {
+        "min_px": 34,
+        "median_px": 34,
+        "max_px": 34,
+        "median_percent_of_extent": 3.917
+      },
+      "horizontal": {
+        "min_px": 32,
+        "median_px": 33,
+        "max_px": 33,
+        "median_percent_of_extent": 3.802
+      }
+    },
+    {
+      "label": "A Regularized",
+      "threshold": "alpha >= 128",
+      "normalization": "maximum cropped visible extent",
+      "sample_fractions": "17% through 33% of the perpendicular extent",
+      "vertical": {
+        "min_px": 36,
+        "median_px": 37,
+        "max_px": 37,
+        "median_percent_of_extent": 4.102
+      },
+      "horizontal": {
+        "min_px": 36,
+        "median_px": 36,
+        "max_px": 36,
+        "median_percent_of_extent": 3.991
+      }
+    },
+    {
+      "label": "B Open spacing",
+      "threshold": "alpha >= 128",
+      "normalization": "maximum cropped visible extent",
+      "sample_fractions": "17% through 33% of the perpendicular extent",
+      "vertical": {
+        "min_px": 46,
+        "median_px": 47,
+        "max_px": 47,
+        "median_percent_of_extent": 6.963
+      },
+      "horizontal": {
+        "min_px": 45,
+        "median_px": 45,
+        "max_px": 45,
+        "median_percent_of_extent": 6.667
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "file": "comparison.png",
+      "size": [
+        1297,
+        1240
+      ],
+      "sha256": "e8c9f2a1ad4b2d80a9bbcc6b2f8f1b6c3e17be46a5b911c3059dbf636c4e06ad"
+    },
+    {
+      "file": "size-review.png",
+      "size": [
+        1297,
+        1220
+      ],
+      "sha256": "aa41c74bc004b64402f08648cb301db58f9946547c9d79f61281bb9a47715b10"
+    }
+  ],
+  "verification": {
+    "replay_verified": true,
+    "method": "fresh temporary render; byte-identical PNG hashes"
+  }
+}

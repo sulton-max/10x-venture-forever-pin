@@ -21,7 +21,7 @@ HERE = Path(__file__).resolve().parent
 FONT = HERE / "fonts/geist-latin-wght-normal.woff2"
 LICENSE = HERE / "fonts/LICENSE"
 ITEMS = [
-    ("Current QR", "Existing tile / reference", HERE / "../../current/foreverpin-logo.png"),
+    ("Current QR", "Existing tile / reference", HERE / "../../archive/2026-09-28-qr/foreverpin-logo.png"),
     ("01 Routed QR", "QR recognition + routing", HERE / "source/01-routed-qr.png"),
     ("02 Finder F", "Finder eye + letterform", HERE / "source/02-finder-f.png"),
     ("03 Linked Finders", "Connected destinations", HERE / "source/03-linked-finders.png"),

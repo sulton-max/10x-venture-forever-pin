@@ -8,12 +8,26 @@
 - [x] Generate three distinct symbol concepts using the current logo as a reference.
 - [x] Preserve original generation files, full prompts and the licensed Geist font.
 - [x] Compose and inspect horizontal, carrier, light/dark and small-size reviews.
-- [ ] Select one direction with the owner.
-- [ ] Refine its geometry, flatten its color and approve its final artwork.
-- [ ] Export the selected primary, standalone and app-tile family; verify target sizes and masks.
+- [x] Select one direction with the owner: `01 — Routed QR`.
+- [x] Owner approved the original four-part artwork with convention-compliant existing gaps.
+- [x] Export the selected primary, standalone and app-tile family; verify target sizes and masks.
 
-These are review concepts, not replacement application assets. The active identity remains in
-[`../../current/`](../../current/), owned by the [brand guide](../../brand.md).
+This folder preserves the original review concepts. `01 — Routed QR` is approved and supplies the
+[canonical family](../../routed-qr/manifest.json); the [brand guide](../../brand.md) owns active usage.
+The comparison's "Current QR" column is the archived pre-adoption baseline, preserved for reproducibility.
+
+The owner selected `01 — Routed QR` for iteration on 2026-09-29, then clarified that its existing
+gaps must remain unchanged. The owner approved the design without another motif and requested convention compliance.
+The [gap study](refinement-01/refinement.md) is retained as unused exploration. The other two concepts
+remain exploration history; the direction-selection question is closed.
+
+## Current design judgment
+
+Keep the original four-part composition and its current gaps. The three finder eyes already establish
+QR recognition, and the open routing corner adds the programmable-destination idea. No extra pin,
+infinity loop, arrowhead or dot is recommended: another motif would compete with the existing reading.
+The useful remaining polish is consistent contours and faithful export construction, with the current
+spacing and metaphor preserved. The owner has approved this artwork for use.
 
 ## Recommendation
 
@@ -70,7 +84,10 @@ The review compositor preserves that evidence: it crops to visible bounds, scale
 and places the original pixels without redrawing or recoloring the symbols. A light lavender carrier in the
 comparison is a placement test, not an approved replacement for the current violet app tile.
 
-## Small-size findings
+## Historical small-size findings
+
+These findings describe the original concept review. The approved family's measured `24px` standalone minimum
+and fallback favicon limitations are recorded in the [brand guide](../../brand.md).
 
 The review renders maximum visible extents of `16`, `20`, `24` and `32` pixels. The existing baseline
 includes its carrier; the proposed symbols have no baked-in carrier. The figures show native pixels
@@ -78,7 +95,7 @@ beside explicitly magnified raster detail.
 
 - Routed QR preserves three open finder counters visually. Its four pieces merge at `16` and `20`
   pixels under a four-neighbor, alpha-at-least-128 connectivity check; they separate at `24` and `32`.
-  Gap calibration and a possible micro derivative remain necessary before production approval.
+  The final export preserves those gaps and documents the minimum instead of introducing a micro derivative.
 - Finder F keeps a strong silhouette but reads as P/F across the reviewed sizes. Its narrow tall
   proportions also give it less area in a square slot than the other two concepts.
 - Linked Finders keeps two visible openings, but its crossover distinction weakens at small sizes.
@@ -101,7 +118,7 @@ These observations support direction selection; they do not establish approved p
 Values were checked against the current frontend's `src/bootstrap/index.css` and
 `src/presentation/marketing/BrandGlyph.vue`. The review renders the installed Geist font directly;
 the AI-generated images contain no lettering. The copied font and its OFL license live in `fonts/`.
-The current reference retains its Lucide license in `../../current/lucide-license.txt`.
+The archived reference retains its Lucide license in `../../archive/2026-09-28-qr/lucide-license.txt`.
 
 ## Reproduce the review
 
@@ -112,7 +129,7 @@ From the repository root:
 python3 product/brand/exploration/rounded-identity/render-review.py
 ```
 
-The script reads only the saved sources, current baseline and licensed font. It does not use the
+The script reads only the saved sources, archived baseline and licensed font. It does not use the
 original ImageGen output directory, a product runtime or a network dependency. Its output directory
 option permits an independent replay without modifying the saved review files.
 
@@ -124,10 +141,9 @@ Both review PNGs and the manifest were reproduced byte-for-byte in a separate ou
 
 ## Selection boundary
 
-The pending decision is the preferred direction: retain the current QR shape, evolve it through
-Routed QR, use the Finder F monogram, or move toward Linked Finders. After selection, one approved
-master must own all exports. Final checks cover transparency, exact palette variants, clear space,
+Routed QR is approved, with its original gaps preserved within the convention's optical tolerance.
+One approved master owns all exports. Final checks cover transparency, exact palette variants, clear space,
 primary minimum size, symbols at `16`, `20`, `24` and `32` CSS pixels, and app-tile masks.
 
-Application integration and native icon packaging follow final artwork approval. This review has
-not replaced the navbar, favicons, OAuth artwork or other active product files.
+Active exports and application integration are recorded in the owning brand guide. This historical review
+does not provide alternate production artwork; its unselected concepts and gap studies remain unused.

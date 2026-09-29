@@ -1,0 +1,8 @@
+{
+  "mode": "built-in image_gen",
+  "intent": "edit",
+  "reference": "source/01a-refined.png",
+  "output": "source/01a-refined-v2.png",
+  "generation": "exec-019e6071-77ba-49f6-bfb6-372d83b187e5.png",
+  "prompt": "Use case: precise-object-edit. Edit target: this ForeverPin Routed QR symbol. Correct ONLY its too-narrow main cross-shaped gutters. The vertical gap between the two top finder squares and horizontal gap between the two left finder squares must both be visibly wider, about ONE THIRD of the thick finder wall width. Aim for an equal 4.5% of the entire visible square symbol width in each gutter. Preserve the existing outer overall square bounds and adjust only the quadrant edges facing the central gutters. Keep the three loops equal, with the same generous square counters, same rounded corners and same thick wall character. Keep the lower-right rounded routing bend, same orientation, same two rounded endpoints and matching wall thickness. Exactly four separate primary parts. Do not add or remove an eye. Preserve the upright composition and all other design choices. Flat solid opaque violet #7040d7, no surface shading or texture. Remove stray pixels, keep actual transparent background and actual transparent holes. No tile, no text, no labels, no mockup. One standalone refined symbol, centered. Do not make the gutters narrower; this edit is specifically to widen and regularize them."
+}

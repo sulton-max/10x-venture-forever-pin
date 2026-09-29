@@ -1,0 +1,118 @@
+{
+  "identity": "ForeverPin Routed QR",
+  "approved_source": "product/brand/routed-qr/manifest.json",
+  "approved_manifest_sha256": "ae7287af9382a47082d9efb6719e83338ea7bff30a6a08c2980995217c327221",
+  "copies": [
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-logo.png",
+      "destination": "product/brand/current/foreverpin-logo.png",
+      "sha256": "56c2fb1558ebe0f6c0f155ba9d48cc91addd07b833e41f7f4b5175fe07973a84"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-logo.svg",
+      "destination": "product/brand/current/foreverpin-logo.svg",
+      "sha256": "a3fdb62c8dff65660413d1a88ea2aeb0739c5bd5008a2ba2162701eaad3d5ae3"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-google-logo.png",
+      "destination": "product/brand/current/foreverpin-google-logo.png",
+      "sha256": "c9001af8298b6dd5bf05de25218669e2d0d31a18c0bb85e5ad503e741d28daa6"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-navbar-logo.png",
+      "destination": "product/brand/current/foreverpin-navbar-logo.png",
+      "sha256": "793e5c1037bc3d7af1c35fbcad906126f91c0cee88270364b3f4179c5823f3c5"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-navbar-logo@2x.png",
+      "destination": "product/brand/current/foreverpin-navbar-logo@2x.png",
+      "sha256": "689ed3469c839affeb3ad15429f0cc176244dfda6407d96f271ab25b7678c76c"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon.svg",
+      "destination": "product/brand/current/favicon.svg",
+      "sha256": "f07d507c17a70e0ba52f942d44aa53c792bec522966ca061a7339c5418c89a7a"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon.ico",
+      "destination": "product/brand/current/favicon.ico",
+      "sha256": "40b93850e08d4308903fb8d6d333cac2eec2e27850fc0dbfdaa8283abf2bac5f"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon-16.png",
+      "destination": "product/brand/current/favicon-16.png",
+      "sha256": "9a25bc6576b27b73e11dd51462a8c77945edd86c455d82f182cf6e27c4215379"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon-32.png",
+      "destination": "product/brand/current/favicon-32.png",
+      "sha256": "b657adfd8751ac6cf6dd66000a093abb8ca1112cc97d93c3271a1583064239d1"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon-48.png",
+      "destination": "product/brand/current/favicon-48.png",
+      "sha256": "a7b84ba95d14ca15e6815c4fb4fd0d2dac2650969c28473653cc3fbe8a74151c"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon-256.png",
+      "destination": "product/brand/current/favicon-256.png",
+      "sha256": "09ba50f04ad35ca65fdc1c591ae013aefc6cdaecfafa6c092e47f35d8132d9c0"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/apple-touch-icon.png",
+      "destination": "product/brand/current/apple-touch-icon.png",
+      "sha256": "a660efc7a4cb4f7df634f4546bbaabf0f7d12cfa7d4b326ec7d9ed34a00d88ec"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-logo.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/src/assets/brand/foreverpin-logo.png",
+      "sha256": "56c2fb1558ebe0f6c0f155ba9d48cc91addd07b833e41f7f4b5175fe07973a84"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-navbar-logo.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/src/assets/brand/foreverpin-navbar-logo.png",
+      "sha256": "793e5c1037bc3d7af1c35fbcad906126f91c0cee88270364b3f4179c5823f3c5"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-navbar-logo@2x.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/src/assets/brand/foreverpin-navbar-logo@2x.png",
+      "sha256": "689ed3469c839affeb3ad15429f0cc176244dfda6407d96f271ab25b7678c76c"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon.svg",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/public/favicon.svg",
+      "sha256": "f07d507c17a70e0ba52f942d44aa53c792bec522966ca061a7339c5418c89a7a"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon.ico",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/public/favicon.ico",
+      "sha256": "40b93850e08d4308903fb8d6d333cac2eec2e27850fc0dbfdaa8283abf2bac5f"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon-16.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/public/favicon-16.png",
+      "sha256": "9a25bc6576b27b73e11dd51462a8c77945edd86c455d82f182cf6e27c4215379"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon-32.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/public/favicon-32.png",
+      "sha256": "b657adfd8751ac6cf6dd66000a093abb8ca1112cc97d93c3271a1583064239d1"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/favicon-48.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/public/favicon-48.png",
+      "sha256": "a7b84ba95d14ca15e6815c4fb4fd0d2dac2650969c28473653cc3fbe8a74151c"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/apple-touch-icon.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/public/apple-touch-icon.png",
+      "sha256": "a660efc7a4cb4f7df634f4546bbaabf0f7d12cfa7d4b326ec7d9ed34a00d88ec"
+    },
+    {
+      "source": "product/brand/routed-qr/exports/foreverpin-navbar-logo@2x.png",
+      "destination": "engineering/codebase/forever-pin.frontend-services/apps/web/src/presentation/marketing/assets/foreverpin-navbar-logo@2x.png",
+      "sha256": "689ed3469c839affeb3ad15429f0cc176244dfda6407d96f271ab25b7678c76c"
+    }
+  ],
+  "external_provider_upload_performed": false
+}

@@ -1,0 +1,706 @@
+{
+  "schema": 1,
+  "identity": "ForeverPin Routed QR",
+  "approved_date": "2026-09-29",
+  "status": "approved original artwork; deterministic raster family; no app synchronization performed",
+  "sources": [
+    {
+      "file": "source/approved-routed-qr.png",
+      "sha256": "932cfd76dcbe7f8d5b49ad98411512f751bf1ec7039944cb9a5bf903c1abfbf1"
+    },
+    {
+      "file": "source/geist-latin-wght-normal.woff2",
+      "sha256": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1"
+    },
+    {
+      "file": "source/Geist-LICENSE",
+      "sha256": "71609cbb5c78b5870d712eab73a31d76622635c6ed034ab5cee3b9ecbda8685f"
+    }
+  ],
+  "raster_only": true,
+  "svg_wrappers": "embedded PNG wrappers, not vector geometry",
+  "palette": {
+    "violet": "#7040d7",
+    "lavender": "#aa8cff",
+    "ink": "#202331",
+    "white": "#ffffff"
+  },
+  "primary_dark_lettering": "#f1f3f8",
+  "tile_carriers": {
+    "light": "#7040d7",
+    "dark": "#aa8cff"
+  },
+  "tile_glyphs": {
+    "light": "#ffffff",
+    "dark": "#1d1433"
+  },
+  "symbol_invariants": {
+    "source_dimensions": [
+      1254,
+      1254
+    ],
+    "crop_alpha_gt_16": [
+      193,
+      208,
+      1061,
+      1069
+    ],
+    "clean_alpha_size": [
+      868,
+      861
+    ],
+    "component_areas_alpha_128": [
+      124915,
+      124897,
+      124884,
+      73913
+    ],
+    "alpha_128_contour_pixel_equality": true,
+    "alpha_128_mask_sha256": "b503fa48e44f7ba04319e9d41e6b637050fc0a25ba0eedd5f88fb09a370e2f59",
+    "alpha_changed_pixels": 447320,
+    "method": "original antialias edges retained within 1px contour band; eroded interiors made opaque; distant residue cleared",
+    "geometry_modified": false,
+    "gaps_unchanged": true,
+    "gaps": {
+      "vertical": {
+        "min_px": 34,
+        "median_px": 34,
+        "max_px": 34,
+        "percent_max_extent": 3.917
+      },
+      "horizontal": {
+        "min_px": 32,
+        "median_px": 33,
+        "max_px": 33,
+        "percent_max_extent": 3.802
+      }
+    },
+    "gap_measurement": "perpendicular central midbodies, 17%-33% cross-axis positions; alpha >= 128",
+    "family_baseline_percent": 4.166666666666667,
+    "family_optical_tolerance_percent": 10,
+    "alpha_raw_bytes_sha256": "cebded2f737d162e0962fb81983b696d6b47346e3a36689b043322fb7208eb75"
+  },
+  "lettering": {
+    "font": "Geist",
+    "axis_wght": 700,
+    "font_size_px": 200,
+    "content": "ForeverPin",
+    "tracking_em": -0.025,
+    "tracking_px": -5,
+    "tracking_method": "kerning-aware prefix advances plus per-character tracking; no synthetic bold",
+    "production_geometry": "rendered raster"
+  },
+  "composition": {
+    "primary_symbol_height": 176,
+    "symbol_text_gap": 32,
+    "export_padding": 8,
+    "tile_size": 1024,
+    "tile_symbol_max_extent": 720,
+    "tile_corner_radius": 224
+  },
+  "usage": {
+    "standalone_min_visible_extent_px": 24,
+    "primary_reviewed_min_total_height_px": 32,
+    "clear_space": "one quarter of visible symbol height around compositions; external layout space",
+    "micro_geometry": "none; original gaps retained at all sizes",
+    "favicon_16_limitation": "ordinary downsampling merges modules; no 16px separated-module claim",
+    "navbar": "56/112px standalone PNGs show 24px visible artwork when displayed at 28 CSS pixels",
+    "native_platform_packaging": "circle/squircle artwork containment checked; store packaging not certified"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "pillow": "12.3.0",
+    "numpy": "2.3.5"
+  },
+  "assets": [
+    {
+      "file": "exports/apple-touch-icon.png",
+      "size": [
+        180,
+        180
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        0,
+        0,
+        180,
+        180
+      ],
+      "sha256": "a660efc7a4cb4f7df634f4546bbaabf0f7d12cfa7d4b326ec7d9ed34a00d88ec"
+    },
+    {
+      "file": "exports/favicon-16.png",
+      "size": [
+        16,
+        16
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        1,
+        1,
+        15,
+        15
+      ],
+      "sha256": "9a25bc6576b27b73e11dd51462a8c77945edd86c455d82f182cf6e27c4215379"
+    },
+    {
+      "file": "exports/favicon-256.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        16,
+        17,
+        240,
+        239
+      ],
+      "sha256": "09ba50f04ad35ca65fdc1c591ae013aefc6cdaecfafa6c092e47f35d8132d9c0"
+    },
+    {
+      "file": "exports/favicon-32.png",
+      "size": [
+        32,
+        32
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        2,
+        2,
+        30,
+        30
+      ],
+      "sha256": "b657adfd8751ac6cf6dd66000a093abb8ca1112cc97d93c3271a1583064239d1"
+    },
+    {
+      "file": "exports/favicon-48.png",
+      "size": [
+        48,
+        48
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        3,
+        3,
+        45,
+        45
+      ],
+      "sha256": "a7b84ba95d14ca15e6815c4fb4fd0d2dac2650969c28473653cc3fbe8a74151c"
+    },
+    {
+      "file": "exports/foreverpin-google-logo.png",
+      "size": [
+        120,
+        120
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        0,
+        0,
+        120,
+        120
+      ],
+      "sha256": "c9001af8298b6dd5bf05de25218669e2d0d31a18c0bb85e5ad503e741d28daa6"
+    },
+    {
+      "file": "exports/foreverpin-logo.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        0,
+        0,
+        1024,
+        1024
+      ],
+      "sha256": "56c2fb1558ebe0f6c0f155ba9d48cc91addd07b833e41f7f4b5175fe07973a84"
+    },
+    {
+      "file": "exports/foreverpin-navbar-logo.png",
+      "size": [
+        56,
+        56
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        4,
+        4,
+        52,
+        52
+      ],
+      "sha256": "793e5c1037bc3d7af1c35fbcad906126f91c0cee88270364b3f4179c5823f3c5"
+    },
+    {
+      "file": "exports/foreverpin-navbar-logo@2x.png",
+      "size": [
+        112,
+        112
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        104,
+        103
+      ],
+      "sha256": "689ed3469c839affeb3ad15429f0cc176244dfda6407d96f271ab25b7678c76c"
+    },
+    {
+      "file": "exports/primary-dark.png",
+      "size": [
+        1269,
+        192
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        1248,
+        184
+      ],
+      "sha256": "1817fb03d7edad2b5ac687d1cd6ffac64c998f0e58fca27f29fc25ba870fcb3d"
+    },
+    {
+      "file": "exports/primary-light.png",
+      "size": [
+        1269,
+        192
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        1248,
+        184
+      ],
+      "sha256": "4a27f34541323c5671f964763cc102262d358a14faf5b2064a754dd5769fd8fa"
+    },
+    {
+      "file": "exports/primary-mono-ink.png",
+      "size": [
+        1269,
+        192
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        1248,
+        184
+      ],
+      "sha256": "7b0b50ae8f3f0f9856e1fcae73cf29111aec431d7dac5ae0237dcd2da0513939"
+    },
+    {
+      "file": "exports/primary-mono-white.png",
+      "size": [
+        1269,
+        192
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        1248,
+        184
+      ],
+      "sha256": "28f5735f7f92b7e32ac1013bef2873cc13e9f6a7b9b75c93877167f3e757fbc6"
+    },
+    {
+      "file": "exports/symbol-ink.png",
+      "size": [
+        884,
+        877
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        876,
+        869
+      ],
+      "sha256": "fbe4607e2225161df053e1e1f6b7e43b64581c9468d0dbe04c59b631e6642494"
+    },
+    {
+      "file": "exports/symbol-lavender.png",
+      "size": [
+        884,
+        877
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        876,
+        869
+      ],
+      "sha256": "0fb1445a96c1ed41d250ea378284a85c0f7ddf323aa816bfe09e3e811114f627"
+    },
+    {
+      "file": "exports/symbol-violet.png",
+      "size": [
+        884,
+        877
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        876,
+        869
+      ],
+      "sha256": "ff73ba2d68cc3a51cd5112047ff7773ddcbf126cdda04bb8894bbaa70d86bfd7"
+    },
+    {
+      "file": "exports/symbol-white.png",
+      "size": [
+        884,
+        877
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        8,
+        8,
+        876,
+        869
+      ],
+      "sha256": "abd9cf1e35f797e1b38e721a974ccc31c526732a600871cbc63981120f81d72f"
+    },
+    {
+      "file": "exports/tile-dark.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        0,
+        0,
+        1024,
+        1024
+      ],
+      "sha256": "65deaadadd1c40a99b69d14ba0d1dc8fe2bd5b9f8b58247c8579fb128eeeb2de"
+    },
+    {
+      "file": "exports/tile-light.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        0,
+        0,
+        1024,
+        1024
+      ],
+      "sha256": "56c2fb1558ebe0f6c0f155ba9d48cc91addd07b833e41f7f4b5175fe07973a84"
+    },
+    {
+      "file": "exports/wordmark-ink.png",
+      "size": [
+        1060,
+        163
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        23,
+        8,
+        1039,
+        155
+      ],
+      "sha256": "954b02feda97d5bd8c97e12d0be515feb11d8235a170c43b19fbec4cc91f7fff"
+    },
+    {
+      "file": "exports/wordmark-white.png",
+      "size": [
+        1060,
+        163
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        23,
+        8,
+        1039,
+        155
+      ],
+      "sha256": "c3661df778873dde05f4914e3b158a6905d8faa5f271fcd61d9770947f111c91"
+    },
+    {
+      "file": "exports/favicon.ico",
+      "sha256": "40b93850e08d4308903fb8d6d333cac2eec2e27850fc0dbfdaa8283abf2bac5f"
+    },
+    {
+      "file": "exports/favicon.svg",
+      "sha256": "f07d507c17a70e0ba52f942d44aa53c792bec522966ca061a7339c5418c89a7a"
+    },
+    {
+      "file": "exports/foreverpin-logo.svg",
+      "sha256": "a3fdb62c8dff65660413d1a88ea2aeb0739c5bd5008a2ba2162701eaad3d5ae3"
+    }
+  ],
+  "small_size_metrics": [
+    {
+      "variant": "violet",
+      "visible_max_extent_px": 16,
+      "size": [
+        16,
+        16
+      ],
+      "components_alpha_128": 1
+    },
+    {
+      "variant": "violet",
+      "visible_max_extent_px": 20,
+      "size": [
+        20,
+        20
+      ],
+      "components_alpha_128": 1
+    },
+    {
+      "variant": "violet",
+      "visible_max_extent_px": 24,
+      "size": [
+        24,
+        24
+      ],
+      "components_alpha_128": 4
+    },
+    {
+      "variant": "violet",
+      "visible_max_extent_px": 32,
+      "size": [
+        32,
+        32
+      ],
+      "components_alpha_128": 4
+    },
+    {
+      "variant": "violet",
+      "visible_max_extent_px": 48,
+      "size": [
+        48,
+        48
+      ],
+      "components_alpha_128": 4
+    },
+    {
+      "variant": "violet",
+      "visible_max_extent_px": 64,
+      "size": [
+        64,
+        63
+      ],
+      "components_alpha_128": 4
+    },
+    {
+      "variant": "lavender",
+      "visible_max_extent_px": 16,
+      "size": [
+        16,
+        16
+      ],
+      "components_alpha_128": 1
+    },
+    {
+      "variant": "lavender",
+      "visible_max_extent_px": 20,
+      "size": [
+        20,
+        20
+      ],
+      "components_alpha_128": 1
+    },
+    {
+      "variant": "lavender",
+      "visible_max_extent_px": 24,
+      "size": [
+        24,
+        24
+      ],
+      "components_alpha_128": 4
+    },
+    {
+      "variant": "lavender",
+      "visible_max_extent_px": 32,
+      "size": [
+        32,
+        32
+      ],
+      "components_alpha_128": 4
+    },
+    {
+      "variant": "lavender",
+      "visible_max_extent_px": 48,
+      "size": [
+        48,
+        48
+      ],
+      "components_alpha_128": 4
+    },
+    {
+      "variant": "lavender",
+      "visible_max_extent_px": 64,
+      "size": [
+        64,
+        63
+      ],
+      "components_alpha_128": 4
+    }
+  ],
+  "mask_checks": [
+    {
+      "asset": "tile-light.png",
+      "mask": "Circle",
+      "symbol_pixels_alpha_128_clipped": 0
+    },
+    {
+      "asset": "tile-light.png",
+      "mask": "Squircle",
+      "symbol_pixels_alpha_128_clipped": 0
+    },
+    {
+      "asset": "tile-dark.png",
+      "mask": "Circle",
+      "symbol_pixels_alpha_128_clipped": 0
+    },
+    {
+      "asset": "tile-dark.png",
+      "mask": "Squircle",
+      "symbol_pixels_alpha_128_clipped": 0
+    }
+  ],
+  "files": [
+    {
+      "file": "exports/apple-touch-icon.png",
+      "sha256": "a660efc7a4cb4f7df634f4546bbaabf0f7d12cfa7d4b326ec7d9ed34a00d88ec"
+    },
+    {
+      "file": "exports/favicon-16.png",
+      "sha256": "9a25bc6576b27b73e11dd51462a8c77945edd86c455d82f182cf6e27c4215379"
+    },
+    {
+      "file": "exports/favicon-256.png",
+      "sha256": "09ba50f04ad35ca65fdc1c591ae013aefc6cdaecfafa6c092e47f35d8132d9c0"
+    },
+    {
+      "file": "exports/favicon-32.png",
+      "sha256": "b657adfd8751ac6cf6dd66000a093abb8ca1112cc97d93c3271a1583064239d1"
+    },
+    {
+      "file": "exports/favicon-48.png",
+      "sha256": "a7b84ba95d14ca15e6815c4fb4fd0d2dac2650969c28473653cc3fbe8a74151c"
+    },
+    {
+      "file": "exports/favicon.ico",
+      "sha256": "40b93850e08d4308903fb8d6d333cac2eec2e27850fc0dbfdaa8283abf2bac5f"
+    },
+    {
+      "file": "exports/favicon.svg",
+      "sha256": "f07d507c17a70e0ba52f942d44aa53c792bec522966ca061a7339c5418c89a7a"
+    },
+    {
+      "file": "exports/foreverpin-google-logo.png",
+      "sha256": "c9001af8298b6dd5bf05de25218669e2d0d31a18c0bb85e5ad503e741d28daa6"
+    },
+    {
+      "file": "exports/foreverpin-logo.png",
+      "sha256": "56c2fb1558ebe0f6c0f155ba9d48cc91addd07b833e41f7f4b5175fe07973a84"
+    },
+    {
+      "file": "exports/foreverpin-logo.svg",
+      "sha256": "a3fdb62c8dff65660413d1a88ea2aeb0739c5bd5008a2ba2162701eaad3d5ae3"
+    },
+    {
+      "file": "exports/foreverpin-navbar-logo.png",
+      "sha256": "793e5c1037bc3d7af1c35fbcad906126f91c0cee88270364b3f4179c5823f3c5"
+    },
+    {
+      "file": "exports/foreverpin-navbar-logo@2x.png",
+      "sha256": "689ed3469c839affeb3ad15429f0cc176244dfda6407d96f271ab25b7678c76c"
+    },
+    {
+      "file": "exports/primary-dark.png",
+      "sha256": "1817fb03d7edad2b5ac687d1cd6ffac64c998f0e58fca27f29fc25ba870fcb3d"
+    },
+    {
+      "file": "exports/primary-light.png",
+      "sha256": "4a27f34541323c5671f964763cc102262d358a14faf5b2064a754dd5769fd8fa"
+    },
+    {
+      "file": "exports/primary-mono-ink.png",
+      "sha256": "7b0b50ae8f3f0f9856e1fcae73cf29111aec431d7dac5ae0237dcd2da0513939"
+    },
+    {
+      "file": "exports/primary-mono-white.png",
+      "sha256": "28f5735f7f92b7e32ac1013bef2873cc13e9f6a7b9b75c93877167f3e757fbc6"
+    },
+    {
+      "file": "exports/symbol-ink.png",
+      "sha256": "fbe4607e2225161df053e1e1f6b7e43b64581c9468d0dbe04c59b631e6642494"
+    },
+    {
+      "file": "exports/symbol-lavender.png",
+      "sha256": "0fb1445a96c1ed41d250ea378284a85c0f7ddf323aa816bfe09e3e811114f627"
+    },
+    {
+      "file": "exports/symbol-violet.png",
+      "sha256": "ff73ba2d68cc3a51cd5112047ff7773ddcbf126cdda04bb8894bbaa70d86bfd7"
+    },
+    {
+      "file": "exports/symbol-white.png",
+      "sha256": "abd9cf1e35f797e1b38e721a974ccc31c526732a600871cbc63981120f81d72f"
+    },
+    {
+      "file": "exports/tile-dark.png",
+      "sha256": "65deaadadd1c40a99b69d14ba0d1dc8fe2bd5b9f8b58247c8579fb128eeeb2de"
+    },
+    {
+      "file": "exports/tile-light.png",
+      "sha256": "56c2fb1558ebe0f6c0f155ba9d48cc91addd07b833e41f7f4b5175fe07973a84"
+    },
+    {
+      "file": "exports/wordmark-ink.png",
+      "sha256": "954b02feda97d5bd8c97e12d0be515feb11d8235a170c43b19fbec4cc91f7fff"
+    },
+    {
+      "file": "exports/wordmark-white.png",
+      "sha256": "c3661df778873dde05f4914e3b158a6905d8faa5f271fcd61d9770947f111c91"
+    },
+    {
+      "file": "mask-review.png",
+      "sha256": "9ba06cf73968af3794b6e4d8c55d362cfece7298391224c88f9f2992bc2d2fa4"
+    },
+    {
+      "file": "preview.png",
+      "sha256": "3af4f4936c4e94721d11783455d4b68a15456b29cb2a6035af9feaba5a1b2121"
+    },
+    {
+      "file": "size-review.png",
+      "sha256": "f7880382bf2e6ca5e2b4fe653fd92ff1c7d5926d1fd03923570eceda4fc1d59f"
+    },
+    {
+      "file": "source/Geist-LICENSE",
+      "sha256": "71609cbb5c78b5870d712eab73a31d76622635c6ed034ab5cee3b9ecbda8685f"
+    },
+    {
+      "file": "source/approved-routed-qr.png",
+      "sha256": "932cfd76dcbe7f8d5b49ad98411512f751bf1ec7039944cb9a5bf903c1abfbf1"
+    },
+    {
+      "file": "source/clean-symbol-alpha.png",
+      "sha256": "328e81f53261bf487d547b02caa0e0f86e64757d80321e0a520002288e37bfd4"
+    },
+    {
+      "file": "source/geist-latin-wght-normal.woff2",
+      "sha256": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1"
+    }
+  ],
+  "replay": {
+    "command": "python3 engineering/scripts/export-brand-logos.py --output-dir /tmp/foreverpin-brand-replay",
+    "verification": "compare saved files and manifest byte for byte after independent replay"
+  }
+}

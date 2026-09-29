@@ -1,0 +1,102 @@
+[
+  {
+    "theme": "light",
+    "viewport": "desktop",
+    "marks": [
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(112, 64, 215)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      },
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(112, 64, 215)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      }
+    ],
+    "homeLinks": 1
+  },
+  {
+    "theme": "light",
+    "viewport": "phone",
+    "marks": [
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(112, 64, 215)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      },
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(112, 64, 215)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      }
+    ],
+    "homeLinks": 1
+  },
+  {
+    "theme": "dark",
+    "viewport": "desktop",
+    "marks": [
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(170, 140, 255)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      },
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(170, 140, 255)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      }
+    ],
+    "homeLinks": 1
+  },
+  {
+    "theme": "dark",
+    "viewport": "phone",
+    "marks": [
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(170, 140, 255)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      },
+      {
+        "width": "28px",
+        "height": "28px",
+        "fill": "rgb(170, 140, 255)",
+        "maskSize": "contain",
+        "ariaHidden": "true",
+        "assetWidth": 112,
+        "assetHeight": 112
+      }
+    ],
+    "homeLinks": 1
+  }
+]
