@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "status": "exploration; no production identity selected",
+  "sources": [
+    {
+      "label": "Current QR",
+      "file": "../../current/foreverpin-logo.png",
+      "sha256": "15d815047a503a870c4eb5195e3bd4d833ce03e4ad6bf70887324e1ec6edaa34",
+      "native_size": [
+        1024,
+        1024
+      ],
+      "native_mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_pixels": 40531,
+      "alpha_partial_pixels": 1657,
+      "alpha_opaque_pixels": 1006388,
+      "alpha_nonzero_bounds": [
+        0,
+        0,
+        1024,
+        1024
+      ],
+      "crop_bounds_alpha_greater_than_16": [
+        0,
+        0,
+        1024,
+        1024
+      ],
+      "crop_size": [
+        1024,
+        1024
+      ],
+      "preserved_crop_rgba_sha256": "00c7a94f549edbfa840a6bfdf317ec7cbba1b3d271fa6e3e645c84cf90dddceb"
+    },
+    {
+      "label": "01 Routed QR",
+      "file": "source/01-routed-qr.png",
+      "sha256": "932cfd76dcbe7f8d5b49ad98411512f751bf1ec7039944cb9a5bf903c1abfbf1",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_pixels": 1104766,
+      "alpha_partial_pixels": 463652,
+      "alpha_opaque_pixels": 4098,
+      "alpha_nonzero_bounds": [
+        57,
+        21,
+        1234,
+        1254
+      ],
+      "crop_bounds_alpha_greater_than_16": [
+        193,
+        208,
+        1061,
+        1069
+      ],
+      "crop_size": [
+        868,
+        861
+      ],
+      "preserved_crop_rgba_sha256": "40a35c6e6529cfa1cc08daaf05cc48d52fec4ca87b0de5e2850a746ce0b3ffdc"
+    },
+    {
+      "label": "02 Finder F",
+      "file": "source/02-finder-f.png",
+      "sha256": "603dc82d4b32884b81f073f6d028e8fc4ac5d58eaf1bab50353702270a0843f0",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_pixels": 1221717,
+      "alpha_partial_pixels": 347122,
+      "alpha_opaque_pixels": 3677,
+      "alpha_nonzero_bounds": [
+        103,
+        39,
+        1192,
+        1254
+      ],
+      "crop_bounds_alpha_greater_than_16": [
+        325,
+        202,
+        930,
+        1100
+      ],
+      "crop_size": [
+        605,
+        898
+      ],
+      "preserved_crop_rgba_sha256": "a7fbe5b7a002fdf9558cf16ecce570f00d601aaf9b78c3ee36737a7f754e68a4"
+    },
+    {
+      "label": "03 Linked Finders",
+      "file": "source/03-linked-finders.png",
+      "sha256": "6cf0a1b433382ecd442d4ddf673d1803af01dba8616d04c14e6a4b419f434c47",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_pixels": 1156652,
+      "alpha_partial_pixels": 412713,
+      "alpha_opaque_pixels": 3151,
+      "alpha_nonzero_bounds": [
+        0,
+        45,
+        1234,
+        1139
+      ],
+      "crop_bounds_alpha_greater_than_16": [
+        175,
+        189,
+        1081,
+        1065
+      ],
+      "crop_size": [
+        906,
+        876
+      ],
+      "preserved_crop_rgba_sha256": "6472e3e9f2984fd442280fd4925d7e9431db12dae1c5ded8b980f21beb2c048e"
+    }
+  ],
+  "font": {
+    "file": "fonts/geist-latin-wght-normal.woff2",
+    "sha256": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1",
+    "weight_axis": 700,
+    "license": "fonts/LICENSE",
+    "license_sha256": "71609cbb5c78b5870d712eab73a31d76622635c6ed034ab5cee3b9ecbda8685f"
+  },
+  "transforms": {
+    "bounds": "alpha > 16; crop retains original RGBA inside those bounds",
+    "resampling": "LANCZOS",
+    "scale": "equal maximum visible extent",
+    "artwork_recolored": false,
+    "artwork_redrawn": false,
+    "palette": "original source values; generated colors are not certified brand tokens",
+    "detail": "nearest-neighbor enlargement labeled per row",
+    "lettering": "real Geist normal variable font, wght=700; no synthetic weight"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "pillow": "12.3.0"
+  },
+  "small_size_metrics": [
+    {
+      "label": "Current QR",
+      "maximum_extent_px": 16,
+      "render_size": [
+        16,
+        16
+      ],
+      "foreground_component_areas_alpha_128": [
+        244
+      ]
+    },
+    {
+      "label": "Current QR",
+      "maximum_extent_px": 20,
+      "render_size": [
+        20,
+        20
+      ],
+      "foreground_component_areas_alpha_128": [
+        388
+      ]
+    },
+    {
+      "label": "Current QR",
+      "maximum_extent_px": 24,
+      "render_size": [
+        24,
+        24
+      ],
+      "foreground_component_areas_alpha_128": [
+        552
+      ]
+    },
+    {
+      "label": "Current QR",
+      "maximum_extent_px": 32,
+      "render_size": [
+        32,
+        32
+      ],
+      "foreground_component_areas_alpha_128": [
+        984
+      ]
+    },
+    {
+      "label": "01 Routed QR",
+      "maximum_extent_px": 16,
+      "render_size": [
+        16,
+        16
+      ],
+      "foreground_component_areas_alpha_128": [
+        159
+      ]
+    },
+    {
+      "label": "01 Routed QR",
+      "maximum_extent_px": 20,
+      "render_size": [
+        20,
+        20
+      ],
+      "foreground_component_areas_alpha_128": [
+        260
+      ]
+    },
+    {
+      "label": "01 Routed QR",
+      "maximum_extent_px": 24,
+      "render_size": [
+        24,
+        24
+      ],
+      "foreground_component_areas_alpha_128": [
+        94,
+        93,
+        93,
+        54
+      ]
+    },
+    {
+      "label": "01 Routed QR",
+      "maximum_extent_px": 32,
+      "render_size": [
+        32,
+        32
+      ],
+      "foreground_component_areas_alpha_128": [
+        166,
+        166,
+        166,
+        95
+      ]
+    },
+    {
+      "label": "02 Finder F",
+      "maximum_extent_px": 16,
+      "render_size": [
+        11,
+        16
+      ],
+      "foreground_component_areas_alpha_128": [
+        106
+      ]
+    },
+    {
+      "label": "02 Finder F",
+      "maximum_extent_px": 20,
+      "render_size": [
+        13,
+        20
+      ],
+      "foreground_component_areas_alpha_128": [
+        156
+      ]
+    },
+    {
+      "label": "02 Finder F",
+      "maximum_extent_px": 24,
+      "render_size": [
+        16,
+        24
+      ],
+      "foreground_component_areas_alpha_128": [
+        249
+      ]
+    },
+    {
+      "label": "02 Finder F",
+      "maximum_extent_px": 32,
+      "render_size": [
+        22,
+        32
+      ],
+      "foreground_component_areas_alpha_128": [
+        446
+      ]
+    },
+    {
+      "label": "03 Linked Finders",
+      "maximum_extent_px": 16,
+      "render_size": [
+        16,
+        15
+      ],
+      "foreground_component_areas_alpha_128": [
+        124
+      ]
+    },
+    {
+      "label": "03 Linked Finders",
+      "maximum_extent_px": 20,
+      "render_size": [
+        20,
+        19
+      ],
+      "foreground_component_areas_alpha_128": [
+        197
+      ]
+    },
+    {
+      "label": "03 Linked Finders",
+      "maximum_extent_px": 24,
+      "render_size": [
+        24,
+        23
+      ],
+      "foreground_component_areas_alpha_128": [
+        282
+      ]
+    },
+    {
+      "label": "03 Linked Finders",
+      "maximum_extent_px": 32,
+      "render_size": [
+        32,
+        31
+      ],
+      "foreground_component_areas_alpha_128": [
+        494
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "file": "comparison.png",
+      "size": [
+        1720,
+        1240
+      ],
+      "sha256": "7a1e15ec6a96e5bf8648a34538241daf94b1d9ac31d72e8f47b73ee8f5a49d0b"
+    },
+    {
+      "file": "size-review.png",
+      "size": [
+        1720,
+        1220
+      ],
+      "sha256": "9caa74c9bd9abc3274236caf11461d15cf45a30b7d2a1bb67c70261f111c75df"
+    }
+  ],
+  "verification": {
+    "replay_verified": true,
+    "method": "fresh temporary render; byte-identical PNG hashes"
+  }
+}

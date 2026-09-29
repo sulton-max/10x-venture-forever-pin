@@ -1,14 +1,23 @@
 # ForeverPin brand assets
 
-*Last updated: 2026-09-28*
+*Last updated: 2026-09-29*
 
 ## Logo
 
 - The owner retained the existing QR logo on 2026-09-28.
-- `Logo` retains its original Lucide `QrCode` glyph, theme-aware violet tile, and live Geist wordmark.
+- `BrandGlyph.vue` retains the Lucide `QrCode` glyph, theme-aware violet tile, and live Geist wordmark.
 - Active export source: `current/foreverpin-logo.svg`; it copies that existing mark's geometry.
 - Active PNG, favicon, and OAuth exports live in `current/` and mirror into the frontend.
 - The generated pin/infinity proposal is retained below as unused provenance.
+
+## Current exploration
+
+- The owner requested a new logo following the shared construction and export conventions on 2026-09-29.
+- [Rounded identity exploration](exploration/rounded-identity/exploration.md) contains three generated directions,
+  a comparison with the current QR logo, size reviews, original sources and reproducible composition.
+- Routed QR is recommended for review; direction selection and final artwork approval remain pending.
+- The independent consumer identity retains violet and Geist; no WoW2 parent endorsement is proposed.
+- Exploration files are raster concepts, separate from the active asset inventory below.
 
 ---
 
@@ -25,7 +34,7 @@
 | `current/favicon.ico` | 16 / 32 / 48 / 64 / 128 / 256 | Browser fallback |
 | `current/apple-touch-icon.png` | 180 × 180 | Device shortcut |
 
-- Frontend `Logo` remains the original theme-aware React/Lucide component.
+- Frontend `BrandGlyph.vue` is the current theme-aware Vue/Lucide component.
 - Frontend raster copies are available under `src/assets/brand/`; favicons are under `public/`.
 - The light palette (`#7040d7` tile, white glyph) supplies the static icon colors.
 - `current/lucide-license.txt` preserves the source glyph's license; a frontend public copy accompanies exports.
