@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import urllib.request
 import urllib.error
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -15,8 +15,8 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def request(base, path, method="GET", payload=None, cookie=None):
-    headers = {"Content-Type": "application/json"}
+def request(base, path, method="GET", payload=None, cookie=None, extra_headers=None):
+    headers = {"Content-Type": "application/json", **(extra_headers or {})}
     if cookie:
         headers["Cookie"] = cookie
     body = json.dumps(payload).encode() if payload is not None else (b"" if method == "POST" else None)
@@ -25,6 +25,14 @@ def request(base, path, method="GET", payload=None, cookie=None):
         return urllib.request.build_opener(NoRedirect).open(req, timeout=20)
     except urllib.error.HTTPError as response:
         return response
+
+
+def keep_cookies(response, jar):
+    """Keeps each Set-Cookie name and value; the stack is plain HTTP, so Secure attributes are ignored here."""
+    for value in response.headers.get_all("Set-Cookie", []):
+        name, _, content = value.split(";")[0].partition("=")
+        jar[name.strip()] = content
+    return "; ".join(name + "=" + content for name, content in jar.items())
 
 
 def foreign_host_status(base):
@@ -44,17 +52,24 @@ def run(management, redirect, state_file, create=False):
             assert response.status == 200, "Service is not ready"
         assert foreign_host_status(base) == 400, "Host filtering accepted an unknown host"
     if create:
+        jar = {}
         with request(management, "/api/identity/guest", "POST") as response:
             assert response.status == 200, "Guest creation failed"
-            cookie = next(value.split(";")[0] for value in response.headers.get_all("Set-Cookie", [])
-                          if value.startswith("user-id="))
+            cookie = keep_cookies(response, jar)
+        assert "user-id" in jar, "Guest creation set no user cookie"
+        # Cookie-authenticated writes echo the XSRF-TOKEN cookie, which a read issues for the signed-in guest.
+        with request(management, "/api/runtime-config", cookie=cookie) as response:
+            assert response.status == 200, "Runtime configuration failed"
+            cookie = keep_cookies(response, jar)
+        assert "XSRF-TOKEN" in jar, "The API issued no antiforgery token"
+        antiforgery = {"X-XSRF-TOKEN": unquote(jar["XSRF-TOKEN"])}
         payload = {
             "name": "Wheelhouse deployment acceptance", "barcodeFormat": "QrCode", "mode": "dynamic",
             "contentType": "url", "rules": [{"type": "default", "content": {"type": "url", "url": "https://example.com/wheelhouse-pilot"}}],
             "style": {"foregroundColor": "#000000", "backgroundColor": "#FFFFFF", "transparentBackground": False,
                       "eccLevel": "Q", "quietZoneModules": 4, "moduleShape": "square", "finderShape": "square", "finderDotShape": "square"}
         }
-        with request(management, "/api/codes", "POST", payload, cookie) as response:
+        with request(management, "/api/codes", "POST", payload, cookie, antiforgery) as response:
             assert response.status == 200, "Code creation failed"
             code = json.load(response)["data"]
         state = {"cookie": cookie, "id": code["id"], "slug": code["slug"]}
