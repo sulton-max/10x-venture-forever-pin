@@ -1,6 +1,6 @@
 # Development
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-10-20*
 
 ## Verification
 
@@ -8,12 +8,12 @@
 bash engineering/scripts/verify.sh all
 ```
 
-- `frontend`: TypeScript, Vitest, and production bundling.
+- `frontend`: TypeScript, Vitest, production bundling and the Playwright browser checks.
 - `unit`: backend pure-logic suite.
 - `backend`: all four backend test tiers.
 - `all`: frontend and backend.
 
-Node is pinned in `.nvmrc`. The script uses that installed nvm runtime without changing global settings.
+Node is pinned in `engineering/codebase/forever-pin.frontend-services/.nvmrc`. The script uses that installed nvm runtime without changing global settings.
 Docker must be running for PostgreSQL integration, migration, and end-to-end tests.
 Provider boundaries are faked for Google and Stripe; tests do not verify live provider configuration.
 

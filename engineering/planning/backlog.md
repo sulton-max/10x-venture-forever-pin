@@ -1,6 +1,6 @@
 # ForeverPin — Backlog
 
-*Last updated: 2026-09-29*
+*Last updated: 2026-10-20*
 
 Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`version-track/`](version-track/).
 
@@ -81,6 +81,7 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Align static-code limits with the chosen pricing | product | — |
 | Reconcile marketing claims with implemented capabilities | product | — |
 | Define guest-subscription merging across accounts | product | — |
+| Choose the permanent `go` short-link host | product | printed into every dynamic code |
 | Configure and verify deployment, TLS and redirect domains | engineering | — |
 | Verify database backup and restore | engineering | — |
 | Measure redirect bursts and scan-queue loss | engineering | — |
@@ -171,10 +172,8 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Item | Type | Notes |
 |---|---|---|
 | Reconcile frontend naming forks against settled conventions | engineering | — |
-| Complete backend convention adoption | engineering | rows in [foreverpin-be-update.md](../../foreverpin-be-update.md) |
+| Complete backend convention adoption | engineering | rows in [backend convention updates](../research/backend-convention-updates.md) |
 | Simplify E2E DTO mirrors while retaining raw-JSON assertions | engineering | — |
-| Review dependency vulnerability warnings with the SDK lane | engineering | — |
-| Establish product CI/CD and a repeatable deployment configuration | engineering | — |
 
 ## Landing hero
 

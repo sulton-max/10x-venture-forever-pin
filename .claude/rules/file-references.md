@@ -35,6 +35,5 @@ Lazy document index. Paths below are relative to the repository root.
 - `engineering/research/gap-analysis-2026-09-19.md`: correctness and release-gap audit.
 - `engineering/research/vector-sweep.md`: app-versus-SDK capability map.
 - `engineering/research/`: design, error-ordering, and persistence experiments.
-- `engineering/operations/documentation-audit.md`: documentation sweep inventory.
 
 Source is navigated directly under `engineering/codebase/`; this index does not duplicate its files.

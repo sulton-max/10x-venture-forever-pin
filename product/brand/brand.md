@@ -1,6 +1,6 @@
 # ForeverPin brand assets
 
-*Last updated: 2026-09-29*
+*Last updated: 2026-10-20*
 
 ## Approved identity
 
@@ -9,6 +9,11 @@
 - [Canonical family](routed-qr/manifest.json) owns the checksummed original, cleaned alpha and derived exports.
 - [Review sheet](routed-qr/preview.png) shows horizontal, standalone and app-tile compositions.
 - The independent consumer identity keeps violet and uses Nunito Sans lettering; no WoW2 endorsement is used.
+
+## Icons
+
+- `icons/` holds the eight product variants Wheelhouse and other consoles read, named `{form}-{color}-{theme}.png`.
+- They copy the Routed QR exports: symbol = `short`, primary horizontal = `full`; no service has its own mark.
 
 ## Spacing and minimums
 

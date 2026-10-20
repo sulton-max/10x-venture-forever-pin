@@ -45,7 +45,6 @@ Personal account: `sulton-max`.
 The owner renamed GitHub to `sulton-max/10x-venture-forever-pin` on 2026-09-13; the screenshot confirms success.
 Both local fetch and push URLs match `https://github.com/sulton-max/10x-venture-forever-pin.git`, verified on 2026-09-13.
 
-No push was performed. Changes are being handed over as staged batches; see [staging batches](staging-batches.md).
 
 ---
 

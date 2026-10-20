@@ -1,0 +1,10 @@
+{
+  "$schema": "../../../../../../conventions/design/identity/product.schema.json",
+  "manifest": 1,
+  "name": "ForeverPin",
+  "description": "Dynamic QR codes and programmable links that keep working after they are printed.",
+  "services": {
+    "management": { "name": "App", "description": "The builder, code library, analytics and billing." },
+    "redirect": { "name": "Redirect", "description": "Resolves each scan to its destination." }
+  }
+}

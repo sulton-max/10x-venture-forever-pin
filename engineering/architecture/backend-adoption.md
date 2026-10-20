@@ -147,7 +147,7 @@ Against `.8` the product passes 251 backend tests; publication must include `80a
 
 ## Remaining acceptance
 
-The published-package backend acceptance for `10.0.59-beta` is complete; `10.0.60-beta` awaits publication.
+The product now pins the renamed be sdk `WoW2.Sdk.Beta.Be` `10.0.72-beta`; every extraction above ships in it.
 The frontend lane owns its verifier, browser comparison and manual product-flow acceptance.
 
 The database migrations add indexes, the webhook inbox and an event watermark without changing stored payloads.

@@ -7,13 +7,12 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 - Workspace conventions live in `wow-two-ws/conventions/`; repo-specific details follow here.
 - `.claude/rules/file-references.md` is a lazy document index.
 - Preserve existing edits; coordinate by disjoint file sets in the shared checkout.
-- The frontend runs on Vue since `v0.10`; backend migration belongs to a separate chat.
 
 ## Codebase
 
 - Backend: `engineering/codebase/forever-pin.backend-services/` — .NET 10.
 - Frontend workspace: `engineering/codebase/forever-pin.frontend-services/`; product source lives in `apps/web/`.
-- Current app: Vue 3, Vite, Tailwind 4, `@wow-two-beta/ui-vue`.
+- Current app: Vue 3, Vite, Tailwind 4, the fe sdk `@wow-two-beta/fe`; backend on the be sdk `WoW2.Sdk.Beta.Be`.
 - Namespace: `ForeverPin`; product folder: `10x-venture-forever-pin`.
 - Management host: `ForeverPin.Api`, HTTPS/HTTP `7020`/`7021`.
 - Redirect host: `ForeverPin.Redirect.Api`, HTTPS/HTTP `7022`/`7023`.
@@ -22,7 +21,7 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 ## Verification
 
 - `bash engineering/scripts/verify.sh all` runs frontend checks and all backend suites.
-- Node version: `.nvmrc`; the verifier selects that installed runtime.
+- Node version: `forever-pin.frontend-services/.nvmrc`; the verifier selects that installed runtime.
 - Full backend tests require Docker and local runner sockets.
 - Restricted execution requires native approval for that command; do not weaken global permissions.
 - See `engineering/development/development.md` for the approval workflow.
@@ -33,3 +32,8 @@ QR, barcode, and programmable-link product. Brand: **ForeverPin**; domain: `fore
 - Active version: newest `engineering/planning/version-track/v{X.Y}/v{X.Y}.md`.
 - Durable content decisions: `engineering/architecture/content-model.md`.
 - Rename compatibility: `engineering/operations/rebrand.md`.
+
+## Delivery
+
+- `engineering/deployment/deploy.yml` (descriptor 2) and `.github/workflows/publish-docker-image.yml` (shared pipelines).
+- `main` pushes release `vX.Y.Z`; Wheelhouse deploys each release to dev, then promotes it to prod.

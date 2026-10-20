@@ -9,7 +9,8 @@ Dynamic QR codes, barcodes, and programmable links.
 - Implemented: code management, styling, SVG/PNG export, accounts, billing integration, and contextual routing.
 - Active: the newest [version track](engineering/planning/version-track/) folder.
 - Remaining: dynamic-content delivery, mode/copy UX, validation guarantees, and launch verification.
-- Vue migration is a separate lane; this application still uses React.
+- Stack: .NET 10 on the be sdk `WoW2.Sdk.Beta.Be`; Vue 3 on the fe sdk `@wow-two-beta/fe`.
+- Delivery: `main` releases through the shared pipelines; Wheelhouse deploys them ([deployment](engineering/deployment/deployment.md)).
 
 ---
 
@@ -18,12 +19,12 @@ Dynamic QR codes, barcodes, and programmable links.
 Requires .NET 10, Node 24.11+, pnpm, and PostgreSQL. Full backend tests use disposable Docker containers.
 
 ```bash
-nvm use
+nvm use "$(cat engineering/codebase/forever-pin.frontend-services/.nvmrc)"
 bash engineering/scripts/verify.sh all
 ```
 
 The verifier also accepts `frontend`, `backend`, or `unit`.
-It selects the installed `.nvmrc` runtime when available.
+It selects the runtime in `forever-pin.frontend-services/.nvmrc` when installed.
 
 ```bash
 cd engineering/codebase/forever-pin.backend-services
@@ -56,7 +57,8 @@ Dev certificates apply only to the dev server; builds and tests never install ce
 - Management API: `ApiSettings:RedirectBaseUrl` controls printed dynamic links.
 - Google: frontend `VITE_GOOGLE_CLIENT_ID` and backend `Auth:Google:ClientId`.
 - Stripe: [billing configuration](engineering/architecture/billing.md).
-- Local overrides: ignored `appsettings.Local.json` and `.env.local`.
+- Local overrides: ignored `appsettings.Local.json` (read when `LOCAL_SETTINGS=true`, as the launch profiles set) and `.env.local`.
+- Deployed: Wheelhouse mounts `appsettings.Target.json`; it derives `Sites:app:Url` and `Sites:go:Url`, which set the redirect base and Stripe's return pages.
 
 The existing physical database remains `smartqr` to retain local data.
 [Rename compatibility](engineering/operations/rebrand.md) records intentional legacy identifiers.

@@ -1,13 +1,13 @@
 # Frontend
 
-*Last updated: 2026-09-28*
+*Last updated: 2026-10-20*
 
 ## Stack and layers
 
-- Vue 3, TypeScript, Vite, Tailwind 4, and `@wow-two-beta/ui-vue@0.0.7`.
+- Vue 3, TypeScript, Vite, Tailwind 4, the fe sdk `@wow-two-beta/fe@0.0.26` and `lucide-vue-next`.
 - `src/domain`: content, rule, style, identity, and billing models; contrast checks.
 - `src/application`: form schema and request mapping, builder lifecycle, session gate, queries and mutations.
-- `src/integration`: API endpoints, zod wire codecs, the antiforgery fetch, and the session bridge.
+- `src/integration`: API endpoints, zod wire codecs, and the session bridge; the SDK client echoes antiforgery.
 - `src/presentation`: marketing pages, the codes list, builder and analytics, billing, and the sign-in gate.
 - `src/bootstrap`: entry, root providers, layouts, and the route table.
 - ESLint enforces layer and slice boundaries; `presentation/common` and `integration/common` import no slice.
