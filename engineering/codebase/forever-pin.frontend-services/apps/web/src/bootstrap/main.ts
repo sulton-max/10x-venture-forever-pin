@@ -1,6 +1,6 @@
 import './index.css';
 
-import { createQueryClient, queryPlugin } from '@wow-two-beta/ui-vue/query';
+import { createQueryClient, queryPlugin } from '@wow-two-beta/fe/query';
 import { createApp } from 'vue';
 
 import { authBridge } from '@/integration/common';

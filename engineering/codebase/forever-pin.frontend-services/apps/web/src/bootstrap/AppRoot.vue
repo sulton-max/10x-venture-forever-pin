@@ -1,24 +1,21 @@
-<script lang="ts">
-/** Holds the storage key of the remembered color mode — `index.html` reads the same key before first paint. */
-const ColorModeStorageKey = 'color-mode';
-</script>
-
 <script setup lang="ts">
-import { AuthProvider } from '@wow-two-beta/ui-vue/auth';
-import { ColorModeProvider } from '@wow-two-beta/ui-vue/foundation/primitives';
-import { FeedbackToastHost } from '@wow-two-beta/ui-vue/presentation/feedback';
-import { QueryProgressBridge } from '@wow-two-beta/ui-vue/query';
+import { AuthProvider } from '@wow-two-beta/fe/auth';
+import { ColorModeProvider } from '@wow-two-beta/fe/foundation/primitives';
+import { FeedbackToastHost } from '@wow-two-beta/fe/presentation/feedback';
+import { QueryProgressBridge } from '@wow-two-beta/fe/query';
 import {
   AppErrorBoundary,
   NavigationProgress,
   NavigationProgressMode,
   ProgressProvider,
   RouteAnnouncer,
-} from '@wow-two-beta/ui-vue/router';
+} from '@wow-two-beta/fe/router';
 import { RouterView } from 'vue-router';
 
 import { createIdentityStrategy } from '@/application/identity';
 import { authBridge } from '@/integration/common';
+
+import { ColorModeStorageKey } from './ColorMode';
 
 /**
  * Renders the app root — remembered color mode, the session (checked only when the product opens),
@@ -30,7 +27,7 @@ const identityStrategy = createIdentityStrategy();
 
 <template>
   <ColorModeProvider default-mode="system" :storage-key="ColorModeStorageKey">
-    <AuthProvider :strategy="identityStrategy" :bridge="authBridge" :resolve-on-mount="false">
+    <AuthProvider :strategy="identityStrategy" :bridge="authBridge" :can-resolve-on-mount="false">
       <ProgressProvider>
         <QueryProgressBridge />
         <NavigationProgress :mode="NavigationProgressMode.Both" />

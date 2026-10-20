@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { Heading, Text } from '@wow-two-beta/fe/presentation/display';
 import { RouterLink } from 'vue-router';
 
 import { AppPaths } from '@/presentation/common';

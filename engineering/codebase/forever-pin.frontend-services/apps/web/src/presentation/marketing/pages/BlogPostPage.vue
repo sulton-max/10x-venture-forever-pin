@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ArrowLeft } from '@lucide/vue';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Badge, Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { SurfaceLayout } from '@wow-two-beta/ui-vue/presentation/layout';
+import { ArrowLeft } from 'lucide-vue-next';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Badge, Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { SurfaceLayout } from '@wow-two-beta/fe/presentation/layout';
 import { computed, defineAsyncComponent } from 'vue';
 import { RouterLink } from 'vue-router';
 

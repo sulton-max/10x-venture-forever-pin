@@ -16,15 +16,15 @@ importers:
       '@fontsource-variable/geist-mono':
         specifier: ^5.2.8
         version: 5.2.8
-      '@lucide/vue':
-        specifier: 1.48.0
-        version: 1.48.0(vue@3.5.43(typescript@5.9.3))
       '@tanstack/vue-query':
         specifier: ^5.102.8
         version: 5.104.0(vue@3.5.43(typescript@5.9.3))
-      '@wow-two-beta/ui-vue':
-        specifier: 0.0.7
-        version: 0.0.7(@tanstack/vue-query@5.104.0(vue@3.5.43(typescript@5.9.3)))(@vue/test-utils@2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@5.9.3)))(tailwindcss@4.3.0)(vue-router@4.6.4(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
+      '@wow-two-beta/fe':
+        specifier: 0.0.26
+        version: 0.0.26(@tanstack/vue-query@5.104.0(vue@3.5.43(typescript@5.9.3)))(@vue/test-utils@2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@5.9.3)))(tailwindcss@4.3.0)(vue-router@4.6.4(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
+      lucide-vue-next:
+        specifier: ^0.460.0
+        version: 0.460.0(vue@3.5.43(typescript@5.9.3))
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
@@ -379,11 +379,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@lucide/vue@1.48.0':
-    resolution: {integrity: sha512-3/Nwx/RsqQ4ZrrSML1GNsSWCSDyLnBgoF/eEr1q9G6iZymn3+WKtzIj7Dbc/Nxrt9WOPuGrJ58S+CBiamK+36w==}
-    peerDependencies:
-      vue: '>=3.0.1'
 
   '@one-ini/wasm@0.2.1':
     resolution: {integrity: sha512-TUqERXGNTifZ9y2g3wPxQrw3HpHv/02DsW3D90T9x0hhonrL1ZqpSmNrU2XkoIq0fP1N6gZfVQzy2Fw1ZvGBNg==}
@@ -823,8 +818,8 @@ packages:
       '@vue/server-renderer':
         optional: true
 
-  '@wow-two-beta/ui-vue@0.0.7':
-    resolution: {integrity: sha512-BqXXzJ5E2JbJ5Xiy6TJUg1m7TXk3RtxRxi5OION0FEhNcXMeinmbzRBLzwWMzXkTXuRbINqe0RE5Byg8ZDo/tg==}
+  '@wow-two-beta/fe@0.0.26':
+    resolution: {integrity: sha512-3zbNmqx12Ge1hjXCw61dJrlHRJTCvcWnJDXt86w4cP9cZxPYgCAW9eGFaWDYzNEC0bmz9/7s4SaomjIsw8AzkQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@tanstack/vue-form': ^1.0.0
@@ -2034,10 +2029,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@lucide/vue@1.48.0(vue@3.5.43(typescript@5.9.3))':
-    dependencies:
-      vue: 3.5.43(typescript@5.9.3)
-
   '@one-ini/wasm@0.2.1': {}
 
   '@playwright/test@1.62.1':
@@ -2460,7 +2451,7 @@ snapshots:
     optionalDependencies:
       '@vue/server-renderer': 3.5.43
 
-  '@wow-two-beta/ui-vue@0.0.7(@tanstack/vue-query@5.104.0(vue@3.5.43(typescript@5.9.3)))(@vue/test-utils@2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@5.9.3)))(tailwindcss@4.3.0)(vue-router@4.6.4(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
+  '@wow-two-beta/fe@0.0.26(@tanstack/vue-query@5.104.0(vue@3.5.43(typescript@5.9.3)))(@vue/test-utils@2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@5.9.3)))(tailwindcss@4.3.0)(vue-router@4.6.4(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
     dependencies:
       '@floating-ui/vue': 1.1.11(vue@3.5.43(typescript@5.9.3))
       bignumber.js: 11.1.5

@@ -1,5 +1,5 @@
-import { ApiFailureFactory, type ApiDecoder } from '@wow-two-beta/ui-vue/foundation/http';
-import { ResultExtensions } from '@wow-two-beta/ui-vue/foundation/results';
+import { ApiFailureFactory, type ApiDecoder } from '@wow-two-beta/fe/foundation/http';
+import { ResultExtensions } from '@wow-two-beta/fe/foundation/results';
 import type { z } from 'zod';
 
 /** Extends the wire codecs with decoders built from schemas. */

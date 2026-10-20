@@ -1,12 +1,12 @@
 using System.Text.Json;
 using ForeverPin.Domain.Codes.Serialization.Factories;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
+using WoW.Two.Sdk.Beta.Be.Foundation.Results;
 using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Infrastructure.Codes.Core.Extensions;
 using ForeverPin.Application.Settings;
-using WoW.Two.Sdk.Backend.Beta.Codes;
-using WoW.Two.Sdk.Backend.Beta.Codes.Models;
-using WoW.Two.Sdk.Backend.Beta.Codes.Models.Style;
+using WoW.Two.Sdk.Beta.Be.Codes;
+using WoW.Two.Sdk.Beta.Be.Codes.Models;
+using WoW.Two.Sdk.Beta.Be.Codes.Models.Style;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
 

@@ -5,7 +5,7 @@
   "type": "module",
   "description": "ForeverPin's Vue product and marketing application.",
   "engines": {
-    "node": ">=24.11.0"
+    "node": ">=24.11.0 <25"
   },
   "scripts": {
     "dev": "vite",
@@ -23,9 +23,9 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
-    "@lucide/vue": "1.48.0",
     "@tanstack/vue-query": "^5.102.8",
-    "@wow-two-beta/ui-vue": "0.0.7",
+    "@wow-two-beta/fe": "0.0.26",
+    "lucide-vue-next": "^0.460.0",
     "qrcode": "^1.5.4",
     "temporal-polyfill": "^1.0.1",
     "vue": "^3.5.13",

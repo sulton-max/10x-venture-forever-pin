@@ -1,5 +1,5 @@
 using ForeverPin.Domain.Codes.Core.Enums;
-using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Models;
+using WoW.Two.Sdk.Beta.Be.Web.RequestContext.Models;
 
 namespace ForeverPin.Redirect.Api.Application.Routing.Models;
 

@@ -1,10 +1,10 @@
 using ForeverPin.Common.Domain.Codes.Core.Enums;
-using WoW.Two.Sdk.Backend.Beta.Codes.Models.Style;
+using WoW.Two.Sdk.Beta.Be.Codes.Models.Style;
 using ForeverPin.Application.Codes.Core.Models;
 using ForeverPin.Domain.Codes.Rules.Models;
 using ForeverPin.Domain.Codes.Core.Enums;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Mediator.Cqrs;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
 
 namespace ForeverPin.Application.Codes.Core.Commands;
 

@@ -5,14 +5,18 @@
   "type": "module",
   "packageManager": "pnpm@10.33.2",
   "engines": {
-    "node": ">=24.11.0"
+    "node": ">=24.11.0 <25"
   },
   "scripts": {
     "dev": "pnpm --filter @foreverpin/web dev",
-    "build": "pnpm -r --if-present build",
-    "deploy": "node scripts/deploy.mjs",
+    "dev:http": "pnpm --filter @foreverpin/web dev:http",
+    "typecheck": "pnpm --filter @foreverpin/web typecheck",
+    "build": "pnpm --filter @foreverpin/web build",
     "preview": "pnpm --filter @foreverpin/web preview",
-    "typecheck": "pnpm -r --if-present typecheck",
-    "test": "pnpm -r --if-present test"
+    "test": "pnpm --filter @foreverpin/web test",
+    "format": "pnpm --filter @foreverpin/web format",
+    "format:check": "pnpm --filter @foreverpin/web format:check",
+    "lint": "pnpm --filter @foreverpin/web lint",
+    "deploy": "node scripts/deploy.mjs"
   }
 }

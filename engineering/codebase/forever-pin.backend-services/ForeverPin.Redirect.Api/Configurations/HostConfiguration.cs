@@ -1,6 +1,7 @@
 using ForeverPin.Redirect.Api.Endpoints;
-using WoW.Two.Sdk.Backend.Beta.Data;
-using WoW.Two.Sdk.Backend.Beta.Meta;
+using WoW.Two.Sdk.Beta.Be.Data;
+using WoW.Two.Sdk.Beta.Be.Meta;
+using WoW.Two.Sdk.Beta.Be.Web.SystemStatus;
 
 namespace ForeverPin.Redirect.Api.Configurations;
 
@@ -40,6 +41,7 @@ public static partial class HostConfiguration
         await app.Services.MigrateBespokeOnStartupAsync(app.Lifetime.ApplicationStopping);
 
         app.UseApiDefaults();
+        app.MapSystemStatus(configure: options => options.ServiceName = "forever-pin-redirect");
 
         // The single hot-path route: GET /{slug} resolves rules and returns a 302.
         app.MapRedirect();

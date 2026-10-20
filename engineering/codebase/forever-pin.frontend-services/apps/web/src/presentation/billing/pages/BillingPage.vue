@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ArrowUpRight, Check, CreditCard, Infinity as InfinityIcon, RotateCw } from '@lucide/vue';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Card, Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { Alert, Banner, MeterBar, Spinner } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { ArrowUpRight, Check, CreditCard, Infinity as InfinityIcon, RotateCw } from 'lucide-vue-next';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Card, Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { Alert, Banner, MeterBar, Spinner } from '@wow-two-beta/fe/presentation/feedback';
 import { computed, ref } from 'vue';
 
 import {

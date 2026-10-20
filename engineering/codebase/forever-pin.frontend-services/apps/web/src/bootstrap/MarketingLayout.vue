@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { Menu as MenuIcon } from '@lucide/vue';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  MenuItem,
-} from '@wow-two-beta/ui-vue/presentation/nav';
+import { Menu as MenuIcon } from 'lucide-vue-next';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, MenuItem } from '@wow-two-beta/fe/presentation/nav';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
 import { AppPaths, ColorModeButton } from '@/presentation/common';

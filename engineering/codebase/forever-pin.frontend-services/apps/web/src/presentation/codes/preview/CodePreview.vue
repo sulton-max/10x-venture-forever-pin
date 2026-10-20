@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Spinner } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { Spinner } from '@wow-two-beta/fe/presentation/feedback';
 import { computed } from 'vue';
 
 import { useCodePreview, type CodePreviewModel } from '@/application/codes';

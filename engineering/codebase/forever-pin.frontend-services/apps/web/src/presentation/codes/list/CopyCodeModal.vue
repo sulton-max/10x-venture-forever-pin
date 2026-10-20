@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { ChoiceCard, RadioGroup } from '@wow-two-beta/ui-vue/presentation/forms';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { ChoiceCard, RadioGroup } from '@wow-two-beta/fe/presentation/forms';
 import {
   Modal,
   ModalBody,
@@ -9,7 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-} from '@wow-two-beta/ui-vue/presentation/overlays';
+} from '@wow-two-beta/fe/presentation/overlays';
 import { computed, ref, watch } from 'vue';
 
 import { oppositeMode } from '@/application/codes';
@@ -74,7 +74,7 @@ function select(next: unknown): void {
             :value="option"
             :label="ContentModeDisplays[option].label"
             :description="ContentModeDisplays[option].note"
-            :disabled="option === ContentMode.Static && !canCopyStatic"
+            :is-disabled="option === ContentMode.Static && !canCopyStatic"
           />
         </RadioGroup>
         <p v-if="!canCopyStatic" class="mt-3 text-xs text-muted-foreground">

@@ -1,5 +1,5 @@
 using ForeverPin.Redirect.Api.Configurations;
-using WoW.Two.Sdk.Backend.Beta.Observability.Logging.Services;
+using WoW.Two.Sdk.Beta.Be.Observability.Logging.Services;
 
 await new StartupFailureReportingService().RunAsync(async cancellationToken =>
 {

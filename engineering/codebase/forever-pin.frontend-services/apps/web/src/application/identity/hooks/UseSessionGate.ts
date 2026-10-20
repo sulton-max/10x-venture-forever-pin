@@ -1,7 +1,7 @@
-import { AuthStatus } from '@wow-two-beta/ui-vue/auth';
-import { NoticeTone, notify } from '@wow-two-beta/ui-vue/feedback';
-import { provideGoogleIdentity } from '@wow-two-beta/ui-vue/foundation/oauth';
-import type { AppError } from '@wow-two-beta/ui-vue/foundation/results';
+import { AuthStatus } from '@wow-two-beta/fe/auth';
+import { NoticeTone, notify } from '@wow-two-beta/fe/feedback';
+import { provideGoogleIdentity } from '@wow-two-beta/fe/foundation/oauth';
+import type { AppError } from '@wow-two-beta/fe/foundation/results';
 import { computed, ref, shallowRef } from 'vue';
 
 import { FailureMessages, useRuntimeConfig } from '@/application/common';

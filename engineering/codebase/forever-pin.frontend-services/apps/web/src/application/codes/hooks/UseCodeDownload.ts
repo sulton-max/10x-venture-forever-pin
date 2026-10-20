@@ -1,7 +1,7 @@
-import { downloadBlob, downloadText } from '@wow-two-beta/ui-vue/foundation/files';
-import { ApiFailureFactory } from '@wow-two-beta/ui-vue/foundation/http';
-import { ResultExtensions } from '@wow-two-beta/ui-vue/foundation/results';
-import { useAppQuery } from '@wow-two-beta/ui-vue/query';
+import { downloadBlob, downloadText } from '@wow-two-beta/fe/foundation/files';
+import { ApiFailureFactory } from '@wow-two-beta/fe/foundation/http';
+import { ResultExtensions } from '@wow-two-beta/fe/foundation/results';
+import { useAppQuery } from '@wow-two-beta/fe/query';
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 
 import { ImageFormat, PrintSizing, type CodeDto } from '@/domain/codes';

@@ -1,8 +1,8 @@
 using ForeverPin.Domain.Codes.Rules.Mappers;
-using WoW.Two.Sdk.Backend.Beta.Codes.Payloads;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Identifiers.Generators;
+using WoW.Two.Sdk.Beta.Be.Codes.Payloads;
+using WoW.Two.Sdk.Beta.Be.Foundation.Identifiers.Generators;
 using ForeverPin.Domain.Codes.Serialization.Factories;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
+using WoW.Two.Sdk.Beta.Be.Foundation.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using ForeverPin.Application.Billing.Core.Services;
@@ -15,33 +15,34 @@ using ForeverPin.Infrastructure.Billing.Services;
 using ForeverPin.Infrastructure.Codes.Core.Services;
 using ForeverPin.Infrastructure.Persistence.Repositories;
 using ForeverPin.Application.Settings;
-using WoW.Two.Sdk.Backend.Beta.Codes;
+using WoW.Two.Sdk.Beta.Be.Codes;
 using ForeverPin.Persistence.DataContexts;
-using WoW.Two.Sdk.Backend.Beta.Data;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Configuration;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Options;
-using WoW.Two.Sdk.Backend.Beta.Identity.Cookies;
-using WoW.Two.Sdk.Backend.Beta.Identity.CurrentUser;
-using WoW.Two.Sdk.Backend.Beta.Identity.Guest;
-using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google;
-using WoW.Two.Sdk.Backend.Beta.Mediator;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Validation;
-using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability.Ef;
-using WoW.Two.Sdk.Backend.Beta.Meta;
-using WoW.Two.Sdk.Backend.Beta.Observability.HealthChecks;
-using WoW.Two.Sdk.Backend.Beta.Web.Antiforgery;
-using WoW.Two.Sdk.Backend.Beta.Web.DataProtection;
-using WoW.Two.Sdk.Backend.Beta.Web.ExceptionHandling;
-using WoW.Two.Sdk.Backend.Beta.Web.Json;
+using WoW.Two.Sdk.Beta.Be.Data;
+using WoW.Two.Sdk.Beta.Be.Data.Migrations.Bespoke;
+using WoW.Two.Sdk.Beta.Be.Foundation.Configuration;
+using WoW.Two.Sdk.Beta.Be.Foundation.Options;
+using WoW.Two.Sdk.Beta.Be.Identity.Cookies;
+using WoW.Two.Sdk.Beta.Be.Identity.CurrentUser;
+using WoW.Two.Sdk.Beta.Be.Identity.Guest;
+using WoW.Two.Sdk.Beta.Be.Identity.OAuth.Google;
+using WoW.Two.Sdk.Beta.Be.Mediator;
+using WoW.Two.Sdk.Beta.Be.Mediator.Validation;
+using WoW.Two.Sdk.Beta.Be.Messaging.Reliability.Ef;
+using WoW.Two.Sdk.Beta.Be.Meta;
+using WoW.Two.Sdk.Beta.Be.Observability.HealthChecks;
+using WoW.Two.Sdk.Beta.Be.Web.Antiforgery;
+using WoW.Two.Sdk.Beta.Be.Web.DataProtection;
+using WoW.Two.Sdk.Beta.Be.Web.ExceptionHandling;
+using WoW.Two.Sdk.Beta.Be.Web.Json;
 
 namespace ForeverPin.Api.Configurations;
 
 public static partial class HostConfiguration
 {
-    /// <summary>Configures file settings and the supported deployment variables; no other variable reaches configuration.</summary>
+    /// <summary>Maps the supported deployment variables; no other variable reaches configuration.</summary>
+    /// <remarks>The settings files (a target's <c>appsettings.Target.json</c>, a local run's <c>appsettings.Local.json</c>) come from <c>AddApiDefaults</c>.</remarks>
     private static WebApplicationBuilder AddConfiguration(this WebApplicationBuilder builder)
     {
-        builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
         builder.Configuration.UseEnvironmentAliases(new Dictionary<string, string>
         {
             ["DB_CONNECTION"] = "DB_CONNECTION",
@@ -64,7 +65,28 @@ public static partial class HostConfiguration
     }
 
 
-    /// <summary>Registers persistent cookie keys, the database readiness probe and the application settings.</summary>
+    /// <summary>Points the redirect base and the Stripe return pages at the sites a deployed target publishes.</summary>
+    /// <remarks>Wheelhouse writes each published site's origin to <c>Sites:{site}:Url</c>, so no target types one.</remarks>
+    private static WebApplicationBuilder AddPublishedSiteUrls(this WebApplicationBuilder builder)
+    {
+        var app = builder.Configuration["Sites:app:Url"]?.TrimEnd('/');
+        var go = builder.Configuration["Sites:go:Url"]?.TrimEnd('/');
+        var values = new Dictionary<string, string?>();
+        if (!string.IsNullOrWhiteSpace(go))
+            values["ApiSettings:RedirectBaseUrl"] = go;
+        if (!string.IsNullOrWhiteSpace(app))
+        {
+            values["Billing:SuccessUrl"] = $"{app}/app/billing?status=success";
+            values["Billing:CancelUrl"] = $"{app}/app/billing?status=cancelled";
+            values["Billing:PortalReturnUrl"] = $"{app}/app/billing";
+        }
+
+        if (values.Count > 0)
+            builder.Configuration.AddInMemoryCollection(values);
+        return builder;
+    }
+
+    /// <summary>Registers persistent cookie keys and the application settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
     {
         // A controller naming a budget configuration lacks would fail every such request; fail the start instead.
@@ -80,20 +102,22 @@ public static partial class HostConfiguration
             options.ApplicationName = "ForeverPin";
             options.KeyDirectory = builder.Configuration["DataProtection:KeyPath"];
         });
-        builder.Services.AddHealthChecks().AddDatabaseReadinessCheck<AppDbContext>();
         builder.Services.AddValidatedSettings<ApiSettings>(builder.Configuration, nameof(ApiSettings),
             options => options.Validate(settings => IsHttpUrl(settings.RedirectBaseUrl),
                 "ApiSettings.RedirectBaseUrl must be an absolute HTTP(S) URL."));
         return builder;
     }
 
-    /// <summary>Registers the Postgres host floor for <see cref="AppDbContext"/>.</summary>
+    /// <summary>Registers the Postgres host floor for <see cref="AppDbContext"/> and its readiness probe.</summary>
     private static WebApplicationBuilder AddPostgresDatabase(this WebApplicationBuilder builder)
     {
         builder.Services.AddStoredJsonOptionsProfile("foreverpin-content", CodeJsonOptionsFactory.CreateContent());
         builder.Services.AddStoredJsonOptionsProfile("foreverpin-rules", CodeJsonOptionsFactory.CreateRules());
         builder.Services.AddStoredJsonOptionsProfile("foreverpin-style", CodeJsonOptionsFactory.CreateStyle());
-        builder.Services.AddPostgresPersistence<AppDbContext>(builder.Configuration);
+        // Applied migrations carry the product version they shipped in.
+        builder.Services.AddPostgresPersistence<AppDbContext>(builder.Configuration, options => options.ConfigureMigrations =
+            migrations => migrations.Version = MigrationVersionMapper.ToVersion(typeof(HostConfiguration).Assembly));
+        builder.Services.AddHealthChecks().AddDatabaseReadinessCheck<AppDbContext>();
         return builder;
     }
 
@@ -183,13 +207,12 @@ public static partial class HostConfiguration
         return builder;
     }
 
-    /// <summary>Registers the controllers with validation filtering and string-enum JSON.</summary>
+    /// <summary>Registers the controllers with the SDK wire JSON and validation filtering.</summary>
     private static WebApplicationBuilder AddControllers(this WebApplicationBuilder builder)
     {
         builder.Services
-            .AddControllers()
+            .AddControllersWithSdkJson()
             .AddValidationExceptionFilter()
-            .AddJsonStringEnums()
             .AddJsonOptions(options =>
             {
                 // Bind both polymorphic unions in the endpoint serializer.

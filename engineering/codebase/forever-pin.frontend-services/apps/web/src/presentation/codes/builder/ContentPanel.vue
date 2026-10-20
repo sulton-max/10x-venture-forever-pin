@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Alert } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Alert } from '@wow-two-beta/fe/presentation/feedback';
 import {
   Field,
-  SegmentedPicker,
+  ToggleGroup,
   SelectPicker,
   SelectPickerContent,
   SelectPickerItem,
@@ -11,8 +11,8 @@ import {
   SelectPickerValue,
   TextInput,
   ToggleInput,
-} from '@wow-two-beta/ui-vue/presentation/forms';
-import { DividerLayout } from '@wow-two-beta/ui-vue/presentation/layout';
+} from '@wow-two-beta/fe/presentation/forms';
+import { DividerLayout } from '@wow-two-beta/fe/presentation/layout';
 import { computed, watch } from 'vue';
 
 import type { CodeBuilderForm } from '@/application/codes';
@@ -126,7 +126,8 @@ function changeContentType(next: ContentType | null): void {
     <!-- Mode is fixed at creation: the two bake different bytes, so a printed code can never switch. -->
     <div v-if="!isEdit" class="relative">
       <Field label="How it resolves" :helper="isModeLocked ? ModeLockedNote : ContentModeDisplays[mode].note">
-        <SegmentedPicker
+        <ToggleGroup
+          variant="segmented"
           type="single"
           :model-value="mode"
           aria-label="How the code resolves"
@@ -140,11 +141,11 @@ function changeContentType(next: ContentType | null): void {
             variant="soft"
             :value="option"
             size="sm"
-            :disabled="isModeLocked && option !== ContentMode.Dynamic"
+            :is-disabled="isModeLocked && option !== ContentMode.Dynamic"
           >
             {{ ContentModeDisplays[option].label }}
           </ToggleInput>
-        </SegmentedPicker>
+        </ToggleGroup>
       </Field>
       <InfoPopover topic="static and dynamic codes" :text="BuilderHelp.mode" class="absolute top-0 right-0" />
     </div>

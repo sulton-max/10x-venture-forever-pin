@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <BackendSdkVersion>10.0.60-beta</BackendSdkVersion>
+    <BackendSdkVersion>10.0.72-beta</BackendSdkVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="EFCore.NamingConventions" Version="10.0.1" />
@@ -11,9 +11,9 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="Stripe.net" Version="52.0.0" />
-    <PackageVersion Include="WoW2.Sdk.Backend.Beta" Version="$(BackendSdkVersion)" />
-    <PackageVersion Include="WoW2.Sdk.Backend.Beta.Testing" Version="$(BackendSdkVersion)" />
-    <PackageVersion Include="WoW2.Sdk.Backend.Beta.Testing.Data" Version="$(BackendSdkVersion)" />
+    <PackageVersion Include="WoW2.Sdk.Beta.Be" Version="$(BackendSdkVersion)" />
+    <PackageVersion Include="WoW2.Sdk.Beta.Be.Testing" Version="$(BackendSdkVersion)" />
+    <PackageVersion Include="WoW2.Sdk.Beta.Be.Testing.Data" Version="$(BackendSdkVersion)" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />

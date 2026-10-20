@@ -1,6 +1,6 @@
 // Builder schema, initial values and request mapping.
 
-import { defaultMapFieldPath } from '@wow-two-beta/ui-vue/forms-engine';
+import { defaultMapFieldPath } from '@wow-two-beta/fe/forms-engine';
 import { Temporal } from 'temporal-polyfill';
 import { z } from 'zod';
 

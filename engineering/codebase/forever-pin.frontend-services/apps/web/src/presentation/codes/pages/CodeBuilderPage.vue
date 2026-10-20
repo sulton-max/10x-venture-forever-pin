@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ArrowLeft, RotateCw } from '@lucide/vue';
-import { BlockerState, useNavigationBlocker } from '@wow-two-beta/ui-vue/router';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Card, Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { Alert, Spinner } from '@wow-two-beta/ui-vue/presentation/feedback';
-import { SegmentedPicker, ToggleInput } from '@wow-two-beta/ui-vue/presentation/forms';
+import { ArrowLeft, RotateCw } from 'lucide-vue-next';
+import { BlockerState, useNavigationBlocker } from '@wow-two-beta/fe/router';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Card, Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { Alert, Spinner } from '@wow-two-beta/fe/presentation/feedback';
+import { ToggleGroup, ToggleInput } from '@wow-two-beta/fe/presentation/forms';
 import {
   AlertModal,
   AlertModalContent,
@@ -12,7 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-} from '@wow-two-beta/ui-vue/presentation/overlays';
+} from '@wow-two-beta/fe/presentation/overlays';
 import { computed, ref } from 'vue';
 
 import { CodeBuilderPhase, useCodeBuilder } from '@/application/codes';
@@ -126,7 +126,8 @@ const loadFailure = computed(() =>
     <div v-else class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.8fr)]">
       <form novalidate class="contents" @submit.prevent="form.handleSubmit">
         <Card class="surface-soft flex min-w-0 flex-col gap-5 p-6">
-          <SegmentedPicker
+          <ToggleGroup
+            variant="segmented"
             type="single"
             :model-value="tab"
             aria-label="Builder section"
@@ -135,7 +136,7 @@ const loadFailure = computed(() =>
           >
             <ToggleInput variant="soft" :value="BuilderTab.Content" class="flex-1">Content</ToggleInput>
             <ToggleInput variant="soft" :value="BuilderTab.Design" class="flex-1">Design</ToggleInput>
-          </SegmentedPicker>
+          </ToggleGroup>
 
           <!-- Both sections stay mounted, so drafts such as a gradient survive a switch. -->
           <div v-show="tab === BuilderTab.Content" class="motion-safe:animate-fade-in">

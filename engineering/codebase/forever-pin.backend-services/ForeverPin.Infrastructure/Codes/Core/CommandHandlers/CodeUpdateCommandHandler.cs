@@ -6,12 +6,12 @@ using ForeverPin.Application.Settings;
 using System.Text.Json;
 using ForeverPin.Domain.Codes.Serialization.Factories;
 using ForeverPin.Application.Codes.Rules.Models;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Validation;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Validation.Trackers;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Validation.Trackers.Extensions;
+using WoW.Two.Sdk.Beta.Be.Foundation.Validation;
+using WoW.Two.Sdk.Beta.Be.Foundation.Errors;
+using WoW.Two.Sdk.Beta.Be.Mediator.Cqrs;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Foundation.Validation.Trackers;
+using WoW.Two.Sdk.Beta.Be.Foundation.Validation.Trackers.Extensions;
 
 namespace ForeverPin.Infrastructure.Codes.Core.CommandHandlers;
 

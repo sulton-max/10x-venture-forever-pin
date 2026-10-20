@@ -4,8 +4,8 @@ const DismissedKey = 'foreverpin.guest-keep-banner.dismissed';
 </script>
 
 <script setup lang="ts">
-import { localStorageStorageBroker } from '@wow-two-beta/ui-vue/foundation/storage';
-import { Banner } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { localStorageStorageBroker } from '@wow-two-beta/fe/foundation/storage';
+import { Banner } from '@wow-two-beta/fe/presentation/feedback';
 import { ref } from 'vue';
 
 /** Defines the props of {@link GuestKeepBanner}. */

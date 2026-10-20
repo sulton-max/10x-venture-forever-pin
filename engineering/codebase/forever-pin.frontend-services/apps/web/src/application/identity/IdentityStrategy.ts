@@ -1,4 +1,4 @@
-import { createCookieStrategy } from '@wow-two-beta/ui-vue/auth';
+import { createCookieStrategy } from '@wow-two-beta/fe/auth';
 
 import { UserKind, type Me } from '@/domain/identity';
 import { apiClient } from '@/integration/common';
@@ -15,7 +15,7 @@ export function createIdentityStrategy() {
     client: apiClient,
     decodeUser: decodeMe,
     mePath: '/api/identity/me',
-    signOutPath: '/api/auth/logout',
+    signOutPath: '/api/identity/sign-out',
     isAnonymous: (me) => me.kind === UserKind.Anonymous,
     signIn: (input, context) =>
       input.kind === 'guest'

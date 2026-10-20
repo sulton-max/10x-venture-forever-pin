@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Clock, Globe, Languages, Smartphone } from '@lucide/vue';
-import { Card, Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { Clock, Globe, Languages, Smartphone } from 'lucide-vue-next';
+import { Card, Text } from '@wow-two-beta/fe/presentation/display';
 
 import StaticQrPreview from './StaticQrPreview.vue';
 

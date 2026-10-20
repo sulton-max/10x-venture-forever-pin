@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Check, X } from '@lucide/vue';
+import { Check, X } from 'lucide-vue-next';
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-} from '@wow-two-beta/ui-vue/presentation/display';
+} from '@wow-two-beta/fe/presentation/display';
 
 import { ComparisonRows } from './MarketingContent';
 

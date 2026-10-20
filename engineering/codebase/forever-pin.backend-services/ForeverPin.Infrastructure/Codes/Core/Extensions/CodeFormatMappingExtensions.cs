@@ -1,5 +1,5 @@
 using DomainBarcodeFormat = ForeverPin.Domain.Codes.Core.Enums.BarcodeFormat;
-using RenderBarcodeFormat = WoW.Two.Sdk.Backend.Beta.Codes.Models.BarcodeFormat;
+using RenderBarcodeFormat = WoW.Two.Sdk.Beta.Be.Codes.Models.BarcodeFormat;
 
 namespace ForeverPin.Infrastructure.Codes.Core.Extensions;
 

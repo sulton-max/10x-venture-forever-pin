@@ -1,8 +1,8 @@
 using ForeverPin.Domain.Codes.Rules.Mappers;
-using WoW.Two.Sdk.Backend.Beta.Codes.Payloads;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Options;
+using WoW.Two.Sdk.Beta.Be.Codes.Payloads;
+using WoW.Two.Sdk.Beta.Be.Foundation.Options;
 using ForeverPin.Domain.Codes.Serialization.Factories;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
+using WoW.Two.Sdk.Beta.Be.Foundation.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Redirect.Api.Application.Analytics.Models;
@@ -10,61 +10,54 @@ using ForeverPin.Redirect.Api.Application.Routing.Services;
 using ForeverPin.Redirect.Api.Infrastructure.Analytics;
 using ForeverPin.Redirect.Api.Infrastructure.Routing;
 using ForeverPin.Redirect.Api.Settings;
-using WoW.Two.Sdk.Backend.Beta.Caching.Invalidation;
-using WoW.Two.Sdk.Backend.Beta.Data;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Configuration;
-using WoW.Two.Sdk.Backend.Beta.Geo.IpLocation;
-using WoW.Two.Sdk.Backend.Beta.Jobs.Batches;
-using WoW.Two.Sdk.Backend.Beta.Meta;
-using WoW.Two.Sdk.Backend.Beta.Observability.HealthChecks;
+using WoW.Two.Sdk.Beta.Be.Caching.Invalidation;
+using WoW.Two.Sdk.Beta.Be.Data;
+using WoW.Two.Sdk.Beta.Be.Data.Migrations.Bespoke;
+using WoW.Two.Sdk.Beta.Be.Foundation.Configuration;
+using WoW.Two.Sdk.Beta.Be.Geo.IpLocation;
+using WoW.Two.Sdk.Beta.Be.Jobs.Batches;
+using WoW.Two.Sdk.Beta.Be.Meta;
+using WoW.Two.Sdk.Beta.Be.Observability.HealthChecks;
 
 namespace ForeverPin.Redirect.Api.Configurations;
 
 public static partial class HostConfiguration
 {
-    /// <summary>Configures file settings and the supported deployment variables; no other variable reaches configuration.</summary>
+    /// <summary>Maps the supported deployment variables; no other variable reaches configuration.</summary>
+    /// <remarks>The settings files (a target's <c>appsettings.Target.json</c>, a local run's <c>appsettings.Local.json</c>) come from <c>AddApiDefaults</c>.</remarks>
     private static WebApplicationBuilder AddConfiguration(this WebApplicationBuilder builder)
     {
-        builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
         builder.Configuration.UseEnvironmentAliases(new Dictionary<string, string>
         {
             ["DB_CONNECTION"] = "DB_CONNECTION",
-            ["REDIRECT_BASE_URL"] = "ApiSettings:RedirectBaseUrl",
             ["ALLOWED_HOSTS"] = "AllowedHosts",
             ["AllowedHosts"] = "AllowedHosts",
             ["IP_LOCATION_DIRECTORY"] = "IpLocation:DatabaseDirectory",
             ["DATA_PROTECTION_KEY_PATH"] = "DataProtection:KeyPath",
             ["DataProtection__KeyPath"] = "DataProtection:KeyPath",
-            ["GOOGLE_CLIENT_ID"] = "Auth:Google:ClientId",
-            ["BILLING_SECRET_KEY"] = "Billing:SecretKey",
-            ["BILLING_WEBHOOK_SECRET"] = "Billing:WebhookSecret",
-            ["BILLING_SUCCESS_URL"] = "Billing:SuccessUrl",
-            ["BILLING_CANCEL_URL"] = "Billing:CancelUrl",
-            ["BILLING_PRICE_SOLO"] = "Billing:Prices:Solo",
-            ["BILLING_PRICE_PRO"] = "Billing:Prices:Pro",
-            ["BILLING_PRICE_AGENCY"] = "Billing:Prices:Agency",
         });
         return builder;
     }
 
-
-    /// <summary>Registers the database readiness probe and the redirect settings.</summary>
+    /// <summary>Registers the redirect settings.</summary>
     private static WebApplicationBuilder AddSettings(this WebApplicationBuilder builder)
     {
-        builder.Services.AddHealthChecks().AddDatabaseReadinessCheck<AppDbContext>();
         builder.Services.AddValidatedSettings<RedirectSettings>(builder.Configuration, nameof(RedirectSettings),
             options => options.Validate(settings => settings.ConfigCacheSeconds > 0,
                 "RedirectSettings.ConfigCacheSeconds must be positive."));
         return builder;
     }
 
-    /// <summary>Registers the Postgres host floor for <see cref="AppDbContext"/>.</summary>
+    /// <summary>Registers the Postgres host floor for <see cref="AppDbContext"/> and its readiness probe.</summary>
     private static WebApplicationBuilder AddPostgresDatabase(this WebApplicationBuilder builder)
     {
         builder.Services.AddStoredJsonOptionsProfile("foreverpin-content", CodeJsonOptionsFactory.CreateContent());
         builder.Services.AddStoredJsonOptionsProfile("foreverpin-rules", CodeJsonOptionsFactory.CreateRules());
         builder.Services.AddStoredJsonOptionsProfile("foreverpin-style", CodeJsonOptionsFactory.CreateStyle());
-        builder.Services.AddPostgresPersistence<AppDbContext>(builder.Configuration);
+        // Applied migrations carry the product version they shipped in.
+        builder.Services.AddPostgresPersistence<AppDbContext>(builder.Configuration, options => options.ConfigureMigrations =
+            migrations => migrations.Version = MigrationVersionMapper.ToVersion(typeof(HostConfiguration).Assembly));
+        builder.Services.AddHealthChecks().AddDatabaseReadinessCheck<AppDbContext>();
         return builder;
     }
 
@@ -73,8 +66,8 @@ public static partial class HostConfiguration
     {
         builder.Services.AddCodePayloads();
         builder.Services.AddSingleton<CodePayloadMapper>();
-        builder.Services.AddSingleton<WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers.IAcceptLanguageParser,
-            WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers.AcceptLanguageParser>();
+        builder.Services.AddSingleton<WoW.Two.Sdk.Beta.Be.Web.RequestContext.Parsers.IAcceptLanguageParser,
+            WoW.Two.Sdk.Beta.Be.Web.RequestContext.Parsers.AcceptLanguageParser>();
         builder.Services.AddSingleton<IRoutingService, RoutingService>();
         builder.Services.AddSingleton<IDeviceMapper, UserAgentDeviceMapper>();
 

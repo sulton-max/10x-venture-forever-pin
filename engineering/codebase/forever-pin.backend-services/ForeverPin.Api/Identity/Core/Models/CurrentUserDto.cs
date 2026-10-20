@@ -1,5 +1,5 @@
 using ForeverPin.Application.Identity.Core.Models;
-using WoW.Two.Sdk.Backend.Beta.Identity.CurrentUser;
+using WoW.Two.Sdk.Beta.Be.Identity.CurrentUser;
 
 namespace ForeverPin.Api.Identity.Core.Models;
 

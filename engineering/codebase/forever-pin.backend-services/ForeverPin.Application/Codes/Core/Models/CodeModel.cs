@@ -1,4 +1,4 @@
-using WoW.Two.Sdk.Backend.Beta.Codes.Models.Style;
+using WoW.Two.Sdk.Beta.Be.Codes.Models.Style;
 using ForeverPin.Common.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Rules.Models;

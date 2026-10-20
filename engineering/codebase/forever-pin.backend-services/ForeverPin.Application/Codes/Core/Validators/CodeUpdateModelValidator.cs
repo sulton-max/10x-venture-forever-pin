@@ -29,7 +29,7 @@ public sealed class CodeUpdateModelValidator : AbstractValidator<CodeUpdateModel
 
         RuleFor(model => model.Command.BarcodeFormat).IsInEnum().OverridePropertyName(nameof(CodeUpdateCommand.BarcodeFormat));
 
-        RuleFor(model => model.Command.Style).NotNull().SetValidator(new WoW.Two.Sdk.Backend.Beta.Codes.Validators.StyleSpecValidator())
+        RuleFor(model => model.Command.Style).NotNull().SetValidator(new WoW.Two.Sdk.Beta.Be.Codes.Validators.StyleSpecValidator())
             .OverridePropertyName(nameof(CodeUpdateCommand.Style));
     }
 }

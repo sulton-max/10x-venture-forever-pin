@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Button, GoogleSignInButton } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Card, Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { Alert } from '@wow-two-beta/ui-vue/presentation/feedback';
-import { DividerLayout } from '@wow-two-beta/ui-vue/presentation/layout';
+import { Button, GoogleSignInButton } from '@wow-two-beta/fe/presentation/actions';
+import { Card, Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { Alert } from '@wow-two-beta/fe/presentation/feedback';
+import { DividerLayout } from '@wow-two-beta/fe/presentation/layout';
 
 /** Defines the props of {@link SignInGate}. */
 export interface SignInGateProps {

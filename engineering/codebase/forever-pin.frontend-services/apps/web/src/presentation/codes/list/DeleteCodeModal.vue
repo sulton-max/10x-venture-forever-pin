@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
 import {
   AlertModal,
   AlertModalContent,
@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-} from '@wow-two-beta/ui-vue/presentation/overlays';
+} from '@wow-two-beta/fe/presentation/overlays';
 import { computed } from 'vue';
 
 import { ContentMode, type CodeDto } from '@/domain/codes';

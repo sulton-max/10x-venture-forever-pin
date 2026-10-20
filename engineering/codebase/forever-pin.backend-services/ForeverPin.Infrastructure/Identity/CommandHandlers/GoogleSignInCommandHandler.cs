@@ -5,11 +5,11 @@ using ForeverPin.Application.Identity.Core.Models;
 using ForeverPin.Application.Identity.Core.Services;
 using ForeverPin.Domain.Identity.Entities;
 using ForeverPin.Persistence.DataContexts;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
-using WoW.Two.Sdk.Backend.Beta.Identity.OAuth.Google.Authenticators;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
+using WoW.Two.Sdk.Beta.Be.Foundation.Errors;
+using WoW.Two.Sdk.Beta.Be.Identity.OAuth.Google.Authenticators;
+using WoW.Two.Sdk.Beta.Be.Mediator.Cqrs;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Locks.Extensions;
 
 namespace ForeverPin.Infrastructure.Identity.CommandHandlers;
 

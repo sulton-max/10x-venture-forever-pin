@@ -1,4 +1,4 @@
-import { useAppQuery } from '@wow-two-beta/ui-vue/query';
+import { useAppQuery } from '@wow-two-beta/fe/query';
 import { computed, shallowRef, toValue, watch, type MaybeRefOrGetter } from 'vue';
 
 import type { CodeDto } from '@/domain/codes';

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Heading, HeadingSize, Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { Heading, HeadingSize, Text } from '@wow-two-beta/fe/presentation/display';
 
 /** Defines the props of {@link MarketingHeading}. */
 export interface MarketingHeadingProps {

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { Plus, QrCode } from '@lucide/vue';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Card, EmptyState, Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { Alert, Spinner } from '@wow-two-beta/ui-vue/presentation/feedback';
-import type { AppError, Result } from '@wow-two-beta/ui-vue/foundation/results';
-import { SearchInput } from '@wow-two-beta/ui-vue/presentation/forms';
+import { Plus, QrCode } from 'lucide-vue-next';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Card, EmptyState, Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { Alert, Spinner } from '@wow-two-beta/fe/presentation/feedback';
+import { useDebouncedValue } from '@wow-two-beta/fe/foundation/async';
+import type { AppError, Result } from '@wow-two-beta/fe/foundation/results';
+import { SearchInput } from '@wow-two-beta/fe/presentation/forms';
 import { computed, reactive, ref, shallowRef } from 'vue';
 
 import { useCodeCommands, useCodes } from '@/application/codes';
-import { FailureMessages, useSettledValue } from '@/application/common';
+import { FailureMessages } from '@/application/common';
 import type { CodeDto, ContentMode } from '@/domain/codes';
 
 import CodeRowCard from '../list/CodeRowCard.vue';
@@ -36,7 +37,7 @@ defineOptions({ name: 'CodesListPage' });
 const props = defineProps<CodesListPageProps>();
 
 const search = ref('');
-const settledSearch = useSettledValue(search, SearchSettleMs);
+const settledSearch = useDebouncedValue(search, SearchSettleMs);
 const list = useCodes(settledSearch);
 const commands = useCodeCommands();
 const busyIds = reactive(new Set<string>());

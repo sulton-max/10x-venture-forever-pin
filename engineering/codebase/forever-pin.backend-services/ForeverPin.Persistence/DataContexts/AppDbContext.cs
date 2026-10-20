@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using ForeverPin.Domain.Billing.Entities;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Identity.Entities;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Naming;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Sqlite;
-using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability.Ef;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Naming;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Sqlite;
+using WoW.Two.Sdk.Beta.Be.Messaging.Reliability.Ef;
 
 namespace ForeverPin.Persistence.DataContexts;
 

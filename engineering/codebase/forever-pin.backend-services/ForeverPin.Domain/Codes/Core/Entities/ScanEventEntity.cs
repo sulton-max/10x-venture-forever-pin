@@ -1,5 +1,5 @@
 using ForeverPin.Domain.Codes.Core.Enums;
-using WoW.Two.Sdk.Backend.Beta.Data.Abstractions;
+using WoW.Two.Sdk.Beta.Be.Data.Abstractions;
 
 namespace ForeverPin.Domain.Codes.Core.Entities;
 

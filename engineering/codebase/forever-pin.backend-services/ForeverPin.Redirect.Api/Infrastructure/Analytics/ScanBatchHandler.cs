@@ -2,7 +2,7 @@ using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Redirect.Api.Application.Analytics.Models;
 using Microsoft.EntityFrameworkCore;
-using WoW.Two.Sdk.Backend.Beta.Jobs.Batches;
+using WoW.Two.Sdk.Beta.Be.Jobs.Batches;
 
 namespace ForeverPin.Redirect.Api.Infrastructure.Analytics;
 

@@ -2,8 +2,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using ForeverPin.Domain.Codes.Content;
 using ForeverPin.Domain.Codes.Rules.Models;
-using WoW.Two.Sdk.Backend.Beta.Codes.Models;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Serialization;
+using WoW.Two.Sdk.Beta.Be.Codes.Models;
+using WoW.Two.Sdk.Beta.Be.Foundation.Serialization;
 
 namespace ForeverPin.Domain.Codes.Serialization.Factories;
 

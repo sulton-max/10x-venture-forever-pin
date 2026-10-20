@@ -23,15 +23,8 @@
       content="One QR code, many destinations by context — and you'll never have to reprint it. Smart routing from $5, unlimited scans on every tier."
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <script>
-      // Applies the saved color mode before first paint; the app's color-mode provider owns it afterwards.
-      try {
-        const saved = localStorage.getItem('color-mode');
-        const dark = saved === 'dark' || (saved !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark', dark);
-        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-      } catch {}
-    </script>
+    <!-- Applies the saved color mode before first paint; the app's color-mode provider owns it afterwards. -->
+    <script vite-ignore src="/theme.js"></script>
   </head>
   <body>
     <div id="root"></div>

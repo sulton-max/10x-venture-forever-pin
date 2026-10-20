@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ColorPicker, ControlGroupField, SegmentedPicker, ToggleInput } from '@wow-two-beta/ui-vue/presentation/forms';
+import { ColorPicker, ControlGroupField, ToggleGroup, ToggleInput } from '@wow-two-beta/fe/presentation/forms';
 
 import type { CodeStyleDto } from '@/domain/codes';
 import { InfoPopover } from '@/presentation/common';
@@ -45,7 +45,8 @@ function setFill(next: unknown): void {
         aria-label="Background color"
         @update:model-value="(hex) => hex && emit('change', { ...style, backgroundColor: hex })"
       />
-      <SegmentedPicker
+      <ToggleGroup
+        variant="segmented"
         type="single"
         :model-value="style.transparentBackground ? 'transparent' : 'color'"
         aria-label="Background fill"
@@ -53,7 +54,7 @@ function setFill(next: unknown): void {
       >
         <ToggleInput variant="soft" value="color" size="sm">Color</ToggleInput>
         <ToggleInput variant="soft" value="transparent" size="sm">Transparent</ToggleInput>
-      </SegmentedPicker>
+      </ToggleGroup>
     </div>
   </ControlGroupField>
 </template>

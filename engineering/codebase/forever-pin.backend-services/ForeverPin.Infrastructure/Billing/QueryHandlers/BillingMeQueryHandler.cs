@@ -4,8 +4,8 @@ using ForeverPin.Application.Billing.Core.Queries;
 using ForeverPin.Application.Billing.Core.Services;
 using ForeverPin.Application.Codes.Core.Services;
 using ForeverPin.Domain.Billing.Enums;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Mediator.Cqrs;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
 
 namespace ForeverPin.Infrastructure.Billing.QueryHandlers;
 

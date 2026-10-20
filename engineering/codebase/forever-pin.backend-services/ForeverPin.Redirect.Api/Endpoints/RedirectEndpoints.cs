@@ -1,11 +1,11 @@
-using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers;
+using WoW.Two.Sdk.Beta.Be.Web.RequestContext.Parsers;
 using System.Security.Cryptography;
 using System.Text;
 using ForeverPin.Redirect.Api.Application.Analytics.Models;
 using ForeverPin.Redirect.Api.Application.Routing.Models;
 using ForeverPin.Redirect.Api.Application.Routing.Services;
-using WoW.Two.Sdk.Backend.Beta.Geo.IpLocation.Brokers;
-using WoW.Two.Sdk.Backend.Beta.Jobs.Batches;
+using WoW.Two.Sdk.Beta.Be.Geo.IpLocation.Brokers;
+using WoW.Two.Sdk.Beta.Be.Jobs.Batches;
 
 namespace ForeverPin.Redirect.Api.Endpoints;
 

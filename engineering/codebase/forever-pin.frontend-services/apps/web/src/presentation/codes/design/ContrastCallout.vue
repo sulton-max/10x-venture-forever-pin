@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Alert } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { Alert } from '@wow-two-beta/fe/presentation/feedback';
 import { computed } from 'vue';
 
 import { ContrastExtensions, ContrastVerdict, type CodeStyleDto } from '@/domain/codes';

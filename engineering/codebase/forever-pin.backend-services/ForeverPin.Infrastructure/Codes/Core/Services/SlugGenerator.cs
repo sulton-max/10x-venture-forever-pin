@@ -1,5 +1,5 @@
 using ForeverPin.Application.Codes.Core.Services;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Identifiers.Generators;
+using WoW.Two.Sdk.Beta.Be.Foundation.Identifiers.Generators;
 
 namespace ForeverPin.Infrastructure.Codes.Core.Services;
 

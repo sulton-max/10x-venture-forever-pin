@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ArrowRight, Infinity as InfinityIcon } from '@lucide/vue';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { ArrowRight, Infinity as InfinityIcon } from 'lucide-vue-next';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Heading, Text } from '@wow-two-beta/fe/presentation/display';
 import { RouterLink } from 'vue-router';
 
 import { AppPaths } from '@/presentation/common';

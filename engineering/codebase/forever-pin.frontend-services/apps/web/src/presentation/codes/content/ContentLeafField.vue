@@ -14,7 +14,7 @@ import {
   TextAreaInput,
   TextInput,
   UrlInput,
-} from '@wow-two-beta/ui-vue/presentation/forms';
+} from '@wow-two-beta/fe/presentation/forms';
 import { Temporal } from 'temporal-polyfill';
 import { computed } from 'vue';
 

@@ -25,6 +25,6 @@ public sealed class CodeCreateCommandValidator : AbstractValidator<CodeCreateCom
 
         RuleFor(command => command.BarcodeFormat).IsInEnum();
 
-        RuleFor(command => command.Style).NotNull().SetValidator(new WoW.Two.Sdk.Backend.Beta.Codes.Validators.StyleSpecValidator());
+        RuleFor(command => command.Style).NotNull().SetValidator(new WoW.Two.Sdk.Beta.Be.Codes.Validators.StyleSpecValidator());
     }
 }

@@ -2,7 +2,7 @@
 
     <ItemGroup>
         <!-- ISuccessResult / IFailureResult result-pattern markers. -->
-        <PackageReference Include="WoW2.Sdk.Backend.Beta" />
+        <PackageReference Include="WoW2.Sdk.Beta.Be" />
     </ItemGroup>
 
 </Project>

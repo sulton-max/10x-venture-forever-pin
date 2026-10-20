@@ -7,7 +7,7 @@ using ForeverPin.Domain.Codes.Content.Sms.Models;
 using ForeverPin.Domain.Codes.Content.Email.Models;
 using ForeverPin.Domain.Codes.Content.Geo.Models;
 using ForeverPin.Domain.Codes.Rules.Mappers;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
+using WoW.Two.Sdk.Beta.Be.Foundation.Results;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Rules.Models;

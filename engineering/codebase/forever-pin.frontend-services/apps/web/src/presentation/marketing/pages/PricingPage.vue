@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { Text } from '@wow-two-beta/fe/presentation/display';
 
 import CallToActionSection from '../CallToActionSection.vue';
 import ComparisonTable from '../ComparisonTable.vue';

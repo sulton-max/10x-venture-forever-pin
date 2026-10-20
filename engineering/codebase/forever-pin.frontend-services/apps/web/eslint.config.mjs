@@ -63,7 +63,11 @@ export default [
   ...vue.configs['flat/recommended'],
   {
     files: ['**/*.{ts,vue}'],
-    languageOptions: { globals: globals.browser, parserOptions: { parser: tseslint.parser } },
+    // __APP_VERSION__ is the build's version, defined by vite.config.ts.
+    languageOptions: {
+      globals: { ...globals.browser, __APP_VERSION__: 'readonly' },
+      parserOptions: { parser: tseslint.parser },
+    },
     // Prettier owns template formatting; ESLint keeps correctness and ordering rules.
     rules: {
       'vue/max-attributes-per-line': 'off',

@@ -1,4 +1,4 @@
-import { createAuthBridge } from '@wow-two-beta/ui-vue/auth';
+import { createAuthBridge } from '@wow-two-beta/fe/auth';
 
 /** Describes what the bridge compares between sessions: the identity kind and, for an account, its id. */
 export interface SessionIdentity {

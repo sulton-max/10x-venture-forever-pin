@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Moon, Sun } from '@lucide/vue';
-import { useColorMode } from '@wow-two-beta/ui-vue/foundation/primitives';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
+import { Moon, Sun } from 'lucide-vue-next';
+import { useColorMode } from '@wow-two-beta/fe/foundation/primitives';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
 
 /** Renders the light and dark mode switch. */
 defineOptions({ name: 'ColorModeButton' });

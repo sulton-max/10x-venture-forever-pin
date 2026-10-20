@@ -1,5 +1,5 @@
-using WoW.Two.Sdk.Backend.Beta.Codes.Models;
-using WoW.Two.Sdk.Backend.Beta.Codes.Models.Style;
+using WoW.Two.Sdk.Beta.Be.Codes.Models;
+using WoW.Two.Sdk.Beta.Be.Codes.Models.Style;
 
 namespace ForeverPin.Api.Codes.Core.Requests;
 

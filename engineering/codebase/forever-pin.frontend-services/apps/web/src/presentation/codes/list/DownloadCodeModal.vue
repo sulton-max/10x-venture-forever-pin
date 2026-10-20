@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { Alert } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Text } from '@wow-two-beta/fe/presentation/display';
+import { Alert } from '@wow-two-beta/fe/presentation/feedback';
 import {
   ChoiceCard,
   ControlGroupField,
   RadioGroup,
-  SegmentedPicker,
+  ToggleGroup,
   ToggleInput,
-} from '@wow-two-beta/ui-vue/presentation/forms';
+} from '@wow-two-beta/fe/presentation/forms';
 import {
   Modal,
   ModalBody,
@@ -17,7 +17,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-} from '@wow-two-beta/ui-vue/presentation/overlays';
+} from '@wow-two-beta/fe/presentation/overlays';
 import { computed, ref, watch } from 'vue';
 
 import { codeImageUrl, useCodeDownload } from '@/application/codes';
@@ -133,7 +133,8 @@ async function save(): Promise<void> {
 
         <template v-if="format === ImageFormat.Svg">
           <ControlGroupField label="Print width">
-            <SegmentedPicker
+            <ToggleGroup
+              variant="segmented"
               type="single"
               :model-value="String(widthMm)"
               aria-label="Print width"
@@ -142,7 +143,7 @@ async function save(): Promise<void> {
               <ToggleInput v-for="width in PrintWidths" :key="width" variant="soft" size="sm" :value="String(width)">
                 {{ length(width) }}
               </ToggleInput>
-            </SegmentedPicker>
+            </ToggleGroup>
           </ControlGroupField>
           <Text size="sm" color="muted">
             Scans comfortably from about {{ length(PrintSizing.scanDistanceMm(widthMm)) }} away.

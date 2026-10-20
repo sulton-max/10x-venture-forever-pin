@@ -1,4 +1,4 @@
-import { ExactNumber } from '@wow-two-beta/ui-vue/foundation/numbers';
+import { ExactNumber } from '@wow-two-beta/fe/foundation/numbers';
 import { Temporal } from 'temporal-polyfill';
 import { z } from 'zod';
 

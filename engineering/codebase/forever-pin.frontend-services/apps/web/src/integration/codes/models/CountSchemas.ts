@@ -1,4 +1,4 @@
-import { ExactNumber } from '@wow-two-beta/ui-vue/foundation/numbers';
+import { ExactNumber } from '@wow-two-beta/fe/foundation/numbers';
 import { z } from 'zod';
 
 /** Decodes an Int64 count exactly: a lossless read keeps every digit; a native read is exact up to 2^53. */

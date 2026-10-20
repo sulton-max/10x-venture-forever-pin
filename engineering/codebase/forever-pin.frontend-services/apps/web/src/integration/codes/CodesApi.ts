@@ -1,7 +1,8 @@
-import { LosslessJson } from '@wow-two-beta/ui-vue/foundation/json';
+import { decodeWarned } from '@wow-two-beta/fe/foundation/http';
+import { LosslessJson } from '@wow-two-beta/fe/foundation/json';
 
 import type { CodeAnalyticsDto, CodeDto, ImageFormat } from '@/domain/codes';
-import { apiClient, DecoderExtensions, warnedEnvelopeSchema } from '@/integration/common';
+import { apiClient, DecoderExtensions } from '@/integration/common';
 
 import { CodeAnalyticsDtoSchema } from './models/CodeAnalyticsDtoSchema';
 import type { CodeCreateUpdateApiRequest, CodeUpdateApiRequest } from './models/CodeCreateUpdateApiRequest';
@@ -11,7 +12,7 @@ import type { CodePreviewApiRequest } from './models/CodePreviewApiRequest';
 /** Holds the decoders of code payloads. */
 const decodeCode = DecoderExtensions.from(CodeDtoSchema);
 const decodeCodes = DecoderExtensions.from(CodeDtoSchema.array());
-const decodeSavedCode = DecoderExtensions.from(warnedEnvelopeSchema(CodeDtoSchema));
+const decodeSavedCode = decodeWarned(decodeCode);
 const decodeAnalytics = DecoderExtensions.from(CodeAnalyticsDtoSchema);
 
 /**

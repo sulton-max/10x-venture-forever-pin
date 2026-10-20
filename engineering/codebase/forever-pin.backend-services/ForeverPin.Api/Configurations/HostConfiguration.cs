@@ -1,6 +1,6 @@
-using WoW.Two.Sdk.Backend.Beta.Data;
-using WoW.Two.Sdk.Backend.Beta.Meta;
-using WoW.Two.Sdk.Backend.Beta.Web.Antiforgery;
+using WoW.Two.Sdk.Beta.Be.Data;
+using WoW.Two.Sdk.Beta.Be.Meta;
+using WoW.Two.Sdk.Beta.Be.Web.Antiforgery;
 
 namespace ForeverPin.Api.Configurations;
 
@@ -34,6 +34,7 @@ public static partial class HostConfiguration
         });
 
         builder
+            .AddPublishedSiteUrls()
             .AddSettings()
             .AddPostgresDatabase()
             .AddCodes()

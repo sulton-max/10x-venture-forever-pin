@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { RotateCw } from '@lucide/vue';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { RotateCw } from 'lucide-vue-next';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Heading, Text } from '@wow-two-beta/fe/presentation/display';
 
 /** Defines the props of {@link SessionFailureState}. */
 export interface SessionFailureStateProps {

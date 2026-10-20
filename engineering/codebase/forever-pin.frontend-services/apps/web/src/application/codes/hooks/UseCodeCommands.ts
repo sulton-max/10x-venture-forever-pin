@@ -1,5 +1,5 @@
-import { ResultExtensions } from '@wow-two-beta/ui-vue/foundation/results';
-import { useAppMutation } from '@wow-two-beta/ui-vue/query';
+import { ResultExtensions } from '@wow-two-beta/fe/foundation/results';
+import { useAppMutation } from '@wow-two-beta/fe/query';
 
 import { codesApi } from '@/integration/codes';
 

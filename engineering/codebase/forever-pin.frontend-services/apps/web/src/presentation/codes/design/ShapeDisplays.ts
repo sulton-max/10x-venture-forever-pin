@@ -4,7 +4,7 @@ import {
   FrameGlyph,
   HorizontalBarsGlyph,
   VerticalBarsGlyph,
-} from '@wow-two-beta/ui-vue/presentation/display';
+} from '@wow-two-beta/fe/presentation/display';
 import type { Component } from 'vue';
 
 import { FinderShape, ModuleShape } from '@/domain/codes';

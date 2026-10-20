@@ -1,4 +1,4 @@
-import { useAppQuery } from '@wow-two-beta/ui-vue/query';
+import { useAppQuery } from '@wow-two-beta/fe/query';
 import { toValue, type MaybeRefOrGetter } from 'vue';
 
 import { codesApi } from '@/integration/codes';

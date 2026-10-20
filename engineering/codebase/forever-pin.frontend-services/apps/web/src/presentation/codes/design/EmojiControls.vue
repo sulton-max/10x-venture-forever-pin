@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { EmojiCatalog, type EmojiCatalogEntry } from '@wow-two-beta/ui-vue/domain/emoji';
-import { localStorageStorageBroker } from '@wow-two-beta/ui-vue/foundation/storage';
-import { DefaultEmojiSize, EmojiPicker, EmojiSizePicker } from '@wow-two-beta/ui-vue/presentation/forms';
+import { EmojiCatalog, type EmojiCatalogEntry } from '@wow-two-beta/fe/domain/emoji';
+import { localStorageStorageBroker } from '@wow-two-beta/fe/foundation/storage';
+import { DefaultEmojiSize, EmojiPicker, EmojiSizePicker } from '@wow-two-beta/fe/presentation/forms';
 import { computed } from 'vue';
 
 import type { CodeStyleDto } from '@/domain/codes';

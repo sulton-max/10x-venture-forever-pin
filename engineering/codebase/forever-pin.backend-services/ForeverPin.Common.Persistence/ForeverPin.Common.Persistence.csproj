@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <ProjectReference Include="..\ForeverPin.Common.Domain\ForeverPin.Common.Domain.csproj" />
-    </ItemGroup>
-
-</Project>

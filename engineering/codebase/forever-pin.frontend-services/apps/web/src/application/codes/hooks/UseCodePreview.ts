@@ -1,5 +1,5 @@
-import { ApiFailureCode } from '@wow-two-beta/ui-vue/foundation/http';
-import { AppErrorType } from '@wow-two-beta/ui-vue/foundation/results';
+import { ApiFailureCode } from '@wow-two-beta/fe/foundation/http';
+import { AppErrorType } from '@wow-two-beta/fe/foundation/results';
 import { onScopeDispose, shallowRef, toValue, watch, type MaybeRefOrGetter } from 'vue';
 
 import { FailureMessages } from '@/application/common';

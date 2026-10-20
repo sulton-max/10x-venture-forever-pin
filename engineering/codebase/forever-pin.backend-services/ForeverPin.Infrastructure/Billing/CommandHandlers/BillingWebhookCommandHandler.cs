@@ -5,10 +5,10 @@ using ForeverPin.Application.Billing.Core.Models;
 using ForeverPin.Application.Billing.Core.Services;
 using ForeverPin.Domain.Billing.Entities;
 using ForeverPin.Domain.Billing.Enums;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
-using WoW.Two.Sdk.Backend.Beta.Messaging.Reliability;
+using WoW.Two.Sdk.Beta.Be.Foundation.Results;
+using WoW.Two.Sdk.Beta.Be.Mediator.Cqrs;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Messaging.Reliability;
 using BillingSettings = ForeverPin.Application.Settings.BillingSettings;
 
 namespace ForeverPin.Infrastructure.Billing.CommandHandlers;

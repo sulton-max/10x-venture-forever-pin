@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Domain.Codes.Serialization.Factories;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Json;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Json;
 using ForeverPin.Persistence.Constants;
 
 namespace ForeverPin.Persistence.Configurations;

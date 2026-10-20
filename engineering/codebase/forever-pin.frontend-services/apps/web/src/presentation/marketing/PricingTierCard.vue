@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { PricingCard } from '@wow-two-beta/ui-vue/presentation/display';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { PricingCard } from '@wow-two-beta/fe/presentation/display';
 import { RouterLink } from 'vue-router';
 
 import { AppPaths } from '@/presentation/common';
@@ -25,7 +25,7 @@ defineProps<PricingTierCardProps>();
     :cadence="tier.cadence"
     :tagline="tier.tagline"
     :features="tier.features"
-    :featured="tier.featured"
+    :is-featured="tier.featured"
   >
     <Button
       as-child

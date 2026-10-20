@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ArrowRight } from '@lucide/vue';
-import { Badge, Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { ArrowRight } from 'lucide-vue-next';
+import { Badge, Heading, Text } from '@wow-two-beta/fe/presentation/display';
 import { RouterLink } from 'vue-router';
 
 import { AppPaths } from '@/presentation/common';

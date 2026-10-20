@@ -1,5 +1,5 @@
-import type { AppForm } from '@wow-two-beta/ui-vue/forms-engine';
-import { ResultExtensions } from '@wow-two-beta/ui-vue/foundation/results';
+import type { AppForm } from '@wow-two-beta/fe/forms-engine';
+import { ResultExtensions } from '@wow-two-beta/fe/foundation/results';
 import { computed, shallowRef, toValue, watch, type MaybeRefOrGetter } from 'vue';
 
 import { useAppForm } from '@/application/common';

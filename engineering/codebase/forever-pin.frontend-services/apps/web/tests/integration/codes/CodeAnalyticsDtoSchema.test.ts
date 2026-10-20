@@ -1,4 +1,4 @@
-import { LosslessJson } from '@wow-two-beta/ui-vue/foundation/json';
+import { LosslessJson } from '@wow-two-beta/fe/foundation/json';
 import { Temporal } from 'temporal-polyfill';
 import { describe, expect, it } from 'vitest';
 

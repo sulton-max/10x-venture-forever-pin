@@ -1,9 +1,9 @@
 using ForeverPin.Application.Codes.Core.Commands;
 using ForeverPin.Application.Codes.Core.Models;
 using ForeverPin.Application.Codes.Core.Services;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Foundation.Errors;
+using WoW.Two.Sdk.Beta.Be.Mediator.Cqrs;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
 
 namespace ForeverPin.Infrastructure.Codes.Core.CommandHandlers;
 

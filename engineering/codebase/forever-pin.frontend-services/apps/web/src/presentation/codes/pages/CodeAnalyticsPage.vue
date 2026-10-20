@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ArrowLeft, ChartColumn, Pencil, RotateCw } from '@lucide/vue';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Card, EmptyState, Heading, Sparkline, StatCard, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { Alert, Spinner } from '@wow-two-beta/ui-vue/presentation/feedback';
-import { SegmentedPicker, ToggleInput } from '@wow-two-beta/ui-vue/presentation/forms';
+import { ArrowLeft, ChartColumn, Pencil, RotateCw } from 'lucide-vue-next';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Card, EmptyState, Heading, Sparkline, StatCard, Text } from '@wow-two-beta/fe/presentation/display';
+import { Alert, Spinner } from '@wow-two-beta/fe/presentation/feedback';
+import { ToggleGroup, ToggleInput } from '@wow-two-beta/fe/presentation/forms';
 import { computed, ref } from 'vue';
 
 import { useCode, useCodeAnalytics } from '@/application/codes';
@@ -84,7 +84,8 @@ function retry(): void {
           <Text color="muted">Scans per day, device, system and country — pull it when you want it.</Text>
         </div>
         <div v-if="code.data.value && !isStatic" class="flex flex-wrap items-center gap-2">
-          <SegmentedPicker
+          <ToggleGroup
+            variant="segmented"
             type="single"
             :model-value="String(days)"
             aria-label="Analytics window"
@@ -99,7 +100,7 @@ function retry(): void {
             >
               {{ option.label }}
             </ToggleInput>
-          </SegmentedPicker>
+          </ToggleGroup>
           <Button size="sm" variant="ghost" tone="neutral" @click="props.onEdit(props.codeId)">
             <template #leading><Pencil :size="15" aria-hidden="true" /></template>
             Edit

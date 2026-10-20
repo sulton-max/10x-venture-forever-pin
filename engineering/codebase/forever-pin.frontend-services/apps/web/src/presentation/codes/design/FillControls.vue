@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ArrowLeftRight, ArrowRight } from '@lucide/vue';
-import { Gradient, GradientType } from '@wow-two-beta/ui-vue/domain/color';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
+import { ArrowLeftRight, ArrowRight } from 'lucide-vue-next';
+import { Gradient, GradientType } from '@wow-two-beta/fe/domain/color';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
 import {
   ColorPicker,
   ControlGroupField,
   OptionTileGroupField,
   OptionTilePicker,
-  SegmentedPicker,
+  ToggleGroup,
   ToggleInput,
-} from '@wow-two-beta/ui-vue/presentation/forms';
+} from '@wow-two-beta/fe/presentation/forms';
 import { computed, shallowRef } from 'vue';
 
 import { FillType, type CodeGradientDto, type CodeStyleDto } from '@/domain/codes';
@@ -84,10 +84,16 @@ function setType(next: unknown): void {
           >Fill <InfoPopover topic="the fill" :text="BuilderHelp.fill"
         /></span>
       </template>
-      <SegmentedPicker type="single" :model-value="fill" aria-label="Foreground fill" @update:model-value="setFill">
+      <ToggleGroup
+        variant="segmented"
+        type="single"
+        :model-value="fill"
+        aria-label="Foreground fill"
+        @update:model-value="setFill"
+      >
         <ToggleInput variant="soft" :value="FillType.Solid" size="sm">Solid</ToggleInput>
         <ToggleInput variant="soft" :value="FillType.Gradient" size="sm">Gradient</ToggleInput>
-      </SegmentedPicker>
+      </ToggleGroup>
     </ControlGroupField>
 
     <ControlGroupField label="Colors">
@@ -131,7 +137,8 @@ function setType(next: unknown): void {
     </ControlGroupField>
 
     <div v-if="style.gradient" class="flex flex-wrap items-stretch gap-3 py-2">
-      <SegmentedPicker
+      <ToggleGroup
+        variant="segmented"
         type="single"
         orientation="vertical"
         :model-value="style.gradient.type"
@@ -141,16 +148,16 @@ function setType(next: unknown): void {
       >
         <ToggleInput variant="soft" :value="GradientType.Linear" size="sm" class="flex-1">Linear</ToggleInput>
         <ToggleInput variant="soft" :value="GradientType.Radial" size="sm" class="flex-1">Radial</ToggleInput>
-      </SegmentedPicker>
+      </ToggleGroup>
 
       <div class="flex min-w-0 flex-1 flex-col divide-y divide-border">
         <OptionTileGroupField
           v-for="row in GradientPresetRows"
           :key="row.type"
           :label="row.label"
-          :disabled="style.gradient.type !== row.type"
+          :is-disabled="style.gradient.type !== row.type"
           align="end"
-          wrap
+          can-wrap
           class="py-2 first:pt-0 last:pb-0"
         >
           <OptionTilePicker

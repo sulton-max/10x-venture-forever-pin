@@ -1,4 +1,4 @@
-import { useAppMutation, useAppQuery } from '@wow-two-beta/ui-vue/query';
+import { useAppMutation, useAppQuery } from '@wow-two-beta/fe/query';
 
 import type { Plan } from '@/domain/billing';
 import { billingApi } from '@/integration/billing';

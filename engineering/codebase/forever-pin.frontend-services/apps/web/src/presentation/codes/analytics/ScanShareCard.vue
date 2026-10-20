@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Card, Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { ProgressBar } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { Card, Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { ProgressBar } from '@wow-two-beta/fe/presentation/feedback';
 import { computed } from 'vue';
 
 import type { ScanShareDto } from '@/domain/codes';

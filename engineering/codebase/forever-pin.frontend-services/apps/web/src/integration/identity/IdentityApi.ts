@@ -17,13 +17,13 @@ export const identityApi = {
     return apiClient.post('/api/identity/guest', { signal, decode: decodeMe });
   },
 
-  /** `POST /api/auth/google` — exchanges a Google ID token for a session, claiming the guest's codes. */
+  /** `POST /api/identity/sign-in` — exchanges a Google ID token for a session, claiming the guest's codes. */
   signInWithGoogle(idToken: string, signal?: AbortSignal) {
-    return apiClient.post('/api/auth/google', { body: { idToken }, signal, decode: decodeMe });
+    return apiClient.post('/api/identity/sign-in', { body: { idToken }, signal, decode: decodeMe });
   },
 
-  /** `POST /api/auth/logout` — drops the session and guest cookies. */
+  /** `POST /api/identity/sign-out` — drops the session and guest cookies. */
   signOut(signal?: AbortSignal) {
-    return apiClient.post('/api/auth/logout', { signal, response: 'empty' });
+    return apiClient.post('/api/identity/sign-out', { signal, response: 'empty' });
   },
 } as const;

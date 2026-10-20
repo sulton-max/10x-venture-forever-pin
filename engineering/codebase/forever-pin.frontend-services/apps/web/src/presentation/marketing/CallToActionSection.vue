@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Heading, Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { SurfaceLayout } from '@wow-two-beta/ui-vue/presentation/layout';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
+import { Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { SurfaceLayout } from '@wow-two-beta/fe/presentation/layout';
 import { RouterLink } from 'vue-router';
 
 import { AppPaths } from '@/presentation/common';

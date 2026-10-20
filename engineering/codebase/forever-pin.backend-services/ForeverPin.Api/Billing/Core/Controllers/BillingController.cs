@@ -1,13 +1,13 @@
-using WoW.Two.Sdk.Backend.Beta.Web.ExceptionHandling.Extensions;
+using WoW.Two.Sdk.Beta.Be.Web.ExceptionHandling.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using ForeverPin.Application.Billing.Core.Commands;
 using ForeverPin.Api.Billing.Core.Models;
 using ForeverPin.Application.Billing.Core.Queries;
 using ForeverPin.Api.Billing.Core.Requests;
-using WoW.Two.Sdk.Backend.Beta.Identity.CurrentUser;
-using WoW.Two.Sdk.Backend.Beta.Mediator;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
-using WoW.Two.Sdk.Backend.Beta.Web.Contracts;
+using WoW.Two.Sdk.Beta.Be.Identity.CurrentUser;
+using WoW.Two.Sdk.Beta.Be.Mediator;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Web.Contracts;
 
 namespace ForeverPin.Api.Billing.Core.Controllers;
 

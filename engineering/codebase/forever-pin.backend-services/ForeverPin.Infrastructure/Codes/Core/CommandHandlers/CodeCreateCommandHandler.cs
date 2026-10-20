@@ -13,10 +13,10 @@ using ForeverPin.Domain.Codes.Serialization.Factories;
 using ForeverPin.Infrastructure.Codes.Core.Extensions;
 using ForeverPin.Persistence.DataContexts;
 using Microsoft.EntityFrameworkCore;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Errors;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Cqrs;
-using WoW.Two.Sdk.Backend.Beta.Mediator.Result;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
+using WoW.Two.Sdk.Beta.Be.Foundation.Errors;
+using WoW.Two.Sdk.Beta.Be.Mediator.Cqrs;
+using WoW.Two.Sdk.Beta.Be.Mediator.Result;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Locks.Extensions;
 
 namespace ForeverPin.Infrastructure.Codes.Core.CommandHandlers;
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ArrowLeft } from '@lucide/vue';
-import { Button, GoogleSignInButton } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Text } from '@wow-two-beta/ui-vue/presentation/display';
-import { Spinner } from '@wow-two-beta/ui-vue/presentation/feedback';
+import { ArrowLeft } from 'lucide-vue-next';
+import { Button, GoogleSignInButton } from '@wow-two-beta/fe/presentation/actions';
+import { Text } from '@wow-two-beta/fe/presentation/display';
+import { Spinner } from '@wow-two-beta/fe/presentation/feedback';
 import { RouterLink, RouterView } from 'vue-router';
 
 import { SessionPhase, useSessionGate } from '@/application/identity';
@@ -16,6 +16,9 @@ import { BrandGlyph } from '@/presentation/marketing';
  */
 defineOptions({ name: 'AppLayout' });
 const gate = useSessionGate();
+const appVersion = __APP_VERSION__;
+/** A numbered build shows as `v0.10.3`; a local build shows `dev`. */
+const versionLabel = /^\d/.test(appVersion) ? `v${appVersion}` : appVersion;
 </script>
 
 <template>
@@ -24,9 +27,16 @@ const gate = useSessionGate();
       <div
         class="mx-auto flex min-h-16 w-full max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6"
       >
-        <RouterLink :to="AppPaths.home()" aria-label="ForeverPin home" class="shrink-0">
-          <BrandGlyph />
-        </RouterLink>
+        <div class="flex shrink-0 items-center gap-2">
+          <RouterLink :to="AppPaths.home()" aria-label="ForeverPin home">
+            <BrandGlyph />
+          </RouterLink>
+          <span
+            class="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground"
+            :title="`ForeverPin ${appVersion}`"
+            >{{ versionLabel }}</span
+          >
+        </div>
         <nav
           aria-label="Account navigation"
           class="flex min-w-0 flex-1 basis-full flex-wrap items-center gap-3 text-sm sm:basis-auto sm:justify-end"

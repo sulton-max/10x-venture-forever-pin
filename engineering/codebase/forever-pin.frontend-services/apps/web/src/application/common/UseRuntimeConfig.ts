@@ -1,4 +1,4 @@
-import { useAppQuery } from '@wow-two-beta/ui-vue/query';
+import { useAppQuery } from '@wow-two-beta/fe/query';
 import { computed } from 'vue';
 
 import { runtimeConfigApi } from '@/integration/common';

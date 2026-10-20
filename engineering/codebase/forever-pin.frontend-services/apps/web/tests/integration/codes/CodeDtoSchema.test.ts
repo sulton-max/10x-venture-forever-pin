@@ -1,8 +1,10 @@
-import { LosslessJson } from '@wow-two-beta/ui-vue/foundation/json';
+import { decodeWarned } from '@wow-two-beta/fe/foundation/http';
+import { LosslessJson } from '@wow-two-beta/fe/foundation/json';
+import { ResultExtensions } from '@wow-two-beta/fe/foundation/results';
 import { Temporal } from 'temporal-polyfill';
 import { describe, expect, it } from 'vitest';
 
-import { warnedEnvelopeSchema } from '@/integration/common';
+import { DecoderExtensions } from '@/integration/common';
 import { CodeDtoSchema } from '@/integration/codes/models/CodeDtoSchema';
 
 const wireCode = {
@@ -64,15 +66,16 @@ describe('CodeDtoSchema', () => {
   });
 
   it('reads save warnings beside the data, defaulting to none', () => {
-    const schema = warnedEnvelopeSchema(CodeDtoSchema);
-    const warned = schema.parse({
+    const decode = decodeWarned(DecoderExtensions.from(CodeDtoSchema));
+    const warned = decode({
       data: wireCode,
       warnings: [
         { property: 'rules[0].content.url', message: 'Insecure', code: 'RedirectTargetInsecure', severity: 'warning' },
       ],
     });
-    expect(warned.warnings).toHaveLength(1);
-    expect(schema.parse({ data: wireCode }).warnings).toEqual([]);
-    expect(schema.safeParse({ data: { ...wireCode, mode: 'bogus' } }).success).toBe(false);
+    const bare = decode({ data: wireCode });
+    expect(ResultExtensions.isOk(warned) && warned.value.warnings).toHaveLength(1);
+    expect(ResultExtensions.isOk(bare) && bare.value.warnings).toEqual([]);
+    expect(ResultExtensions.isOk(decode({ data: { ...wireCode, mode: 'bogus' } }))).toBe(false);
   });
 });

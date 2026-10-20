@@ -4,7 +4,7 @@ import {
   AccordionGroupContent,
   AccordionGroupItem,
   AccordionGroupTrigger,
-} from '@wow-two-beta/ui-vue/presentation/display';
+} from '@wow-two-beta/fe/presentation/display';
 
 import type { FaqModel } from './MarketingContent';
 

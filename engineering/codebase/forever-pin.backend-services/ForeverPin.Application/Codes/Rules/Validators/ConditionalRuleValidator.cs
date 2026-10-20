@@ -3,9 +3,9 @@ using FluentValidation;
 using ForeverPin.Application.Codes.Content.Validators;
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Domain.Codes.Rules.Models;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
-using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Models;
-using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Parsers;
+using WoW.Two.Sdk.Beta.Be.Foundation.Results;
+using WoW.Two.Sdk.Beta.Be.Web.RequestContext.Models;
+using WoW.Two.Sdk.Beta.Be.Web.RequestContext.Parsers;
 
 namespace ForeverPin.Application.Codes.Rules.Validators;
 

@@ -1,6 +1,6 @@
-import { ArrowDown, ArrowDownLeft, ArrowDownRight, ArrowRight } from '@lucide/vue';
-import { GradientType } from '@wow-two-beta/ui-vue/domain/color';
-import { RadiusGlyph } from '@wow-two-beta/ui-vue/presentation/display';
+import { ArrowDown, ArrowDownLeft, ArrowDownRight, ArrowRight } from 'lucide-vue-next';
+import { GradientType } from '@wow-two-beta/fe/domain/color';
+import { RadiusGlyph } from '@wow-two-beta/fe/presentation/display';
 import type { Component } from 'vue';
 
 /** Holds the preset glyph size in px. */

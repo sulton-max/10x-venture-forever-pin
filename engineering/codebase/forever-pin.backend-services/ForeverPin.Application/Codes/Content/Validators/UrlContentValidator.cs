@@ -1,7 +1,7 @@
 using FluentValidation;
 using ForeverPin.Application.Codes.Validators;
 using ForeverPin.Domain.Codes.Content.Url.Models;
-using WoW.Two.Sdk.Backend.Beta.Web.Redirects.Extensions;
+using WoW.Two.Sdk.Beta.Be.Web.Redirects.Extensions;
 
 namespace ForeverPin.Application.Codes.Content.Validators;
 

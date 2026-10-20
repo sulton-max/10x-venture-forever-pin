@@ -13,11 +13,11 @@ using ForeverPin.Domain.Codes.Content.VCard.Models;
 using ForeverPin.Domain.Codes.Content.Wifi.Models;
 using ForeverPin.Domain.Codes.Rules.Models;
 using NodaTime;
-using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Exporters;
-using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Models;
-using WoW.Two.Sdk.Backend.Beta.Codes.Payloads.Serializers;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Validation;
+using WoW.Two.Sdk.Beta.Be.Codes.Payloads.Exporters;
+using WoW.Two.Sdk.Beta.Be.Codes.Payloads.Models;
+using WoW.Two.Sdk.Beta.Be.Codes.Payloads.Serializers;
+using WoW.Two.Sdk.Beta.Be.Foundation.Results;
+using WoW.Two.Sdk.Beta.Be.Foundation.Validation;
 
 namespace ForeverPin.Domain.Codes.Rules.Mappers;
 

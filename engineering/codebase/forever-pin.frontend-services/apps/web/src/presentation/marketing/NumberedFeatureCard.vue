@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FeatureCard } from '@wow-two-beta/ui-vue/presentation/display';
+import { FeatureCard } from '@wow-two-beta/fe/presentation/display';
 import { computed } from 'vue';
 
 import type { HighlightModel } from './MarketingContent';

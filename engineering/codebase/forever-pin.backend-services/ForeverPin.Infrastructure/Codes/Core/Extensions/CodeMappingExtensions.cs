@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ForeverPin.Domain.Codes.Serialization.Factories;
 using ForeverPin.Application.Codes.Core.Models;
-using WoW.Two.Sdk.Backend.Beta.Codes.Models.Style;
+using WoW.Two.Sdk.Beta.Be.Codes.Models.Style;
 using ForeverPin.Domain.Codes.Core.Entities;
 
 namespace ForeverPin.Infrastructure.Codes.Core.Extensions;

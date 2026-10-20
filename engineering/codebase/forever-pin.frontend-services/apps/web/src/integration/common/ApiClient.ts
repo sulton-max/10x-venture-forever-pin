@@ -1,16 +1,17 @@
-import { createApiClient, wowTwoEnvelope } from '@wow-two-beta/ui-vue/foundation/http';
+import { createApiClient } from '@wow-two-beta/fe/foundation/http';
 
-import { createAntiforgeryFetch } from './AntiforgeryFetch';
 import { authBridge } from './AuthBridge';
 
 /** Holds the path whose read issues a fresh antiforgery token. */
 const TokenRefreshPath = '/api/runtime-config';
 
-/** Holds the same-origin client for the ForeverPin API, unwrapping the `{ data }` success envelope. */
+/**
+ * Holds the same-origin client for the ForeverPin API, unwrapping the `{ data }` success envelope. Cookie-carrying
+ * writes echo the antiforgery token; a token issued before sign-in or sign-out is refreshed once through a read.
+ */
 export const apiClient = createApiClient({
-  envelope: wowTwoEnvelope,
   credentials: 'same-origin',
   scope: authBridge.scope,
   onUnauthorized: authBridge.onUnauthorized,
-  fetch: createAntiforgeryFetch(TokenRefreshPath),
+  antiforgery: { refreshPath: TokenRefreshPath },
 });

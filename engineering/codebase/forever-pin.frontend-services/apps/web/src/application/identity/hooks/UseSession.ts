@@ -1,4 +1,4 @@
-import { useAuth } from '@wow-two-beta/ui-vue/auth';
+import { useAuth } from '@wow-two-beta/fe/auth';
 import { computed } from 'vue';
 
 import { UserKind, type Me } from '@/domain/identity';

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ForeverPin.Application.Billing.Core.Services;
 using ForeverPin.Domain.Billing.Entities;
 using ForeverPin.Persistence.DataContexts;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Locks.Extensions;
 
 namespace ForeverPin.Infrastructure.Persistence.Repositories;
 

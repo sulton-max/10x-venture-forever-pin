@@ -4,8 +4,8 @@ import {
   AccordionGroupContent,
   AccordionGroupItem,
   AccordionGroupTrigger,
-} from '@wow-two-beta/ui-vue/presentation/display';
-import { Alert } from '@wow-two-beta/ui-vue/presentation/feedback';
+} from '@wow-two-beta/fe/presentation/display';
+import { Alert } from '@wow-two-beta/fe/presentation/feedback';
 import {
   Field,
   SelectPicker,
@@ -13,7 +13,7 @@ import {
   SelectPickerItem,
   SelectPickerTrigger,
   SelectPickerValue,
-} from '@wow-two-beta/ui-vue/presentation/forms';
+} from '@wow-two-beta/fe/presentation/forms';
 
 import type { CodeBuilderForm } from '@/application/codes';
 import { BarcodeFormat, type CodeStyleDto } from '@/domain/codes';

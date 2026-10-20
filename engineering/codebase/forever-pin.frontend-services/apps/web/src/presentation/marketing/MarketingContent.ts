@@ -9,7 +9,7 @@ import {
   Route,
   Sparkles,
   type LucideIcon,
-} from '@lucide/vue';
+} from 'lucide-vue-next';
 
 // Marketing-surface source of truth: pricing, features, comparison, steps and questions.
 // Keep prices in sync with `product/product.md` and the billing plan limits.

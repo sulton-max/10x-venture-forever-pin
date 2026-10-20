@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ChartColumn, CopyPlus, Download, Pencil, Trash2 } from '@lucide/vue';
-import { Button, CopyButton } from '@wow-two-beta/ui-vue/presentation/actions';
-import { Badge, Card, Text } from '@wow-two-beta/ui-vue/presentation/display';
+import { ChartColumn, CopyPlus, Download, Pencil, Trash2 } from 'lucide-vue-next';
+import { Button, CopyButton } from '@wow-two-beta/fe/presentation/actions';
+import { Badge, Card, Text } from '@wow-two-beta/fe/presentation/display';
 import { computed } from 'vue';
 
 import { CodeRuleType, ContentMode, ContentType, type CodeDto } from '@/domain/codes';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronUp, GripVertical, Plus, Trash2 } from '@lucide/vue';
-import { useFieldArray } from '@wow-two-beta/ui-vue/forms-engine';
-import { Button } from '@wow-two-beta/ui-vue/presentation/actions';
+import { ChevronDown, ChevronUp, GripVertical, Plus, Trash2 } from 'lucide-vue-next';
+import { useFieldArray } from '@wow-two-beta/fe/forms-engine';
+import { Button } from '@wow-two-beta/fe/presentation/actions';
 import {
   SelectPicker,
   SelectPickerContent,
@@ -13,7 +13,7 @@ import {
   SortableGroupItem,
   SortableGroupMoveButton,
   TextInput,
-} from '@wow-two-beta/ui-vue/presentation/forms';
+} from '@wow-two-beta/fe/presentation/forms';
 import { computed } from 'vue';
 
 import { emptyConditionalRule, emptyDefaultRule, type CodeBuilderForm } from '@/application/codes';

@@ -4,9 +4,9 @@ using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Persistence.Constants;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Application.Codes.Core.Enums;
-using WoW.Two.Sdk.Backend.Beta.Caching.Invalidation.Extensions;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Locks.Extensions;
-using WoW.Two.Sdk.Backend.Beta.Data.EntityFrameworkCore.Uniqueness.Extensions;
+using WoW.Two.Sdk.Beta.Be.Caching.Invalidation.Extensions;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Locks.Extensions;
+using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Uniqueness.Extensions;
 
 namespace ForeverPin.Infrastructure.Persistence.Repositories;
 

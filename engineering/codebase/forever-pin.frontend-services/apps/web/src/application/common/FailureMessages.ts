@@ -1,4 +1,4 @@
-import { AppErrorType, type AppError } from '@wow-two-beta/ui-vue/foundation/results';
+import { AppErrorType, type AppError } from '@wow-two-beta/fe/foundation/results';
 
 /** Holds the longest server message shown verbatim; anything longer reads as diagnostics. */
 const MaxProblemText = 300;

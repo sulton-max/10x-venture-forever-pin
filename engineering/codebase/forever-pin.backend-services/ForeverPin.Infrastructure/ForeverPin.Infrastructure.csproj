@@ -4,7 +4,7 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Stripe.net" />
-        <PackageReference Include="WoW2.Sdk.Backend.Beta" />
+        <PackageReference Include="WoW2.Sdk.Beta.Be" />
     </ItemGroup>
 
     <ItemGroup>

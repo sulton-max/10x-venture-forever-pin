@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControlGroupField, OptionTileGroupField, OptionTilePicker } from '@wow-two-beta/ui-vue/presentation/forms';
+import { ControlGroupField, OptionTileGroupField, OptionTilePicker } from '@wow-two-beta/fe/presentation/forms';
 
 import { FinderShape, ModuleShape, type CodeStyleDto } from '@/domain/codes';
 import { InfoPopover } from '@/presentation/common';
@@ -38,13 +38,13 @@ function set(patch: Partial<CodeStyleDto>): void {
 
 <template>
   <div class="flex flex-col gap-2">
-    <ControlGroupField label="Body" orientation="vertical" :divided="false">
+    <ControlGroupField label="Body" orientation="vertical" :has-divider="false">
       <template #label>
         <span class="inline-flex items-center gap-1"
           >Body <InfoPopover topic="the body shape" :text="BuilderHelp.body"
         /></span>
       </template>
-      <OptionTileGroupField label="Body shape" wrap>
+      <OptionTileGroupField label="Body shape" can-wrap>
         <OptionTilePicker
           v-for="shape in Object.values(ModuleShape)"
           :key="shape"
@@ -57,7 +57,7 @@ function set(patch: Partial<CodeStyleDto>): void {
       </OptionTileGroupField>
     </ControlGroupField>
 
-    <ControlGroupField label="Eyes" orientation="vertical" :divided="false" class="border-t border-border pt-2">
+    <ControlGroupField label="Eyes" orientation="vertical" :has-divider="false" class="border-t border-border pt-2">
       <template #label>
         <span class="inline-flex items-center gap-1"
           >Eyes <InfoPopover topic="the eyes" :text="BuilderHelp.eyes"
@@ -66,7 +66,7 @@ function set(patch: Partial<CodeStyleDto>): void {
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div v-for="part in EyeParts" :key="part.key" class="min-w-0">
           <div class="mb-1.5 text-xs text-muted-foreground">{{ part.label }}</div>
-          <OptionTileGroupField :label="`${part.label} eye`" wrap>
+          <OptionTileGroupField :label="`${part.label} eye`" can-wrap>
             <OptionTilePicker
               v-for="shape in Object.values(FinderShape)"
               :key="shape"

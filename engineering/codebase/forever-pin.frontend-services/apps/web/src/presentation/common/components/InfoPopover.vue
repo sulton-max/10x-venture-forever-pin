@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Info } from '@lucide/vue';
-import { Popover, PopoverContent, PopoverTrigger } from '@wow-two-beta/ui-vue/presentation/overlays';
+import { Info } from 'lucide-vue-next';
+import { Popover, PopoverContent, PopoverTrigger } from '@wow-two-beta/fe/presentation/overlays';
 
 /** Defines the props of {@link InfoPopover}. */
 export interface InfoPopoverProps {

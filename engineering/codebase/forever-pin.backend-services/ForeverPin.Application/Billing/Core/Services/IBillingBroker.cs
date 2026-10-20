@@ -1,5 +1,5 @@
 using ForeverPin.Application.Billing.Core.Models;
-using WoW.Two.Sdk.Backend.Beta.Foundation.Results;
+using WoW.Two.Sdk.Beta.Be.Foundation.Results;
 
 namespace ForeverPin.Application.Billing.Core.Services;
 

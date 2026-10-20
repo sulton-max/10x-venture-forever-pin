@@ -1,11 +1,11 @@
 @import 'tailwindcss';
-@import '@wow-two-beta/ui-vue/styles.css';
+@import '@wow-two-beta/fe/styles.css';
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
 
 /* Tailwind v4 must scan the lib's compiled output to emit the utility classes it uses.
    Path is relative to THIS file — from bootstrap/ that's ../../ (bootstrap → src → root). */
-@source "../../node_modules/@wow-two-beta/ui-vue/dist";
+@source "../../node_modules/@wow-two-beta/fe/dist";
 
 /* ForeverPin palette over the SDK's semantic roles.
    Source: engineering/research/design-research/design-research.md.

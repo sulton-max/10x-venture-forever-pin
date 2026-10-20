@@ -1,4 +1,4 @@
-import { createAppRouter, lazyRoute, type RouteConfig, type RouteHandle } from '@wow-two-beta/ui-vue/router';
+import { createAppRouter, lazyPage, lazyRoute, type RouteConfig, type RouteHandle } from '@wow-two-beta/fe/router';
 
 import { ContentMode } from '@/domain/codes';
 import { AppPaths } from '@/presentation/common';
@@ -38,7 +38,7 @@ export const routes: RouteConfig = [
         index: true,
         id: 'codes',
         handle: { title: 'Your codes · ForeverPin', meta: PrivatePage },
-        lazy: RoutePropsExtensions.page(
+        lazy: lazyPage(
           () => import('@/presentation/codes/pages/CodesListPage.vue'),
           (_route, router) => ({
             onCreate: () => void router.push(AppPaths.newCode()),
@@ -52,7 +52,7 @@ export const routes: RouteConfig = [
         path: 'new',
         id: 'new-code',
         handle: { title: 'New code · ForeverPin', meta: PrivatePage },
-        lazy: RoutePropsExtensions.page(
+        lazy: lazyPage(
           () => import('@/presentation/codes/pages/CodeBuilderPage.vue'),
           (route, router) => ({
             copyFromId: RoutePropsExtensions.toText(route.query.copyOf) || undefined,
@@ -65,7 +65,7 @@ export const routes: RouteConfig = [
         path: 'billing',
         id: 'billing',
         handle: { title: 'Billing · ForeverPin', meta: PrivatePage },
-        lazy: RoutePropsExtensions.page(
+        lazy: lazyPage(
           () => import('@/presentation/billing/pages/BillingPage.vue'),
           (route, router) => ({
             checkoutReturn: RoutePropsExtensions.toMember(route.query.status, CheckoutReturn),
@@ -77,7 +77,7 @@ export const routes: RouteConfig = [
         path: ':id/analytics',
         id: 'code-analytics',
         handle: { title: 'Analytics · ForeverPin', meta: PrivatePage },
-        lazy: RoutePropsExtensions.page(
+        lazy: lazyPage(
           () => import('@/presentation/codes/pages/CodeAnalyticsPage.vue'),
           (route, router) => ({
             codeId: RoutePropsExtensions.toText(route.params.id),
@@ -90,7 +90,7 @@ export const routes: RouteConfig = [
         path: ':id/edit',
         id: 'edit-code',
         handle: { title: 'Edit code · ForeverPin', meta: PrivatePage },
-        lazy: RoutePropsExtensions.page(
+        lazy: lazyPage(
           () => import('@/presentation/codes/pages/CodeBuilderPage.vue'),
           (route, router) => ({
             codeId: RoutePropsExtensions.toText(route.params.id),
@@ -136,7 +136,7 @@ export const routes: RouteConfig = [
             return { description: head.description, 'og:title': head.title, 'og:description': head.description };
           },
         },
-        lazy: RoutePropsExtensions.page(
+        lazy: lazyPage(
           () => import('@/presentation/marketing/pages/BlogPostPage.vue'),
           (route) => ({ slug: RoutePropsExtensions.toText(route.params.slug) }),
         ),

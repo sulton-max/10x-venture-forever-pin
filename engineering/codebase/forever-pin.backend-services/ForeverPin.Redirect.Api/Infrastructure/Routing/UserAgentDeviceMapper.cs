@@ -1,7 +1,7 @@
 using ForeverPin.Domain.Codes.Core.Enums;
 using ForeverPin.Redirect.Api.Application.Routing.Services;
-using WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Models;
-using SdkDeviceMapper = WoW.Two.Sdk.Backend.Beta.Web.RequestContext.Mappers.UserAgentDeviceMapper;
+using WoW.Two.Sdk.Beta.Be.Web.RequestContext.Models;
+using SdkDeviceMapper = WoW.Two.Sdk.Beta.Be.Web.RequestContext.Mappers.UserAgentDeviceMapper;
 
 namespace ForeverPin.Redirect.Api.Infrastructure.Routing;
 
