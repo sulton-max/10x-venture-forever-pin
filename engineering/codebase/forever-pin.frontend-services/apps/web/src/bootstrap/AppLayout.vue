@@ -62,7 +62,7 @@ watch(
   </SplashScreen>
   <div
     v-else-if="gate.phase.value !== SessionPhase.Ready"
-    class="flex min-h-dvh flex-col items-center justify-center bg-background px-4 py-10 text-foreground"
+    class="surface-ambient flex min-h-dvh flex-col items-center justify-center bg-background px-4 py-10 text-foreground"
   >
     <RouterLink :to="AppPaths.home()" aria-label="ForeverPin home" class="mb-8"><BrandGlyph /></RouterLink>
     <main class="w-full">
@@ -81,8 +81,8 @@ watch(
       />
     </main>
   </div>
-  <AppShell v-else class="app-shell">
-    <AppShellHeader height="auto">
+  <AppShell v-else class="app-shell surface-ambient">
+    <AppShellHeader height="auto" variant="glass" class="border-b border-(--fp-glass-edge)">
       <Navbar container-size="lg" container-class="gap-3 px-4 sm:px-6">
         <template #start>
           <div class="flex min-w-0 items-center gap-2">
@@ -123,7 +123,7 @@ watch(
         <RouterView />
       </AppShellContent>
     </AppShellMain>
-    <BottomNavMenu :is-fixed="false" aria-label="Primary" class="[grid-area:footer] md:hidden">
+    <BottomNavMenu :is-fixed="false" aria-label="Primary" class="surface-glass border-t [grid-area:footer] md:hidden">
       <BottomNavMenuItem v-for="place in Destinations" :key="place.path" as-child :is-active="current === place.path">
         <template #icon><component :is="place.icon" :size="20" /></template>
         <RouterLink :to="place.path">{{ place.label }}</RouterLink>

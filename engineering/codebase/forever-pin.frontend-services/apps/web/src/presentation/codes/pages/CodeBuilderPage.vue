@@ -116,7 +116,7 @@ const previewNote = computed(() =>
       </template>
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.8fr)]">
         <form novalidate class="contents" @submit.prevent="form.handleSubmit">
-          <Card class="surface-soft flex min-w-0 flex-col gap-5 p-6">
+          <Card class="surface-glass flex min-w-0 flex-col gap-5 p-6">
             <ToggleGroup
               variant="segmented"
               type="single"
@@ -163,7 +163,7 @@ const previewNote = computed(() =>
           </Card>
         </form>
 
-        <Card class="surface-soft flex flex-col items-center gap-4 p-6 lg:sticky lg:top-6 lg:self-start">
+        <Card class="surface-glass flex flex-col items-center gap-4 p-6 lg:sticky lg:top-6 lg:self-start">
           <CodePreview :model="previewModel" />
           <Text size="xs" color="muted" align="center">{{ previewNote }}</Text>
           <div v-if="form.values.barcodeFormat === BarcodeFormat.QrCode" class="w-full">

@@ -105,7 +105,7 @@ function retry(): void {
       </div>
     </div>
 
-    <Card v-if="isStatic" class="surface-soft p-6">
+    <Card v-if="isStatic" class="surface-glass p-6">
       <EmptyState
         title="Static codes aren't counted"
         description="A static code carries its content in the symbol, so a scan never passes through ForeverPin. Copy it as a dynamic code to count its scans."
@@ -147,7 +147,7 @@ function retry(): void {
           />
         </div>
 
-        <Card class="surface-soft flex flex-col gap-3 p-5">
+        <Card class="surface-glass flex flex-col gap-3 p-5">
           <div class="flex items-baseline justify-between gap-3">
             <Heading :level="2" size="sm" weight="semibold">Scans per day</Heading>
             <Text size="xs" color="muted">UTC</Text>

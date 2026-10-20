@@ -1,6 +1,6 @@
 # ForeverPin — design system
 
-*Last updated: 2026-09-26*
+*Last updated: 2026-10-20*
 
 > Current palette and accepted product frame. Earlier layout explorations remain reference material below.
 
@@ -14,6 +14,22 @@
 - Structural dividers stay quiet; input outlines and keyboard focus remain distinct.
 - Geist stays the UI font; Geist Mono remains available for literal values.
 - QR artwork follows the saved code design; application colors do not recolor the rendered asset.
+
+## Theme pattern
+
+Ambient glass ([theme patterns](../../../../../../../conventions/design/theme/theme-patterns.md)): blurred translucent
+panels over two still glows. The semantic palette below stays the opaque fallback.
+
+| Layer | Light | Dark |
+|---|---|---|
+| Glow, top left | violet `#7040d7` at 10% | lavender `#aa8cff` at 18% |
+| Glow, top right | teal `#0f766e` at 7% | teal `#2dd4bf` at 10% |
+| Glass panel | `#ffffff` at 82%, 16px blur | `#1d2028` at 85%, 16px blur |
+| Glass edge | `#202331` at 10% | `#f1f3f8` at 12% |
+
+- `surface-ambient` paints the glows on the app frame, the gate screens and the marketing layout.
+- `surface-glass` is the panel recipe; the app bar uses `AppShellHeader` `variant="glass"`.
+- Inputs, tables and long text stay on opaque fills; no glass panel nests inside another.
 
 ## Semantic palette
 

@@ -125,7 +125,7 @@ async function open(target: Plan | 'portal'): Promise<void> {
         <SkeletonState class="h-64 w-full rounded-xl" />
       </template>
       <template v-if="snapshot">
-        <Card class="surface-soft flex flex-col gap-5 p-6">
+        <Card class="surface-glass flex flex-col gap-5 p-6">
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
               <div class="flex items-center gap-2">
@@ -196,7 +196,7 @@ async function open(target: Plan | 'portal'): Promise<void> {
             plan === Plan.Free ? 'Choose a plan' : 'Upgrade'
           }}</Heading>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Card v-for="candidate in upgrades" :key="candidate" class="surface-soft flex flex-col gap-4 p-5">
+            <Card v-for="candidate in upgrades" :key="candidate" class="surface-glass flex flex-col gap-4 p-5">
               <div>
                 <div class="flex items-baseline justify-between gap-2">
                   <span class="text-base font-semibold">{{ PlanDisplays[candidate].name }}</span>
@@ -231,7 +231,7 @@ async function open(target: Plan | 'portal'): Promise<void> {
             </Card>
           </div>
         </div>
-        <Card v-else class="surface-soft p-6">
+        <Card v-else class="surface-glass p-6">
           <Text size="sm" color="muted">
             You're on the top plan — nothing more to upgrade to. Use
             <span class="font-medium text-foreground">Manage billing</span> to update your payment method or cancel.

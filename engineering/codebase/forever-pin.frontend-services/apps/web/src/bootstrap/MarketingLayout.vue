@@ -27,10 +27,8 @@ function isActive(to: string): boolean {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-background text-foreground">
-    <header
-      class="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-xl backdrop-saturate-150 dark:bg-card/60"
-    >
+  <div class="surface-ambient flex min-h-screen flex-col bg-background text-foreground">
+    <header class="surface-glass sticky top-0 z-40 border-b">
       <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-3.5">
         <RouterLink :to="AppPaths.home()" aria-label="ForeverPin home">
           <BrandGlyph />

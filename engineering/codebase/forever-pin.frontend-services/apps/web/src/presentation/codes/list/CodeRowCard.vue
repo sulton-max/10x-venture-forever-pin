@@ -49,7 +49,7 @@ const destination = computed(() => {
 </script>
 
 <template>
-  <Card class="surface-soft flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
+  <Card class="surface-glass flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
     <div class="min-w-0 flex-1">
       <div class="flex items-center gap-2">
         <span class="truncate font-medium" :title="code.name">{{ code.name }}</span>

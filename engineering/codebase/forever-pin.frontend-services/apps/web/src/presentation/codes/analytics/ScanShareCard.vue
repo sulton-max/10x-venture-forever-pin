@@ -38,7 +38,7 @@ const rows = computed(() => {
 </script>
 
 <template>
-  <Card class="surface-soft flex flex-col gap-4 p-5">
+  <Card class="surface-glass flex flex-col gap-4 p-5">
     <Heading :level="2" size="sm" weight="semibold">{{ title }}</Heading>
     <Text v-if="rows.length === 0" size="sm" color="muted">No scans in this window.</Text>
     <ul v-else class="flex flex-col gap-3">

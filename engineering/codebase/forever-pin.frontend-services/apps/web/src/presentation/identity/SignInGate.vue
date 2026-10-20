@@ -28,7 +28,7 @@ const emit = defineEmits<SignInGateEmits>();
 
 <template>
   <div class="flex min-h-[60vh] items-center justify-center">
-    <Card class="surface-soft w-full max-w-sm p-8">
+    <Card class="surface-glass w-full max-w-sm p-8">
       <div class="flex flex-col gap-5">
         <div class="text-center">
           <Heading :level="1" size="xl" weight="bold">Welcome to ForeverPin</Heading>
