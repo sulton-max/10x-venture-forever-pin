@@ -174,6 +174,8 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Reconcile frontend naming forks against settled conventions | engineering | — |
 | Complete backend convention adoption | engineering | rows in [backend convention updates](../research/backend-convention-updates.md) |
 | Simplify E2E DTO mirrors while retaining raw-JSON assertions | engineering | — |
+| Offer one-click Report on defect notices | feature | needs an incident ingest; `feedbackQueryErrors` takes the reporter |
+| Move the marketing header onto `Navbar` | engineering | the product frame is on `AppShell` |
 
 ## Landing hero
 

@@ -8,7 +8,12 @@ const RuntimeConfigKey = ['runtimeConfig'] as const;
 
 /** Reads the API's public runtime settings; the build-time Google id fills in while they load. */
 export function useRuntimeConfig() {
-  const query = useAppQuery({ key: RuntimeConfigKey, queryFn: ({ signal }) => runtimeConfigApi.get(signal) });
+  // A failure only hides Google sign-in; the session check reports an unreachable API on its own.
+  const query = useAppQuery({
+    key: RuntimeConfigKey,
+    queryFn: ({ signal }) => runtimeConfigApi.get(signal),
+    meta: { suppressGlobalError: true },
+  });
   return {
     /** The Google OAuth web client id; empty keeps sign-in hidden. */
     googleClientId: computed(() => query.data.value?.googleClientId ?? import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''),

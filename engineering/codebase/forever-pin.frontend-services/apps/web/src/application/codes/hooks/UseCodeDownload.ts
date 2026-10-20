@@ -18,6 +18,8 @@ export function useCodeDownload(code: MaybeRefOrGetter<CodeDto | null>) {
     key: () => CodeQueryKeys.svg(toValue(code)?.id ?? ''),
     queryFn: ({ signal }) => codesApi.svg(toValue(code)?.id ?? '', signal),
     enabled: () => Boolean(toValue(code)),
+    // The download dialog shows a failed read in place.
+    meta: { suppressGlobalError: true },
   });
 
   /** Saves the code as a print-sized SVG or as its PNG, named after the code. */

@@ -13,18 +13,20 @@ export function useCodeCommands() {
   const invalidates = () => [CodeQueryKeys.all];
 
   return {
-    /** Creates a code; the result carries destination warnings that did not block it. */
+    /** Creates a code; the result carries destination warnings that did not block it. The form shows a failure. */
     create: useAppMutation({
       mutationFn: async (values: CodeFormModel, { signal }) =>
         ResultExtensions.map(await codesApi.create(toCreateCodeRequest(values), signal), CodeMappers.toSaveModel),
       invalidates,
+      meta: { suppressGlobalError: true },
     }),
 
-    /** Replaces a code's editable fields; its mode, slug and scans stay. */
+    /** Replaces a code's editable fields; its mode, slug and scans stay. The form shows a failure. */
     update: useAppMutation({
       mutationFn: async ({ id, values }: { id: string; values: CodeFormModel }, { signal }) =>
         ResultExtensions.map(await codesApi.update(id, toUpdateCodeRequest(values), signal), CodeMappers.toSaveModel),
       invalidates,
+      meta: { suppressGlobalError: true },
     }),
 
     /** Pauses or resumes a code. */

@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { Plus, QrCode } from 'lucide-vue-next';
+import { Plus } from 'lucide-vue-next';
 import { Button } from '@wow-two-beta/fe/presentation/actions';
-import { Card, EmptyState, Heading, Text } from '@wow-two-beta/fe/presentation/display';
-import { Alert, Spinner } from '@wow-two-beta/fe/presentation/feedback';
+import { Heading, Text } from '@wow-two-beta/fe/presentation/display';
+import { DataRegion, InlineSpinner, SkeletonState } from '@wow-two-beta/fe/presentation/feedback';
 import { useDebouncedValue } from '@wow-two-beta/fe/foundation/async';
 import type { AppError, Result } from '@wow-two-beta/fe/foundation/results';
 import { SearchInput } from '@wow-two-beta/fe/presentation/forms';
-import { computed, reactive, ref, shallowRef } from 'vue';
+import { reactive, ref, shallowRef } from 'vue';
 
 import { useCodeCommands, useCodes } from '@/application/codes';
-import { FailureMessages } from '@/application/common';
 import type { CodeDto, ContentMode } from '@/domain/codes';
 
 import CodeRowCard from '../list/CodeRowCard.vue';
@@ -32,7 +31,7 @@ export interface CodesListPageProps {
 /** Holds how long typing must pause before a search runs. */
 const SearchSettleMs = 250;
 
-/** Renders the owner's searchable code dashboard; each row's commands track their own progress. */
+/** Renders the owner's searchable code dashboard; each row's commands track their own progress, failures toast. */
 defineOptions({ name: 'CodesListPage' });
 const props = defineProps<CodesListPageProps>();
 
@@ -44,35 +43,23 @@ const busyIds = reactive(new Set<string>());
 const pendingDelete = shallowRef<CodeDto | null>(null);
 const pendingCopy = shallowRef<CodeDto | null>(null);
 const pendingDownload = shallowRef<CodeDto | null>(null);
-const commandFailure = ref<string | null>(null);
 
-const listFailure = computed(() =>
-  list.error.value ? FailureMessages.describe(list.error.value, 'Your codes could not be loaded.') : null,
-);
-
-/** Runs one row command, keeping that row busy until its own reply lands. */
-async function runForRow(id: string, command: () => Promise<Result<unknown, AppError>>, fallback: string) {
+/** Runs one row command, keeping that row busy until its own reply lands; a failure reaches the toast host. */
+async function runForRow(id: string, command: () => Promise<Result<unknown, AppError>>) {
   busyIds.add(id);
-  commandFailure.value = null;
   const result = await command();
   busyIds.delete(id);
-  if (!result.ok) commandFailure.value = FailureMessages.describe(result.failure, fallback);
   return result.ok;
 }
 
 function toggleActive(code: CodeDto): void {
-  void runForRow(
-    code.id,
-    () => commands.setActive.mutateAsync({ id: code.id, isActive: !code.isActive }),
-    'The code could not be updated.',
-  );
+  void runForRow(code.id, () => commands.setActive.mutateAsync({ id: code.id, isActive: !code.isActive }));
 }
 
 async function confirmDelete(): Promise<void> {
   const target = pendingDelete.value;
   if (!target) return;
-  if (await runForRow(target.id, () => commands.remove.mutateAsync(target.id), 'The code could not be deleted.'))
-    pendingDelete.value = null;
+  if (await runForRow(target.id, () => commands.remove.mutateAsync(target.id))) pendingDelete.value = null;
 }
 </script>
 
@@ -96,34 +83,35 @@ async function confirmDelete(): Promise<void> {
         placeholder="Search by name or destination…"
         aria-label="Search codes"
       />
-      <Spinner v-if="list.isRefreshing.value" size="sm" label="Searching" />
+      <InlineSpinner v-if="list.isRefreshing.value">Searching</InlineSpinner>
     </div>
 
-    <Alert v-if="listFailure" severity="danger" :description="listFailure" />
-    <Alert v-if="commandFailure" severity="danger" :description="commandFailure" />
-
-    <div v-if="list.isLoading.value" class="flex min-h-[40vh] items-center justify-center">
-      <Spinner size="lg" label="Loading codes" />
-    </div>
-    <Card v-else-if="list.codes.value && list.codes.value.length === 0" class="surface-soft p-6">
-      <EmptyState
-        :title="settledSearch ? 'No matching codes' : 'No codes yet'"
-        :description="
-          settledSearch
-            ? 'Try a different search term.'
-            : 'Create your first programmable code — one code, many destinations.'
-        "
-      >
-        <template #icon><QrCode :size="32" /></template>
-        <template v-if="!settledSearch" #actions>
-          <Button tone="primary" @click="props.onCreate">
-            <template #leading><Plus :size="16" aria-hidden="true" /></template>
-            Create new
-          </Button>
-        </template>
-      </EmptyState>
-    </Card>
-    <div v-else-if="list.codes.value" class="flex flex-col gap-3" :aria-busy="list.isRefreshing.value">
+    <DataRegion
+      class="flex flex-col gap-3"
+      :is-first-load="list.isFirstLoad.value"
+      :is-refreshing="list.isRefreshing.value"
+      :error="list.error.value"
+      :has-data="Boolean(list.codes.value)"
+      :is-empty="list.codes.value?.length === 0"
+      :empty-title="settledSearch ? 'No matching codes' : 'No codes yet'"
+      :empty-description="
+        settledSearch
+          ? 'Try a different search term.'
+          : 'Create your first programmable code — one code, many destinations.'
+      "
+      unavailable-title="Your codes aren't available right now"
+      loading-label="Loading codes"
+      @retry="list.refetch"
+    >
+      <template #skeleton>
+        <SkeletonState v-for="index in 3" :key="index" class="h-24 w-full rounded-xl" />
+      </template>
+      <template v-if="!settledSearch" #emptyActions>
+        <Button tone="primary" @click="props.onCreate">
+          <template #leading><Plus :size="16" aria-hidden="true" /></template>
+          Create new
+        </Button>
+      </template>
       <CodeRowCard
         v-for="code in list.codes.value"
         :key="code.id"
@@ -136,7 +124,7 @@ async function confirmDelete(): Promise<void> {
         @toggle-active="toggleActive(code)"
         @delete="pendingDelete = code"
       />
-    </div>
+    </DataRegion>
 
     <CopyCodeModal
       :code="pendingCopy"

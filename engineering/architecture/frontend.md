@@ -17,10 +17,16 @@
 ## Behavior
 
 - Marketing routes never call the API; the session is checked only when `/app` opens.
-- The sign-in gate renders in place, so a deep link survives sign-in.
+- A splash covers the session check; the sign-in gate renders outside the frame, on the deep link's address.
+- The product frame is the SDK `AppShell`: brand, version, Codes and Billing, then the account menu.
+- The account menu names the visitor, shows the app and API versions, the colour mode, the site link and sign-out.
+- Phones navigate through a bottom bar; the main region scrolls, the bars hold still.
+- A failed read or row command becomes one toast; its region settles into neutral copy and keeps last good data.
+- The builder form, billing sessions and the download dialog show their own failures in place.
 - A failed session check offers a retry instead of creating a new guest.
 - A new guest or account clears private queries through the SDK session bridge.
-- Each list search owns a cache entry; row commands track their own progress.
+- Each list search owns a cache entry; the last list stays while the next loads.
+- Row commands track their own progress.
 - Opening another code starts a fresh builder session; a failed load blocks editing.
 - Content leaves bind at their own paths, so server field errors land on their controls.
 - Conditionals reorder by drag or keyboard; the catch-all stays last and a pointer names its target.

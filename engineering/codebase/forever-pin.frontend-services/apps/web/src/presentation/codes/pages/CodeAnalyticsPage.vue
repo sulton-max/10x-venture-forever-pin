@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ArrowLeft, ChartColumn, Pencil, RotateCw } from 'lucide-vue-next';
+import { ArrowLeft, ChartColumn, Pencil } from 'lucide-vue-next';
 import { Button } from '@wow-two-beta/fe/presentation/actions';
 import { Card, EmptyState, Heading, Sparkline, StatCard, Text } from '@wow-two-beta/fe/presentation/display';
-import { Alert, Spinner } from '@wow-two-beta/fe/presentation/feedback';
+import { DataRegion, SkeletonState } from '@wow-two-beta/fe/presentation/feedback';
 import { ToggleGroup, ToggleInput } from '@wow-two-beta/fe/presentation/forms';
 import { computed, ref } from 'vue';
 
 import { useCode, useCodeAnalytics } from '@/application/codes';
-import { FailureMessages } from '@/application/common';
 import { ContentMode, type ScanDayDto } from '@/domain/codes';
 
 import { AnalyticsDisplays, AnalyticsWindows, DefaultAnalyticsDays } from '../analytics/AnalyticsDisplays';
@@ -53,11 +52,8 @@ const chartLabel = computed(() => {
     ? `${total} scans over ${days.value} days, peaking at ${AnalyticsDisplays.count(peak.value.scans)} on ${AnalyticsDisplays.day(peak.value.date)}`
     : `No scans over ${days.value} days`;
 });
-const failure = computed(() => {
-  if (code.error.value) return FailureMessages.describe(code.error.value, 'The code could not be loaded.');
-  if (analytics.error.value) return FailureMessages.describe(analytics.error.value, 'Analytics could not be loaded.');
-  return null;
-});
+/** The read that failed, if any; its message reaches the toast host, the region settles into neutral copy. */
+const failure = computed(() => code.error.value ?? analytics.error.value);
 
 function selectDays(value: unknown): void {
   if (typeof value === 'string') days.value = Number(value);
@@ -109,15 +105,7 @@ function retry(): void {
       </div>
     </div>
 
-    <div v-if="failure" role="alert" class="flex flex-col items-start gap-3">
-      <Alert severity="danger" :description="failure" />
-      <Button tone="primary" variant="outline" @click="retry">
-        <template #leading><RotateCw :size="16" aria-hidden="true" /></template>
-        Try again
-      </Button>
-    </div>
-
-    <Card v-else-if="isStatic" class="surface-soft p-6">
+    <Card v-if="isStatic" class="surface-soft p-6">
       <EmptyState
         title="Static codes aren't counted"
         description="A static code carries its content in the symbol, so a scan never passes through ForeverPin. Copy it as a dynamic code to count its scans."
@@ -126,80 +114,94 @@ function retry(): void {
       </EmptyState>
     </Card>
 
-    <div v-else-if="!scans" class="flex min-h-[40vh] items-center justify-center">
-      <Spinner size="lg" label="Loading analytics" />
-    </div>
-
-    <template v-else>
-      <div class="grid grid-cols-2 gap-3 lg:grid-cols-4" :aria-busy="analytics.loading.value">
-        <StatCard :label="`Scans · last ${days} days`" :value="AnalyticsDisplays.count(scans.rangeScans)" />
-        <StatCard label="All-time scans" :value="AnalyticsDisplays.count(scans.totalScans)" />
-        <StatCard
-          label="Busiest day"
-          :value="peak ? AnalyticsDisplays.count(peak.scans) : '—'"
-          :helper="peak ? AnalyticsDisplays.day(peak.date) : 'No scans yet'"
-        />
-        <StatCard
-          label="Top country"
-          :value="topCountry ? AnalyticsDisplays.country(topCountry.key) : '—'"
-          :helper="topCountry ? `${AnalyticsDisplays.count(topCountry.scans)} scans` : 'Not located yet'"
-        />
-      </div>
-
-      <Card class="surface-soft flex flex-col gap-3 p-5">
-        <div class="flex items-baseline justify-between gap-3">
-          <Heading :level="2" size="sm" weight="semibold">Scans per day</Heading>
-          <Text size="xs" color="muted">UTC</Text>
+    <DataRegion
+      v-else
+      class="flex flex-col gap-6"
+      :is-first-load="!scans && !failure"
+      :is-refreshing="analytics.isRefreshing.value"
+      :error="failure"
+      :has-data="Boolean(scans)"
+      unavailable-title="Analytics aren't available right now"
+      loading-label="Loading analytics"
+      @retry="retry"
+    >
+      <template #skeleton>
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <SkeletonState v-for="index in 4" :key="index" class="h-24 w-full rounded-xl" />
         </div>
-        <Sparkline
-          variant="bar"
-          :data="dailyScans"
-          :width="720"
-          :height="160"
-          :min="0"
-          :max="Math.max(1, peak?.scans ?? 0)"
-          :aria-label="chartLabel"
-          class="h-40 w-full"
-        />
-        <div class="flex justify-between text-xs text-muted-foreground tabular-nums">
-          <span>{{ AnalyticsDisplays.day(scans.from) }}</span>
-          <span>{{ AnalyticsDisplays.day(scans.to) }}</span>
+        <SkeletonState class="h-48 w-full rounded-xl" />
+      </template>
+      <template v-if="scans">
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-4" :aria-busy="analytics.isRefreshing.value">
+          <StatCard :label="`Scans · last ${days} days`" :value="AnalyticsDisplays.count(scans.rangeScans)" />
+          <StatCard label="All-time scans" :value="AnalyticsDisplays.count(scans.totalScans)" />
+          <StatCard
+            label="Busiest day"
+            :value="peak ? AnalyticsDisplays.count(peak.scans) : '—'"
+            :helper="peak ? AnalyticsDisplays.day(peak.date) : 'No scans yet'"
+          />
+          <StatCard
+            label="Top country"
+            :value="topCountry ? AnalyticsDisplays.country(topCountry.key) : '—'"
+            :helper="topCountry ? `${AnalyticsDisplays.count(topCountry.scans)} scans` : 'Not located yet'"
+          />
         </div>
-        <Text v-if="activeDays.length === 0" size="sm" color="muted">
-          No scans in this window yet — a scan shows up here within seconds.
+
+        <Card class="surface-soft flex flex-col gap-3 p-5">
+          <div class="flex items-baseline justify-between gap-3">
+            <Heading :level="2" size="sm" weight="semibold">Scans per day</Heading>
+            <Text size="xs" color="muted">UTC</Text>
+          </div>
+          <Sparkline
+            variant="bar"
+            :data="dailyScans"
+            :width="720"
+            :height="160"
+            :min="0"
+            :max="Math.max(1, peak?.scans ?? 0)"
+            :aria-label="chartLabel"
+            class="h-40 w-full"
+          />
+          <div class="flex justify-between text-xs text-muted-foreground tabular-nums">
+            <span>{{ AnalyticsDisplays.day(scans.from) }}</span>
+            <span>{{ AnalyticsDisplays.day(scans.to) }}</span>
+          </div>
+          <Text v-if="activeDays.length === 0" size="sm" color="muted">
+            No scans in this window yet — a scan shows up here within seconds.
+          </Text>
+          <details v-else class="text-sm">
+            <summary class="cursor-pointer text-muted-foreground hover:text-foreground">Daily counts</summary>
+            <ul class="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-3">
+              <li v-for="day in activeDays" :key="day.date.toString()" class="flex justify-between gap-3 tabular-nums">
+                <span>{{ AnalyticsDisplays.day(day.date) }}</span>
+                <span class="text-muted-foreground">{{ AnalyticsDisplays.count(day.scans) }}</span>
+              </li>
+            </ul>
+          </details>
+        </Card>
+
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <ScanShareCard title="Devices" :shares="scans.devices" :describe="AnalyticsDisplays.device" />
+          <ScanShareCard
+            title="Operating systems"
+            :shares="scans.operatingSystems"
+            :describe="AnalyticsDisplays.system"
+          />
+          <ScanShareCard title="Countries" :shares="scans.countries" :describe="AnalyticsDisplays.country">
+            <template #footer>
+              <!-- DB-IP Lite data is licensed CC BY 4.0; showing located countries requires this attribution. -->
+              <Text size="xs" color="muted">
+                <a href="https://db-ip.com" class="underline hover:text-foreground">IP Geolocation by DB-IP</a>
+              </Text>
+            </template>
+          </ScanShareCard>
+        </div>
+
+        <Text size="xs" color="muted">
+          Days are UTC. Every resolved scan counts, including repeat scans from the same phone; link previews and bots
+          are listed as their own device class.
         </Text>
-        <details v-else class="text-sm">
-          <summary class="cursor-pointer text-muted-foreground hover:text-foreground">Daily counts</summary>
-          <ul class="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-3">
-            <li v-for="day in activeDays" :key="day.date.toString()" class="flex justify-between gap-3 tabular-nums">
-              <span>{{ AnalyticsDisplays.day(day.date) }}</span>
-              <span class="text-muted-foreground">{{ AnalyticsDisplays.count(day.scans) }}</span>
-            </li>
-          </ul>
-        </details>
-      </Card>
-
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <ScanShareCard title="Devices" :shares="scans.devices" :describe="AnalyticsDisplays.device" />
-        <ScanShareCard
-          title="Operating systems"
-          :shares="scans.operatingSystems"
-          :describe="AnalyticsDisplays.system"
-        />
-        <ScanShareCard title="Countries" :shares="scans.countries" :describe="AnalyticsDisplays.country">
-          <template #footer>
-            <!-- DB-IP Lite data is licensed CC BY 4.0; showing located countries requires this attribution. -->
-            <Text size="xs" color="muted">
-              <a href="https://db-ip.com" class="underline hover:text-foreground">IP Geolocation by DB-IP</a>
-            </Text>
-          </template>
-        </ScanShareCard>
-      </div>
-
-      <Text size="xs" color="muted">
-        Days are UTC. Every resolved scan counts, including repeat scans from the same phone; link previews and bots are
-        listed as their own device class.
-      </Text>
-    </template>
+      </template>
+    </DataRegion>
   </div>
 </template>

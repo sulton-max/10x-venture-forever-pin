@@ -116,7 +116,9 @@ export class FakeApi {
       return this.json(route, 400, { code: 'AntiforgeryValidationFailed' });
 
     if (path === '/api/runtime-config')
-      return this.json(route, 200, { data: { googleClientId: '', redirectBaseUrl: 'https://go.foreverpin.test' } });
+      return this.json(route, 200, { googleClientId: '', redirectBaseUrl: 'https://go.foreverpin.test' });
+    if (path === '/api/system/status')
+      return this.json(route, 200, { data: { service: 'forever-pin-api', status: 'ok', version: '0.11.0+abcdef0' } });
     if (path === '/api/identity/me') {
       if (this.failMe) return this.json(route, this.failMe, { title: 'Unavailable' });
       return this.json(route, 200, { data: { kind: this.isGuest ? 'guest' : 'anonymous', user: null } });

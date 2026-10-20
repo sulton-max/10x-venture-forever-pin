@@ -13,13 +13,15 @@ export function useBillingStatus() {
 /** Provides the hosted billing sessions: Checkout for a paid plan and the Customer Portal. */
 export function useBillingSessions() {
   return {
-    /** Creates a Checkout session for a paid plan; the caller navigates to its address. */
+    /** Creates a Checkout session for a paid plan; the caller navigates to its address or shows its failure. */
     checkout: useAppMutation({
       mutationFn: (plan: Plan, { signal }) => billingApi.createCheckout(plan, signal),
+      meta: { suppressGlobalError: true },
     }),
-    /** Creates a Customer Portal session; fails before the first subscription. */
+    /** Creates a Customer Portal session; fails before the first subscription, which the caller shows. */
     portal: useAppMutation({
       mutationFn: (_: void, { signal }) => billingApi.createPortal(signal),
+      meta: { suppressGlobalError: true },
     }),
   };
 }
