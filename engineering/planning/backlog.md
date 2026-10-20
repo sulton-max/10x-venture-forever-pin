@@ -76,10 +76,7 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 |---|---|---|
 | Verify real Google sign-in with the configured OAuth client | product | — |
 | Verify Stripe test-mode checkout, portal and webhooks | product | — |
-| Tie paid entitlements to subscription status | fix | every subscription update maps to Active; [gap analysis](../research/gap-analysis-2026-09-19.md) F08 |
-| Decide the free dynamic allowance and entry pricing | product | — |
-| Align static-code limits with the chosen pricing | product | — |
-| Reconcile marketing claims with implemented capabilities | product | — |
+| Map Stripe's subscription status in the webhook | fix | entitlements follow status; updates still store Active; F08 |
 | Define guest-subscription merging across accounts | product | — |
 | Choose the permanent `go` short-link host | product | printed into every dynamic code |
 | Configure and verify deployment, TLS and redirect domains | engineering | — |

@@ -1,30 +1,52 @@
 using ForeverPin.Application.Billing.Core;
+using ForeverPin.Domain.Billing.Entities;
 using ForeverPin.Domain.Billing.Enums;
 
 namespace ForeverPin.Tests.Unit;
 
-/// <summary>Unit tests for the per-plan code cap.</summary>
+/// <summary>Unit tests for what each plan holds and which plan a subscription entitles.</summary>
 public class PlanLimitsTests
 {
     [Theory]
     [InlineData(Plan.Free, 3)]
-    [InlineData(Plan.Solo, 25)]
+    [InlineData(Plan.Basic, 25)]
     [InlineData(Plan.Pro, 200)]
-    public void MaxCodes_returns_cap_for_bounded_plans(Plan plan, int expected) =>
-        Assert.Equal(expected, PlanLimitsConstants.MaxCodes(plan));
+    public void MaxDynamicCodes_ShouldReturnTheCap_ForBoundedPlans(Plan plan, int expected) =>
+        Assert.Equal(expected, PlanLimits.MaxDynamicCodes(plan));
 
     [Fact]
-    public void MaxCodes_agency_is_unlimited_sentinel_internally() =>
-        Assert.Equal(int.MaxValue, PlanLimitsConstants.MaxCodes(Plan.Agency));
+    public void MaxDynamicCodes_ShouldBeUnlimitedInternally_ForAgency() =>
+        Assert.Equal(int.MaxValue, PlanLimits.MaxDynamicCodes(Plan.Agency));
+
+    [Fact]
+    public void MaxDynamicCodesForApi_ShouldCollapseToMinusOne_ForAgency() =>
+        Assert.Equal(-1, PlanLimits.MaxDynamicCodesForApi(Plan.Agency));
 
     [Theory]
-    [InlineData(Plan.Free, 3)]
-    [InlineData(Plan.Solo, 25)]
-    [InlineData(Plan.Pro, 200)]
-    public void MaxCodesForApi_passes_bounded_caps_through(Plan plan, int expected) =>
-        Assert.Equal(expected, PlanLimitsConstants.MaxCodesForApi(plan));
+    [InlineData(Plan.Free, 7)]
+    [InlineData(Plan.Basic, 366)]
+    public void AnalyticsDays_ShouldReturnTheReach_ForEachPlan(Plan plan, int expected) =>
+        Assert.Equal(expected, PlanLimits.AnalyticsDays(plan));
+
+    [Theory]
+    [InlineData(SubscriptionStatus.Active, Plan.Basic)]
+    [InlineData(SubscriptionStatus.Trialing, Plan.Basic)]
+    [InlineData(SubscriptionStatus.PastDue, Plan.Basic)]
+    [InlineData(SubscriptionStatus.Canceled, Plan.Free)]
+    [InlineData(SubscriptionStatus.Unpaid, Plan.Free)]
+    [InlineData(SubscriptionStatus.Incomplete, Plan.Free)]
+    public void EffectivePlan_ShouldFollowTheSubscriptionStatus(SubscriptionStatus status, Plan expected) =>
+        Assert.Equal(expected, PlanLimits.EffectivePlan(new SubscriptionEntity
+        {
+            Id = Guid.NewGuid(),
+            UserId = Guid.NewGuid(),
+            Plan = Plan.Basic,
+            Status = status,
+            StripeCustomerId = "cus",
+            StripeSubscriptionId = "sub",
+        }));
 
     [Fact]
-    public void MaxCodesForApi_agency_collapses_to_minus_one() =>
-        Assert.Equal(-1, PlanLimitsConstants.MaxCodesForApi(Plan.Agency));
+    public void EffectivePlan_ShouldBeFree_WithoutASubscription() =>
+        Assert.Equal(Plan.Free, PlanLimits.EffectivePlan(null));
 }

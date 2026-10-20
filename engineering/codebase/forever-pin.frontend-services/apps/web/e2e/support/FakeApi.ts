@@ -45,6 +45,8 @@ export interface FakeApiOptions {
   readonly scans?: Record<string, FakeScans>;
   /** Seeds rendered SVG markup per code id; others render a small sample. */
   readonly images?: Record<string, string>;
+  /** How many days back the visitor's plan lets analytics reach; a year unless a test narrows it. */
+  readonly analyticsDays?: number;
 }
 
 const PreviewSvg =
@@ -89,6 +91,7 @@ export class FakeApi {
   readonly scans: Record<string, FakeScans>;
   readonly images: Record<string, string>;
   readonly analyticsReads: number[] = [];
+  readonly analyticsDays: number;
   isGuest: boolean;
   failMe: number | undefined;
 
@@ -96,6 +99,7 @@ export class FakeApi {
     this.codes = options.codes ?? [];
     this.scans = options.scans ?? {};
     this.images = options.images ?? {};
+    this.analyticsDays = options.analyticsDays ?? 366;
     this.isGuest = options.isGuest ?? false;
     this.failMe = options.failMe;
   }
@@ -129,7 +133,12 @@ export class FakeApi {
     }
     if (path === '/api/billing/me')
       return this.json(route, 200, {
-        data: { plan: 'free', status: 'active', limits: { maxCodes: 3 }, usage: { codeCount: this.codes.length } },
+        data: {
+          plan: 'free',
+          status: 'active',
+          limits: { maxDynamicCodes: 3, analyticsDays: this.analyticsDays },
+          usage: { dynamicCodeCount: this.codes.filter((code) => code.mode === 'dynamic').length },
+        },
       });
     if (path === '/api/codes/preview' && method === 'POST')
       return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: PreviewSvg });
@@ -152,7 +161,7 @@ export class FakeApi {
     if (match[2] === '/analytics') {
       const days = Number(url.searchParams.get('days') ?? '30');
       this.analyticsReads.push(days);
-      return this.json(route, 200, { data: this.analytics(code, days) });
+      return this.json(route, 200, { data: this.analytics(code, Math.min(days, this.analyticsDays)) });
     }
     if (match[2] === '/image')
       return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: this.images[code.id] ?? PreviewSvg });
@@ -185,6 +194,7 @@ export class FakeApi {
     return {
       from: daily[0]?.date,
       to: FakeToday,
+      maxDays: this.analyticsDays,
       totalScans: code.scanCount,
       rangeScans: daily.reduce((sum, day) => sum + day.scans, 0),
       daily,

@@ -99,7 +99,7 @@ export const Features: ReadonlyArray<HighlightModel> = [
   {
     icon: Sparkles,
     title: 'Built to be left alone',
-    body: 'Unlimited scans on every tier. No scan caps as a paywall lever. Cancel, export everything, and delete everything — anytime.',
+    body: 'Unlimited scans on every tier. No scan caps as a paywall lever. Cancel anytime — printed codes keep working.',
   },
 ];
 
@@ -113,7 +113,7 @@ export const Steps: ReadonlyArray<HighlightModel> = [
   {
     icon: Printer,
     title: 'Print',
-    body: 'Export a crisp vector SVG, PNG, or PDF and put it on anything — a table tent, a billboard, product packaging.',
+    body: 'Export a crisp vector SVG at print size, or a PNG, and put it on anything — a table tent, a billboard, packaging.',
   },
   {
     icon: RefreshCw,
@@ -122,7 +122,7 @@ export const Steps: ReadonlyArray<HighlightModel> = [
   },
 ];
 
-/** Lists the plans, cheapest first. */
+/** Lists the plans, cheapest first; only plans on sale appear. */
 export const PricingTiers: ReadonlyArray<PricingTierModel> = [
   {
     id: 'free',
@@ -131,41 +131,23 @@ export const PricingTiers: ReadonlyArray<PricingTierModel> = [
     cadence: 'forever',
     tagline: 'For tinkerers and first codes.',
     cta: 'Start free',
-    features: ['3 dynamic codes', 'Unlimited scans', 'Basic analytics', 'Codes never expire'],
-  },
-  {
-    id: 'solo',
-    name: 'Solo',
-    price: '$5',
-    cadence: '/mo',
-    tagline: 'For a small business with physical surfaces.',
-    featured: true,
-    cta: 'Choose Solo',
-    features: ['25 codes', 'Smart routing rules', 'Custom domain', 'Full analytics', 'Everything in Free'],
-  },
-  {
-    id: 'pro',
-    name: 'Pro',
-    price: '$15',
-    cadence: '/mo',
-    tagline: 'For marketers and power users.',
-    cta: 'Choose Pro',
     features: [
-      '200 codes',
-      'A/B + advanced rules',
-      'Bulk generation',
-      'All code & content types',
-      'Everything in Solo',
+      '3 dynamic codes',
+      'Unlimited static codes',
+      'Unlimited scans',
+      '7 days of analytics',
+      'Codes never expire',
     ],
   },
   {
-    id: 'agency',
-    name: 'Dev / Agency',
-    price: '$39',
+    id: 'basic',
+    name: 'Basic',
+    price: '$1',
     cadence: '/mo',
-    tagline: 'For developers and agencies.',
-    cta: 'Choose Agency',
-    features: ['REST API + keys', 'White-label', 'Client workspaces', 'Webhooks', 'Everything in Pro'],
+    tagline: 'Billed yearly at $12. For a small business with printed codes.',
+    featured: true,
+    cta: 'Choose Basic',
+    features: ['25 dynamic codes', 'A full year of analytics', 'Everything in Free'],
   },
 ];
 
@@ -177,14 +159,9 @@ export const ComparisonRows: ReadonlyArray<ComparisonRowModel> = [
     incumbent: 'Often deactivated — your print is bricked',
   },
   { dimension: 'Scans', foreverPin: 'Unlimited on every tier', incumbent: 'Metered, capped as a paywall lever' },
-  { dimension: 'Smart routing + custom domain', foreverPin: 'From $5/mo', incumbent: 'Buried in $30+/mo tiers' },
-  {
-    dimension: 'Developer API at a flat price',
-    foreverPin: 'Yes — no sales call',
-    incumbent: 'Enterprise-only or absent',
-  },
+  { dimension: 'Smart routing', foreverPin: 'On every plan, Free included', incumbent: 'Buried in $30+/mo tiers' },
+  { dimension: 'Paid plan', foreverPin: '$1/mo, billed yearly', incumbent: '$10–$40/mo' },
   { dimension: 'Email behaviour', foreverPin: 'No ads, no scan nags', incumbent: 'Engagement emails by default' },
-  { dimension: 'Export & delete everything', foreverPin: 'Anytime, one click', incumbent: 'Friction or unavailable' },
 ];
 
 /** Lists the landing page's questions. */
@@ -202,7 +179,7 @@ export const Faqs: ReadonlyArray<FaqModel> = [
   {
     question: 'What is smart routing?',
     answer:
-      "An ordered set of rules on a single code: if the scanner's device, country, language, the time of day, scan count, or an A/B bucket matches, send them to one destination — otherwise fall back to your default. One code behaves differently for whoever scans it.",
+      "An ordered set of rules on a single code: if the scanner's device, country, language or the time of day matches, send them to one destination — otherwise fall back to your default. One code behaves differently for whoever scans it.",
   },
   {
     question: 'Can I change where a code points after printing?',
@@ -217,7 +194,7 @@ export const Faqs: ReadonlyArray<FaqModel> = [
   {
     question: 'Is there really a free plan?',
     answer:
-      'Yes — three dynamic codes, unlimited scans, basic analytics, and the never-expire promise, at no cost and with no card required.',
+      'Yes — three dynamic codes, unlimited static codes, unlimited scans, a week of analytics and the never-expire promise, with no card required.',
   },
 ];
 
@@ -226,7 +203,7 @@ export const PricingFaqs: ReadonlyArray<FaqModel> = [
   {
     question: 'What happens to my codes if I downgrade or cancel?',
     answer:
-      'They keep redirecting. You lose the ability to edit them and see new analytics, but every printed code continues to resolve to its last destination — permanently. This is the opposite of how most QR vendors work.',
+      'They keep redirecting, and you can still edit them. You drop back to Free: three dynamic code slots and a week of analytics. No printed code ever stops resolving — the opposite of how most QR vendors work.',
   },
   {
     question: 'Are scans really unlimited on every plan?',
@@ -236,16 +213,11 @@ export const PricingFaqs: ReadonlyArray<FaqModel> = [
   {
     question: 'Do I need a credit card to start?',
     answer:
-      'No. Start as a guest, create your first codes, and only add billing when you want more codes or the paid routing features.',
+      'No. Start as a guest, create your first codes, and only add billing when you want more dynamic codes or a longer analytics history.',
   },
   {
-    question: 'Can I bring my own domain?',
+    question: 'Why is Basic billed yearly?',
     answer:
-      'Yes — from the $5 Solo tier. Point a CNAME like qr.yourbrand.com at us and your codes resolve through your own domain, not a shared one.',
-  },
-  {
-    question: 'Is there a discount for paying yearly?',
-    answer:
-      'Annual pricing is coming alongside billing. The flat monthly prices shown here are the anchor — no per-scan fees, no hidden metering.',
+      'Card fees take about a third of a $1 charge, so Basic is one $12 payment a year — $1 a month. No per-scan fees, no hidden metering.',
   },
 ];

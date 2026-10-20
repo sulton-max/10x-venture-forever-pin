@@ -16,16 +16,14 @@
 
 - Free styled generation attracts users; paid forwarding provides editable printed codes.
 - A plan downgrade must not deactivate an existing redirect.
-- Marketing's proposed entry experiment is $12/year; it is not the implemented pricing model.
-- Current creation limits count all codes, including static ones.
-- Custom domains and customer analytics remain unfinished despite existing marketing claims.
+- Pricing (owner, 2026-10-20): Free, and Basic at $12/year shown as $1/month; Pro and Agency off sale.
+- Free holds 3 dynamic codes, unlimited static codes and 7 days of analytics; Basic 25 and a full year.
+- Marketing names only built capabilities; custom domains, A/B, API and white-label wait for their code.
 
 ---
 
 ## Open business work
 
-- Decide the free dynamic allowance and launch pricing.
-- Align pricing, limits, and marketing with implemented capabilities.
 - Confirm handles and brand clearance before launch.
 - Finish launch content and product analytics.
 - Validate real Google and Stripe flows before charging customers.

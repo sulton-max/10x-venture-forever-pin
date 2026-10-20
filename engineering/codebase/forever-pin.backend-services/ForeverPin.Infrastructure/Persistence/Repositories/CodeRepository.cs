@@ -4,6 +4,7 @@ using ForeverPin.Domain.Codes.Core.Entities;
 using ForeverPin.Persistence.Constants;
 using ForeverPin.Persistence.DataContexts;
 using ForeverPin.Application.Codes.Core.Enums;
+using ForeverPin.Common.Domain.Codes.Core.Enums;
 using WoW.Two.Sdk.Beta.Be.Caching.Invalidation.Extensions;
 using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Locks.Extensions;
 using WoW.Two.Sdk.Beta.Be.Data.EntityFrameworkCore.Uniqueness.Extensions;
@@ -21,7 +22,9 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
             : null;
         await db.Database.AcquireTransactionLocksAsync("owner", [code.UserId], ct);
 
-        if (await db.Codes.CountAsync(c => c.UserId == code.UserId, ct) >= limit)
+        // Only dynamic codes count against the plan; a static code is always added.
+        if (code.Mode is ContentMode.Dynamic
+            && await db.Codes.CountAsync(c => c.UserId == code.UserId && c.Mode == ContentMode.Dynamic, ct) >= limit)
             return CodeInsertStatus.PlanLimitReached;
 
         // A taken slug rolls back to a savepoint and detaches the insert; the caller's transaction stays usable.
@@ -117,8 +120,8 @@ public sealed class CodeRepository(AppDbContext db) : ICodeRepository
         db.Codes.AnyAsync(c => c.Slug == slug, ct);
 
     /// <inheritdoc />
-    public Task<int> CountByUserAsync(Guid userId, CancellationToken ct) =>
-        db.Codes.CountAsync(c => c.UserId == userId, ct);
+    public Task<int> CountDynamicByUserAsync(Guid userId, CancellationToken ct) =>
+        db.Codes.CountAsync(c => c.UserId == userId && c.Mode == ContentMode.Dynamic, ct);
 
     /// <summary>Saves the pending change and evicts the code from every redirect host once the change commits.</summary>
     /// <remarks>Joins the caller's transaction when present; a static code has no slug and no cached route.</remarks>

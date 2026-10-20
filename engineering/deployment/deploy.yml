@@ -44,7 +44,7 @@ services:
     memory: 768m
     stopGrace: 45s
     # The redirect base and Stripe's return pages follow the derived Sites:go:Url and Sites:app:Url; nobody types
-    # an origin. Billing stays off until its secret key is set, and then needs its webhook secret and every price.
+    # an origin. Billing stays off until its secret key is set, and then needs its webhook secret and the Basic price.
     settings:
       required:
         - DatabaseSettings:ConnectionString
@@ -52,9 +52,8 @@ services:
         Auth:Google:ClientId: {}
         Billing:SecretKey: { secret: true }
         Billing:WebhookSecret: { secret: true }
-        Billing:Prices:Solo: {}
-        Billing:Prices:Pro: {}
-        Billing:Prices:Agency: {}
+        # Basic is a yearly Stripe price ($12); Pro and Agency are not on sale.
+        Billing:Prices:Basic: {}
     volumes:
       keys: /data/keys
     needs: [postgres]

@@ -21,18 +21,24 @@ public sealed class BillingMeQueryHandler(
     {
         var subscription = await subscriptions.GetByUserAsync(request.UserId, ct);
 
-        // No row ⇒ Free / active (the synthesized default; no row is ever required to use the app).
+        // No row ⇒ Free / active (the synthesized default; no row is ever required to use the app). A lapsed
+        // subscription reports its own plan and status, while its limits fall back to Free's.
         var plan = subscription?.Plan ?? Plan.Free;
+        var entitled = PlanLimits.EffectivePlan(subscription);
         var status = subscription is null ? "active" : subscription.Status.ToString().ToLowerInvariant();
 
-        var codeCount = await codes.CountByUserAsync(request.UserId, ct);
+        var dynamicCodeCount = await codes.CountDynamicByUserAsync(request.UserId, ct);
 
         var dto = new BillingStatusModel
         {
             Plan = plan,
             Status = status,
-            Limits = new LimitsModel { MaxCodes = PlanLimitsConstants.MaxCodesForApi(plan) },
-            Usage = new UsageModel { CodeCount = codeCount },
+            Limits = new LimitsModel
+            {
+                MaxDynamicCodes = PlanLimits.MaxDynamicCodesForApi(entitled),
+                AnalyticsDays = PlanLimits.AnalyticsDays(entitled),
+            },
+            Usage = new UsageModel { DynamicCodeCount = dynamicCodeCount },
         };
 
         return AppResult<BillingMeResult.Success>.Ok(new BillingMeResult.Success(dto));

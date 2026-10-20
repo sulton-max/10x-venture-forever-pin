@@ -47,7 +47,7 @@ public class SubscriptionRepositoryTests(ForeverPinTestDb db) : RepositoryTestBa
         var user = Guid.NewGuid();
 
         await new SubscriptionRepository(NewContext()).UpsertByUserAsync(
-            NewSub(user, Plan.Solo, SubscriptionStatus.Active, sub: "sub_A"),
+            NewSub(user, Plan.Basic, SubscriptionStatus.Active, sub: "sub_A"),
             default);
         // Re-subscribe / plan change → same user, overwrite (single-row policy, status flips, new sub id).
         await new SubscriptionRepository(NewContext()).UpsertByUserAsync(
@@ -65,7 +65,7 @@ public class SubscriptionRepositoryTests(ForeverPinTestDb db) : RepositoryTestBa
     public async Task GetByStripeSubscriptionId_finds_the_row()
     {
         await new SubscriptionRepository(NewContext()).UpsertByUserAsync(
-            NewSub(Guid.NewGuid(), Plan.Solo, SubscriptionStatus.Active, sub: "sub_lookup"),
+            NewSub(Guid.NewGuid(), Plan.Basic, SubscriptionStatus.Active, sub: "sub_lookup"),
             default);
 
         var found = await new SubscriptionRepository(NewContext()).GetByStripeSubscriptionIdAsync(

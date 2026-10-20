@@ -143,7 +143,7 @@ public sealed class HostConfigurationTests(AppFixture fixture) : E2EBase(fixture
     private static IWebHostBuilder EnableBilling(IWebHostBuilder builder) => builder
         .UseSetting("Billing:SecretKey", "sk_test_fake")
         .UseSetting("Billing:WebhookSecret", "whsec_fake")
-        .UseSetting("Billing:Prices:Solo", AppFixture.PriceSolo)
+        .UseSetting("Billing:Prices:Basic", AppFixture.PriceBasic)
         .UseSetting("Billing:Prices:Pro", AppFixture.PricePro)
         .UseSetting("Billing:Prices:Agency", AppFixture.PriceAgency);
 }

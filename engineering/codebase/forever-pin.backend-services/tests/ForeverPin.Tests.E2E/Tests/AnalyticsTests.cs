@@ -1,3 +1,5 @@
+using ForeverPin.Domain.Billing.Enums;
+using ForeverPin.Domain.Billing.Entities;
 using System.Net;
 using AwesomeAssertions;
 using ForeverPin.Domain.Codes.Core.Entities;
@@ -49,9 +51,37 @@ public sealed class AnalyticsTests(AppFixture fixture) : E2EBase(fixture)
         var analytics = await (await owner.Client.GetAsync($"/api/codes/{code.Id}/analytics"))
             .ReadEnvelopeAsync<CodeAnalyticsDtoModel>();
 
-        analytics.Daily.Should().HaveCount(30).And.OnlyContain(day => day.Scans == 0);
+        // The 30-day default is cut to the Free plan's 7-day reach.
+        analytics.MaxDays.Should().Be(7);
+        analytics.Daily.Should().HaveCount(7).And.OnlyContain(day => day.Scans == 0);
         analytics.RangeScans.Should().Be(0);
         analytics.Devices.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Analytics_ShouldReachTheFullWindow_ForABasicSubscriber()
+    {
+        var owner = await CreateGuestClientAsync();
+        var code = await CreateCodeAsync(owner.Client);
+        await using (var context = Fixture.NewDbContext())
+        {
+            context.Set<SubscriptionEntity>().Add(new SubscriptionEntity
+            {
+                Id = Guid.NewGuid(),
+                UserId = owner.UserId,
+                Plan = Plan.Basic,
+                Status = SubscriptionStatus.Active,
+                StripeCustomerId = "cus_analytics",
+                StripeSubscriptionId = "sub_analytics",
+            });
+            await context.SaveChangesAsync();
+        }
+
+        var analytics = await (await owner.Client.GetAsync($"/api/codes/{code.Id}/analytics?days=90"))
+            .ReadEnvelopeAsync<CodeAnalyticsDtoModel>();
+
+        analytics.MaxDays.Should().Be(366);
+        analytics.Daily.Should().HaveCount(90);
     }
 
     [Fact]

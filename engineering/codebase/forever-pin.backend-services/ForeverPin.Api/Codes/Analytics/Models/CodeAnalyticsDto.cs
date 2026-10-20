@@ -11,6 +11,9 @@ public sealed record CodeAnalyticsDto
     /// <summary>Gets the last day of the window, today.</summary>
     public required DateOnly To { get; init; }
 
+    /// <summary>Gets how many days back the owner's plan lets the window reach.</summary>
+    public required int MaxDays { get; init; }
+
     /// <summary>Gets every scan the code has resolved.</summary>
     public required long TotalScans { get; init; }
 
@@ -48,6 +51,7 @@ public static class CodeAnalyticsDtoExtensions
     {
         From = model.From,
         To = model.To,
+        MaxDays = model.MaxDays,
         TotalScans = model.TotalScans,
         RangeScans = model.RangeScans,
         Daily = [.. model.Daily.Select(day => new ScanDayDto(day.Date, day.Scans))],

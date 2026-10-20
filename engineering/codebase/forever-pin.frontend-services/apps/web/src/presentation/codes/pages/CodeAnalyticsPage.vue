@@ -36,6 +36,11 @@ const analytics = useCodeAnalytics(
 );
 
 const scans = computed(() => analytics.data.value);
+/** The window the answer covers: the one asked for, cut to the plan's reach. */
+const windowDays = computed(() => scans.value?.daily.length ?? days.value);
+/** How far back the owner's plan reaches; every window is open until the first answer says otherwise. */
+const maxDays = computed(() => scans.value?.maxDays ?? Number.POSITIVE_INFINITY);
+const hasLockedWindows = computed(() => AnalyticsWindows.some((option) => option.days > maxDays.value));
 const dailyScans = computed(() => scans.value?.daily.map((day) => day.scans) ?? []);
 const peak = computed(() =>
   scans.value?.daily.reduce<ScanDayDto | undefined>(
@@ -49,8 +54,8 @@ const chartLabel = computed(() => {
   if (!scans.value) return 'Scans per day';
   const total = AnalyticsDisplays.count(scans.value.rangeScans);
   return peak.value
-    ? `${total} scans over ${days.value} days, peaking at ${AnalyticsDisplays.count(peak.value.scans)} on ${AnalyticsDisplays.day(peak.value.date)}`
-    : `No scans over ${days.value} days`;
+    ? `${total} scans over ${windowDays.value} days, peaking at ${AnalyticsDisplays.count(peak.value.scans)} on ${AnalyticsDisplays.day(peak.value.date)}`
+    : `No scans over ${windowDays.value} days`;
 });
 /** The read that failed, if any; its message reaches the toast host, the region settles into neutral copy. */
 const failure = computed(() => code.error.value ?? analytics.error.value);
@@ -83,7 +88,7 @@ function retry(): void {
           <ToggleGroup
             variant="segmented"
             type="single"
-            :model-value="String(days)"
+            :model-value="String(windowDays)"
             aria-label="Analytics window"
             @update:model-value="selectDays"
           >
@@ -93,10 +98,12 @@ function retry(): void {
               variant="soft"
               size="sm"
               :value="String(option.days)"
+              :is-disabled="option.days > maxDays"
             >
               {{ option.label }}
             </ToggleInput>
           </ToggleGroup>
+          <Text v-if="hasLockedWindows" size="xs" color="muted">Longer windows come with Basic.</Text>
           <Button size="sm" variant="ghost" tone="neutral" @click="props.onEdit(props.codeId)">
             <template #leading><Pencil :size="15" aria-hidden="true" /></template>
             Edit
@@ -133,7 +140,7 @@ function retry(): void {
       </template>
       <template v-if="scans">
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4" :aria-busy="analytics.isRefreshing.value">
-          <StatCard :label="`Scans · last ${days} days`" :value="AnalyticsDisplays.count(scans.rangeScans)" />
+          <StatCard :label="`Scans · last ${windowDays} days`" :value="AnalyticsDisplays.count(scans.rangeScans)" />
           <StatCard label="All-time scans" :value="AnalyticsDisplays.count(scans.totalScans)" />
           <StatCard
             label="Busiest day"

@@ -4,10 +4,10 @@ import { Plan, type BillingStatus } from '@/domain/billing';
 
 /** Validates an account's billing snapshot. */
 export const BillingStatusDtoSchema: z.ZodType<BillingStatus> = z.object({
-  plan: z.enum([Plan.Free, Plan.Solo, Plan.Pro, Plan.Agency]),
+  plan: z.enum([Plan.Free, Plan.Basic, Plan.Pro, Plan.Agency]),
   status: z.string(),
-  limits: z.object({ maxCodes: z.number() }),
-  usage: z.object({ codeCount: z.number() }),
+  limits: z.object({ maxDynamicCodes: z.number(), analyticsDays: z.number() }),
+  usage: z.object({ dynamicCodeCount: z.number() }),
 });
 
 /** Validates a hosted billing-session address. */

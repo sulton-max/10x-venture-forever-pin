@@ -5,6 +5,8 @@ public sealed record CodeAnalyticsDtoModel
 {
     public DateOnly From { get; init; }
     public DateOnly To { get; init; }
+    public int MaxDays { get; init; }
+
     public long TotalScans { get; init; }
     public long RangeScans { get; init; }
     public IReadOnlyList<ScanDayDtoModel> Daily { get; init; } = [];

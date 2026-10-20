@@ -37,16 +37,29 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
     {
         var owner = await CreateGuestClientAsync();
 
-        var response = await owner.Client.PostJsonAsync("/api/billing/checkout", new { plan = nameof(Plan.Pro) });
+        var response = await owner.Client.PostJsonAsync("/api/billing/checkout", new { plan = nameof(Plan.Basic) });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var session = await response.ReadEnvelopeAsync<SessionUrlDtoModel>();
         session.Url.Should().Be("https://checkout.stripe.com/c/pay/cs_test_fake"); // the fake gateway's canned URL
 
-        // The handler resolved Billing:Prices:Pro and passed the caller as client_reference_id.
+        // The handler resolved Billing:Prices:Basic and passed the caller as client_reference_id.
         Fixture.Gateway.LastCheckout.Should().NotBeNull();
-        Fixture.Gateway.LastCheckout!.Value.PriceId.Should().Be(AppFixture.PricePro);
+        Fixture.Gateway.LastCheckout!.Value.PriceId.Should().Be(AppFixture.PriceBasic);
         Fixture.Gateway.LastCheckout!.Value.UserId.Should().Be(owner.UserId);
+    }
+
+    [Theory]
+    [InlineData(nameof(Plan.Pro))]
+    [InlineData(nameof(Plan.Agency))]
+    public async Task Checkout_PlanNotOnSale_Returns400(string plan)
+    {
+        var owner = await CreateGuestClientAsync();
+
+        var response = await owner.Client.PostJsonAsync("/api/billing/checkout", new { plan });
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest, "only the Basic plan is on sale");
+        Fixture.Gateway.LastCheckout.Should().BeNull();
     }
 
     [Fact]
@@ -94,14 +107,16 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         var before = await GetMeAsync(owner);
         before.Plan.Should().Be("free");
         before.Status.Should().Be("active");
-        before.Limits.MaxCodes.Should().Be(3);   // Free cap
-        before.Usage.CodeCount.Should().Be(0);
+        before.Limits.MaxDynamicCodes.Should().Be(3);   // Free cap
+        before.Limits.AnalyticsDays.Should().Be(7);
+        before.Usage.DynamicCodeCount.Should().Be(0);
 
-        // Usage reflects live code count.
+        // Usage counts live dynamic codes; a static code costs nothing.
         await owner.Client.PostJsonAsync("/api/codes", CodeRequests.StaticUrl("One", "https://x.example"));
+        await owner.Client.PostJsonAsync("/api/codes", CodeRequests.DynamicUrl("Two", "https://x.example"));
 
         var after = await GetMeAsync(owner);
-        after.Usage.CodeCount.Should().Be(1);
+        after.Usage.DynamicCodeCount.Should().Be(1);
     }
 
     [Fact]
@@ -114,8 +129,44 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         var me = await GetMeAsync(owner);
         me.Plan.Should().Be("pro");
         me.Status.Should().Be("active");
-        me.Limits.MaxCodes.Should().Be(200);
-        me.Usage.CodeCount.Should().Be(5);
+        me.Limits.MaxDynamicCodes.Should().Be(200);
+        me.Usage.DynamicCodeCount.Should().Be(5);
+    }
+
+    [Fact]
+    public async Task Me_WithBasicRow_ReportsBasicLimits()
+    {
+        var owner = await CreateGuestClientAsync();
+        await SeedSubscriptionAsync(owner, Plan.Basic, "sub_basic", "cus_basic");
+
+        var me = await GetMeAsync(owner);
+        me.Plan.Should().Be("basic");
+        me.Limits.MaxDynamicCodes.Should().Be(25);
+        me.Limits.AnalyticsDays.Should().Be(366);
+    }
+
+    [Theory]
+    [InlineData(SubscriptionStatus.Canceled)]
+    [InlineData(SubscriptionStatus.Unpaid)]
+    [InlineData(SubscriptionStatus.Incomplete)]
+    public async Task Me_WithLapsedBasicRow_ReportsFreeLimits(SubscriptionStatus status)
+    {
+        var owner = await CreateGuestClientAsync();
+        await SeedSubscriptionAsync(owner, Plan.Basic, "sub_lapsed", "cus_lapsed", status);
+
+        var me = await GetMeAsync(owner);
+        me.Plan.Should().Be("basic");
+        me.Limits.MaxDynamicCodes.Should().Be(3, "a lapsed subscription entitles Free");
+        me.Limits.AnalyticsDays.Should().Be(7);
+    }
+
+    [Fact]
+    public async Task Me_WithPastDueBasicRow_KeepsBasicLimitsWhileStripeRetries()
+    {
+        var owner = await CreateGuestClientAsync();
+        await SeedSubscriptionAsync(owner, Plan.Basic, "sub_retry", "cus_retry", SubscriptionStatus.PastDue);
+
+        (await GetMeAsync(owner)).Limits.MaxDynamicCodes.Should().Be(25);
     }
 
     [Fact]
@@ -126,7 +177,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
 
         var me = await GetMeAsync(owner);
         me.Plan.Should().Be("agency");
-        me.Limits.MaxCodes.Should().Be(-1); // unlimited → -1 on the wire
+        me.Limits.MaxDynamicCodes.Should().Be(-1); // unlimited → -1 on the wire
     }
 
     [Fact]
@@ -147,7 +198,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
 
         var response = await owner.Client.PostJsonAsync(
             "/api/codes",
-            CodeRequests.StaticUrl("Third", "https://x.example"));
+            CodeRequests.DynamicUrl("Third", "https://x.example"));
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -160,21 +211,48 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
 
         var response = await owner.Client.PostJsonAsync(
             "/api/codes",
-            CodeRequests.StaticUrl("Over", "https://x.example"));
+            CodeRequests.DynamicUrl("Over", "https://x.example"));
 
         response.StatusCode.Should().Be(HttpStatusCode.PaymentRequired); // 402
     }
 
     [Fact]
-    public async Task Create_SoloUserAtCap_Returns402()
+    public async Task Create_FreeUserAtCap_StillAddsStaticCodes()
     {
         var owner = await CreateGuestClientAsync();
-        await SeedSubscriptionAsync(owner, Plan.Solo, "sub_solo", "cus_solo"); // cap = 25
+        await SeedCodesAsync(owner, 3); // the dynamic cap is reached
+
+        var response = await owner.Client.PostJsonAsync(
+            "/api/codes",
+            CodeRequests.StaticUrl("Printed menu", "https://x.example"));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK, "static codes stay unlimited on every plan");
+    }
+
+    [Fact]
+    public async Task Create_LapsedBasicUserAtFreeCap_Returns402()
+    {
+        var owner = await CreateGuestClientAsync();
+        await SeedSubscriptionAsync(owner, Plan.Basic, "sub_gone", "cus_gone", SubscriptionStatus.Canceled);
+        await SeedCodesAsync(owner, 3);
+
+        var response = await owner.Client.PostJsonAsync(
+            "/api/codes",
+            CodeRequests.DynamicUrl("Over", "https://x.example"));
+
+        response.StatusCode.Should().Be(HttpStatusCode.PaymentRequired);
+    }
+
+    [Fact]
+    public async Task Create_BasicUserAtCap_Returns402()
+    {
+        var owner = await CreateGuestClientAsync();
+        await SeedSubscriptionAsync(owner, Plan.Basic, "sub_solo", "cus_solo"); // cap = 25
         await SeedCodesAsync(owner, 25);
 
         var response = await owner.Client.PostJsonAsync(
             "/api/codes",
-            CodeRequests.StaticUrl("Over", "https://x.example"));
+            CodeRequests.DynamicUrl("Over", "https://x.example"));
 
         response.StatusCode.Should().Be(HttpStatusCode.PaymentRequired); // 402
     }
@@ -188,7 +266,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
 
         var response = await owner.Client.PostJsonAsync(
             "/api/codes",
-            CodeRequests.StaticUrl("AnotherOne", "https://x.example"));
+            CodeRequests.DynamicUrl("AnotherOne", "https://x.example"));
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -218,7 +296,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         var me = await GetMeAsync(owner);
         me.Plan.Should().Be("pro");
         me.Status.Should().Be("active");
-        me.Limits.MaxCodes.Should().Be(200);
+        me.Limits.MaxDynamicCodes.Should().Be(200);
     }
 
     [Fact]
@@ -228,11 +306,11 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
 
         // Seed an existing (Solo) subscription, as if a prior checkout created it — subscription.updated refreshes
         // an existing row located by its Stripe subscription id (it does not create one).
-        await SeedSubscriptionAsync(owner, Plan.Solo, "sub_upgrade", "cus_1");
+        await SeedSubscriptionAsync(owner, Plan.Basic, "sub_upgrade", "cus_1");
 
         var before = await GetMeAsync(owner);
-        before.Plan.Should().Be("solo");
-        before.Limits.MaxCodes.Should().Be(25);
+        before.Plan.Should().Be("basic");
+        before.Limits.MaxDynamicCodes.Should().Be(25);
 
         Fixture.Gateway.NextEvent = new BillingWebhookEvent
         {
@@ -251,7 +329,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         var after = await GetMeAsync(owner);
         after.Plan.Should().Be("pro");
         after.Status.Should().Be("active");
-        after.Limits.MaxCodes.Should().Be(200);
+        after.Limits.MaxDynamicCodes.Should().Be(200);
     }
 
     [Fact]
@@ -323,11 +401,11 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
 
         // Free cap = 3: first three succeed.
         for (var i = 0; i < 3; i++)
-            (await owner.Client.PostJsonAsync("/api/codes", CodeRequests.StaticUrl($"code-{i}", "https://x.example")))
+            (await owner.Client.PostJsonAsync("/api/codes", CodeRequests.DynamicUrl($"code-{i}", "https://x.example")))
                 .StatusCode.Should().Be(HttpStatusCode.OK);
 
         // The fourth exceeds the cap → 402.
-        (await owner.Client.PostJsonAsync("/api/codes", CodeRequests.StaticUrl("over-cap", "https://x.example")))
+        (await owner.Client.PostJsonAsync("/api/codes", CodeRequests.DynamicUrl("over-cap", "https://x.example")))
             .StatusCode.Should().Be(HttpStatusCode.PaymentRequired);
 
         // A first-time subscribe (checkout.session.completed) lifts the user to Pro.
@@ -346,7 +424,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         (await GetMeAsync(owner)).Plan.Should().Be("pro");
 
         // The next create — which would have been over the Free cap — now succeeds.
-        (await owner.Client.PostJsonAsync("/api/codes", CodeRequests.StaticUrl("after-upgrade", "https://x.example")))
+        (await owner.Client.PostJsonAsync("/api/codes", CodeRequests.DynamicUrl("after-upgrade", "https://x.example")))
             .StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
@@ -416,14 +494,14 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
         await using (var context = Fixture.NewDbContext())
         {
             var row = await context.Subscriptions.SingleAsync(subscription => subscription.UserId == owner.UserId);
-            row.Plan = Plan.Solo;   // a later change the redelivery must not overwrite
+            row.Plan = Plan.Basic;   // a later change the redelivery must not overwrite
             await context.SaveChangesAsync();
         }
 
         Fixture.Gateway.NextEvent = checkout;
         (await AppFixture.PostWebhookAsync(owner.Client)).StatusCode.Should().Be(HttpStatusCode.OK);
 
-        (await GetMeAsync(owner)).Plan.Should().Be("solo");
+        (await GetMeAsync(owner)).Plan.Should().Be("basic");
         await using var check = Fixture.NewDbContext();
         (await check.Set<InboxMessageEntity>().CountAsync(message => message.MessageId == $"stripe:{checkout.EventId}"))
             .Should().Be(1);
@@ -460,7 +538,12 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
     private async Task<BillingStatusDtoModel> GetMeAsync(GuestClient owner) =>
         await (await owner.Client.GetAsync("/api/billing/me")).ReadEnvelopeAsync<BillingStatusDtoModel>();
 
-    private async Task SeedSubscriptionAsync(GuestClient owner, Plan plan, string subscriptionId, string customerId)
+    private async Task SeedSubscriptionAsync(
+        GuestClient owner,
+        Plan plan,
+        string subscriptionId,
+        string customerId,
+        SubscriptionStatus status = SubscriptionStatus.Active)
     {
         await using var ctx = Fixture.NewDbContext();
         ctx.Set<SubscriptionEntity>().Add(new SubscriptionEntity
@@ -468,7 +551,7 @@ public sealed class BillingTests(AppFixture fixture) : E2EBase(fixture)
             Id = Guid.NewGuid(),
             UserId = owner.UserId,
             Plan = plan,
-            Status = SubscriptionStatus.Active,
+            Status = status,
             StripeCustomerId = customerId,
             StripeSubscriptionId = subscriptionId,
         });

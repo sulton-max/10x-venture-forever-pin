@@ -9,6 +9,9 @@ public sealed record CodeAnalyticsModel
     /// <summary>Gets the last day of the window, today.</summary>
     public required DateOnly To { get; init; }
 
+    /// <summary>Gets how many days back the owner's plan lets the window reach.</summary>
+    public required int MaxDays { get; init; }
+
     /// <summary>Gets every scan the code has resolved.</summary>
     public required long TotalScans { get; init; }
 

@@ -9,7 +9,7 @@ public static class PlanPriceMapper
     /// <summary>Gets the Stripe price id for a paid plan; null for Free or an unconfigured plan.</summary>
     public static string? PriceIdFor(BillingSettings billing, Plan plan) => plan switch
     {
-        Plan.Solo => NullIfEmpty(billing.Prices.Solo),
+        Plan.Basic => NullIfEmpty(billing.Prices.Basic),
         Plan.Pro => NullIfEmpty(billing.Prices.Pro),
         Plan.Agency => NullIfEmpty(billing.Prices.Agency),
         _ => null,
@@ -21,7 +21,7 @@ public static class PlanPriceMapper
         if (string.IsNullOrWhiteSpace(priceId))
             return Plan.Free;
 
-        if (priceId == NullIfEmpty(billing.Prices.Solo)) return Plan.Solo;
+        if (priceId == NullIfEmpty(billing.Prices.Basic)) return Plan.Basic;
         if (priceId == NullIfEmpty(billing.Prices.Pro)) return Plan.Pro;
         if (priceId == NullIfEmpty(billing.Prices.Agency)) return Plan.Agency;
 

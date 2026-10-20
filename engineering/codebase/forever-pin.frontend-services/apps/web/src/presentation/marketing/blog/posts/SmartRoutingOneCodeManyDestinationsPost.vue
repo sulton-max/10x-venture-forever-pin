@@ -48,13 +48,6 @@ defineOptions({ name: 'SmartRoutingOneCodeManyDestinationsPost' });
       <strong>Time of day / day of week</strong> — a restaurant code that shows the lunch menu before 4&nbsp;pm and the
       dinner menu after, or a weekend-only promotion.
     </li>
-    <li>
-      <strong>Scan count</strong> — the first 100 scans get an early-bird coupon; everyone after gets the standard page.
-    </li>
-    <li>
-      <strong>A/B split</strong> — send 50% of scans to one landing page and 50% to another, sticky per visitor, to test
-      which converts better.
-    </li>
   </ul>
 
   <h2>Patterns worth stealing</h2>

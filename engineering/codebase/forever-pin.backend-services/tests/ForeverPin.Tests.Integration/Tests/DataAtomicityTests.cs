@@ -60,7 +60,7 @@ public sealed class DataAtomicityTests(ForeverPinTestDb db) : RepositoryTestBase
             {
                 Id = Guid.NewGuid(),
                 UserId = owner,
-                Plan = Plan.Solo,
+                Plan = Plan.Basic,
                 Status = SubscriptionStatus.Active,
                 StripeCustomerId = "cus_downgrade",
                 StripeSubscriptionId = "sub_downgrade",
@@ -218,7 +218,7 @@ public sealed class DataAtomicityTests(ForeverPinTestDb db) : RepositoryTestBase
             {
                 Id = Guid.NewGuid(),
                 UserId = owner,
-                Plan = Plan.Solo,
+                Plan = Plan.Basic,
                 Status = SubscriptionStatus.Active,
                 StripeCustomerId = $"cus_{index}",
                 StripeSubscriptionId = $"sub_{index}",

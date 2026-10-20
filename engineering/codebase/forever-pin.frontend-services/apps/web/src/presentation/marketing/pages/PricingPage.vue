@@ -32,7 +32,7 @@ defineOptions({ name: 'PricingPage' });
   <MarketingSection is-muted>
     <MarketingHeading
       title="How we compare"
-      description="The same three things people actually want — smart routing, a custom domain, and un-capped scans — without the $30+ paywall."
+      description="What people actually want — smart routing, un-capped scans and codes that never expire — without the $30+ paywall."
     />
     <ComparisonTable class="mt-12" />
   </MarketingSection>

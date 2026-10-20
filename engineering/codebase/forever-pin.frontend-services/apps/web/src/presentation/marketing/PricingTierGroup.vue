@@ -7,7 +7,7 @@ defineOptions({ name: 'PricingTierGroup' });
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+  <div class="mx-auto grid max-w-3xl grid-cols-1 gap-5 sm:grid-cols-2">
     <PricingTierCard v-for="tier in PricingTiers" :key="tier.id" :tier="tier" />
   </div>
 </template>

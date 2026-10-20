@@ -46,6 +46,24 @@ test.describe('analytics', () => {
     expect(api.analyticsReads).toEqual([30, 7]);
   });
 
+  test("cuts a Free owner's window to the plan's week and locks the longer ones", async ({ page, baseURL }) => {
+    const code = fakeCode({ name: 'Menu', scanCount: 4 });
+    const api = new FakeApi({
+      isGuest: true,
+      codes: [code],
+      analyticsDays: 7,
+      scans: { [code.id]: { daily: [1, 3] } },
+    });
+    await api.install(page, baseURL!);
+
+    await page.goto(`/app/${code.id}/analytics`);
+
+    await expect(page.getByText('Scans · last 7 days')).toBeVisible();
+    await expect(page.getByRole('button', { name: '30 days' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: '90 days' })).toBeDisabled();
+    await expect(page.getByText('Longer windows come with Basic.')).toBeVisible();
+  });
+
   test('explains that a static code is not counted', async ({ page, baseURL }) => {
     const code = fakeCode({ name: 'Wifi card', mode: 'static', scanCount: 0 });
     const api = new FakeApi({ isGuest: true, codes: [code] });

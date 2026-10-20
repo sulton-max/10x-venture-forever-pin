@@ -23,7 +23,7 @@ const Pricing: PublicPageHead = {
   path: '/pricing',
   title: 'Pricing — flat plans, unlimited scans · ForeverPin',
   description:
-    'Free, $5, $15, or $39 a month — flat. Unlimited scans on every tier, smart routing and a custom domain from $5, and codes that never expire. No scan caps, no surprise bills.',
+    'Free, or $1 a month billed yearly. Unlimited scans and smart routing on every plan, and codes that never expire. No scan caps, no surprise bills.',
 };
 
 /** Holds the blog index's head. */

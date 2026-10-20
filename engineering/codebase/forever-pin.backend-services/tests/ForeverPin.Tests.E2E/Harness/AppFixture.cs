@@ -40,8 +40,8 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
     /// <summary>Holds the redirect base for each code's <c>shortUrl</c>, set via <c>REDIRECT_BASE_URL</c>.</summary>
     public const string RedirectBaseUrl = "https://redirect.foreverpin.test";
 
-    /// <summary>Holds the fake Stripe price id for the Solo plan.</summary>
-    public const string PriceSolo = "price_solo";
+    /// <summary>Holds the fake Stripe price id for the Basic plan.</summary>
+    public const string PriceBasic = "price_basic";
 
     /// <summary>Holds the fake Stripe price id for the Pro plan.</summary>
     public const string PricePro = "price_pro";
@@ -89,7 +89,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
                 {
                     SecretKey = "sk_test_fake",
                     WebhookSecret = "whsec_fake",
-                    Prices = new BillingPricesSettings { Solo = PriceSolo, Pro = PricePro, Agency = PriceAgency },
+                    Prices = new BillingPricesSettings { Basic = PriceBasic, Pro = PricePro, Agency = PriceAgency },
                     SuccessUrl = "https://app.example/ok",
                     CancelUrl = "https://app.example/cancel",
                     PortalReturnUrl = "https://app.example/app/billing",

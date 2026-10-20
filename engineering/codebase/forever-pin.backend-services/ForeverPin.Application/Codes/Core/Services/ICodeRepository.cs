@@ -34,8 +34,8 @@ public interface ICodeRepository
     /// <summary>Returns whether a slug is already taken.</summary>
     Task<bool> SlugExistsAsync(string slug, CancellationToken ct);
 
-    /// <summary>Counts how many codes a user currently owns.</summary>
-    Task<int> CountByUserAsync(Guid userId, CancellationToken ct);
+    /// <summary>Counts how many dynamic codes a user currently owns, the ones a plan caps.</summary>
+    Task<int> CountDynamicByUserAsync(Guid userId, CancellationToken ct);
 
     /// <summary>Reassigns every code owned by <paramref name="fromUserId"/> to <paramref name="toUserId"/>.</summary>
     /// <remarks>The caller owns the transaction containing account creation and the ownership transfer.</remarks>

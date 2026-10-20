@@ -57,9 +57,7 @@ public static partial class HostConfiguration
             ["BILLING_SUCCESS_URL"] = "Billing:SuccessUrl",
             ["BILLING_CANCEL_URL"] = "Billing:CancelUrl",
             ["BILLING_PORTAL_RETURN_URL"] = "Billing:PortalReturnUrl",
-            ["BILLING_PRICE_SOLO"] = "Billing:Prices:Solo",
-            ["BILLING_PRICE_PRO"] = "Billing:Prices:Pro",
-            ["BILLING_PRICE_AGENCY"] = "Billing:Prices:Agency",
+            ["BILLING_PRICE_BASIC"] = "Billing:Prices:Basic",
         });
         return builder;
     }
@@ -190,10 +188,9 @@ public static partial class HostConfiguration
             options => options
                 .Validate(settings => string.IsNullOrWhiteSpace(settings.SecretKey)
                     || (!string.IsNullOrWhiteSpace(settings.WebhookSecret)
-                        && settings.Prices is { } prices && !string.IsNullOrWhiteSpace(prices.Solo)
-                        && !string.IsNullOrWhiteSpace(prices.Pro) && !string.IsNullOrWhiteSpace(prices.Agency)
+                        && settings.Prices is { } prices && !string.IsNullOrWhiteSpace(prices.Basic)
                         && IsHttpUrl(settings.SuccessUrl) && IsHttpUrl(settings.CancelUrl) && IsHttpUrl(settings.PortalReturnUrl)),
-                    "Enabled billing requires a webhook secret, all price IDs, and absolute HTTP(S) return URLs.")
+                    "Enabled billing requires a webhook secret, the Basic price ID, and absolute HTTP(S) return URLs.")
                 // The file defaults point at localhost; a paying customer must never be sent there.
                 .Validate<IHostEnvironment>((settings, environment) => !environment.IsProduction()
                     || string.IsNullOrWhiteSpace(settings.SecretKey)

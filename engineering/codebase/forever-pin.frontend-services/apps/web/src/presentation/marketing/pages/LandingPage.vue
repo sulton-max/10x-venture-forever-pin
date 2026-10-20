@@ -98,7 +98,7 @@ defineOptions({ name: 'LandingPage' });
     <MarketingHeading
       eyebrow="Pricing"
       title="Flat plans. Unlimited scans on all of them."
-      description="Smart routing and a custom domain from $5 — not buried in a $30+ tier."
+      description="Smart routing on every plan; Basic is $1 a month — not buried in a $30+ tier."
     />
     <div class="mt-12">
       <PricingTierGroup />

@@ -26,6 +26,9 @@ export interface CodeAnalyticsDto {
   /** The last day of the window, today. */
   to: Temporal.PlainDate;
 
+  /** How many days back the owner's plan lets the window reach. */
+  maxDays: number;
+
   /** Every scan the code has resolved — an Int64 on the server, so it stays exact as a bigint. */
   totalScans: bigint;
 

@@ -38,7 +38,7 @@
 - `Sites:go:Url` becomes `ApiSettings:RedirectBaseUrl`; `Sites:app:Url` sets Stripe's three return pages.
 - The database layer fills `DatabaseSettings:ConnectionString` from the target's own database.
 - `Auth:Google:ClientId` is optional: without it, Google sign-in hides and guests still work.
-- Billing stays off until `Billing:SecretKey` is set; then it needs the webhook secret and all three price IDs.
+- Billing stays off until `Billing:SecretKey` is set; then it needs the webhook secret and `Billing:Prices:Basic`.
 - `Billing:SecretKey` and `Billing:WebhookSecret` are typed secrets, kept in Wheelhouse's vault.
 - `IpLocation:EnableDownload` (boolean, default true) lets the redirect host fetch the monthly DB-IP Lite file.
 - The redirect image keeps that file in `/data/geo`; a volume avoids re-downloading.
@@ -71,7 +71,7 @@ Owner steps, in order; each needs an account or a decision.
 5. Bind hosts: dev `app` and `go` under the server pattern; prod `foreverpin.com` and the chosen `go` host.
 6. First dev deploy: enter the Google client ID; leave billing empty until Stripe is ready.
 7. Google: add the dev and prod origins to the OAuth client; production needs its own project and verified domain.
-8. Stripe: test mode on dev, live mode on prod; webhook `https://<app host>/api/billing/webhook` per environment.
+8. Stripe: a $12 yearly Basic price per mode; webhook `https://<app host>/api/billing/webhook` per environment.
 9. Promote the dev-verified release to prod.
 
 ---

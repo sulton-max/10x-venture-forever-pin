@@ -38,8 +38,8 @@ public sealed class CodeCreateCommandHandler(
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
         await db.Database.AcquireTransactionLocksAsync("owner", [request.UserId], ct);
         var subscription = await subscriptions.GetByUserAsync(request.UserId, ct);
-        var plan = subscription?.Plan ?? Plan.Free;
-        var cap = PlanLimitsConstants.MaxCodes(plan);
+        var plan = PlanLimits.EffectivePlan(subscription);
+        var cap = PlanLimits.MaxDynamicCodes(plan);
 
         var entity = new CodeEntity
         {
@@ -63,7 +63,7 @@ public sealed class CodeCreateCommandHandler(
             if (status is CodeInsertStatus.PlanLimitReached)
                 return AppResult<CodeCreateResult.Success>.Fail(AppError.Of(
                     AppErrorType.PaymentRequired,
-                    $"Plan '{plan}' allows at most {cap} codes. Upgrade to create more."));
+                    $"The {plan} plan holds {cap} dynamic codes. Static codes stay unlimited; upgrade for more dynamic ones."));
 
             if (status is CodeInsertStatus.Added)
             {

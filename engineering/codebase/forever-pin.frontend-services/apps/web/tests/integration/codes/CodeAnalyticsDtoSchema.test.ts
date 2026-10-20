@@ -7,6 +7,7 @@ import { CodeAnalyticsDtoSchema } from '@/integration/codes/models/CodeAnalytics
 const wireAnalytics = {
   from: '2026-09-22',
   to: '2026-09-28',
+  maxDays: 366,
   totalScans: 40,
   rangeScans: 3,
   daily: [

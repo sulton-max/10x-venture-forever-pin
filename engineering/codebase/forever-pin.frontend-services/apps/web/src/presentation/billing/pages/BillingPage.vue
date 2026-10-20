@@ -50,7 +50,7 @@ const sessionFailure = ref<string | null>(null);
 const snapshot = computed(() => status.data.value);
 const plan = computed(() => snapshot.value?.plan ?? Plan.Free);
 const standing = computed(() => subscriptionStatusDisplay(snapshot.value?.status ?? ''));
-const isUnlimited = computed(() => snapshot.value?.limits.maxCodes === Unlimited);
+const isUnlimited = computed(() => snapshot.value?.limits.maxDynamicCodes === Unlimited);
 const upgrades = computed(() =>
   PAID_PLANS.filter((candidate) => PlanDisplays[candidate].rank > PlanDisplays[plan.value].rank),
 );
@@ -160,27 +160,33 @@ async function open(target: Plan | 'portal'): Promise<void> {
 
           <div>
             <div class="mb-1.5 flex items-center justify-between text-sm">
-              <span class="font-medium">Codes used</span>
+              <span class="font-medium">Dynamic codes used</span>
               <span class="text-muted-foreground tabular-nums">
-                {{ CountFormat.format(snapshot.usage.codeCount) }} /
+                {{ CountFormat.format(snapshot.usage.dynamicCodeCount) }} /
                 <InfinityIcon
                   v-if="isUnlimited"
                   :size="15"
                   class="-mt-0.5 inline align-middle"
                   aria-label="unlimited"
                 />
-                <template v-else>{{ CountFormat.format(snapshot.limits.maxCodes) }}</template>
+                <template v-else>{{ CountFormat.format(snapshot.limits.maxDynamicCodes) }}</template>
               </span>
             </div>
-            <MeterBar v-if="isUnlimited" :value="1" :max="1" :thresholds="[1, 1]" aria-label="Unlimited codes" />
+            <MeterBar
+              v-if="isUnlimited"
+              :value="1"
+              :max="1"
+              :thresholds="[1, 1]"
+              aria-label="Unlimited dynamic codes"
+            />
             <MeterBar
               v-else
-              :value="snapshot.usage.codeCount"
-              :max="Math.max(snapshot.limits.maxCodes, 1)"
-              :label="`${snapshot.usage.codeCount} of ${snapshot.limits.maxCodes} codes used`"
+              :value="snapshot.usage.dynamicCodeCount"
+              :max="Math.max(snapshot.limits.maxDynamicCodes, 1)"
+              :label="`${snapshot.usage.dynamicCodeCount} of ${snapshot.limits.maxDynamicCodes} dynamic codes used`"
             />
             <Text
-              v-if="!isUnlimited && snapshot.usage.codeCount >= snapshot.limits.maxCodes"
+              v-if="!isUnlimited && snapshot.usage.dynamicCodeCount >= snapshot.limits.maxDynamicCodes"
               size="sm"
               color="warning"
               class="mt-2"

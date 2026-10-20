@@ -23,8 +23,16 @@ Enterprise governance and payment rails are outside the current launch scope.
 
 ## Pricing boundary
 
-| Plan | Current display | Implemented creation cap |
+| Plan | Price | Holds |
 |---|---|---|
+| Free | $0 | 3 dynamic codes, unlimited static codes, 7 days of analytics |
+| Basic | $12/year, shown as $1/month | 25 dynamic codes, a full year of analytics |
+
+- Routing, styling, unlimited scans and never-expire stay free on every plan.
+- Basic bills yearly because card fees take about a third of a $1 monthly charge.
+- Pro and Agency are off sale until their features ship; marketing names no unbuilt feature.
+
+---|---|---|
 | Free | $0 | 3 codes |
 | Solo | $5/month | 25 codes |
 | Pro | $15/month | 200 codes |

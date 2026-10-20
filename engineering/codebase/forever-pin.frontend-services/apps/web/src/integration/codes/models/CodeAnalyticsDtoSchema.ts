@@ -28,6 +28,7 @@ const ScanShareDtoSchema = z.object({
 export const CodeAnalyticsDtoSchema: z.ZodType<CodeAnalyticsDto> = z.object({
   from: plainDate,
   to: plainDate,
+  maxDays: bucketCount,
   totalScans: exactCount,
   rangeScans: exactCount,
   daily: z.array(z.object({ date: plainDate, scans: bucketCount })),
