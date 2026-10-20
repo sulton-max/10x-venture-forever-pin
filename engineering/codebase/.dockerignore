@@ -1,14 +1,29 @@
+# Build context = engineering/codebase/ (parent of forever-pin.backend-services + forever-pin.frontend-services).
+
+# Build outputs — restored/rebuilt fresh inside the image
 **/bin
 **/obj
-**/node_modules
 **/dist
-**/wwwroot
+**/node_modules
 **/logs
-**/.git
+
+# Locally-deployed SPA — the spa stage rebuilds it from source
+**/wwwroot
+
+# Local settings and secrets — never baked into an image layer
 **/.env*
 **/appsettings.Local.json
-**/appsettings.Development.json
+**/appsettings.Target.json
+**/appsettings.Machine.json
 **/*.pfx
 **/*.pem
 **/*.key
 **/*.db
+
+# IDE / VCS / OS cruft
+**/.git
+**/.vs
+**/.idea
+**/.vite
+**/*.user
+**/.DS_Store

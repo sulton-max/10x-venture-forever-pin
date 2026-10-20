@@ -6,8 +6,13 @@ obj/
 # Frontend output served by the Api (`pnpm -C engineering/codebase/forever-pin.frontend-services run deploy`)
 engineering/codebase/forever-pin.backend-services/ForeverPin.Api/wwwroot/
 
-# Local config overrides (loaded by HostConfiguration; never committed)
+# Settings files: a machine's own (appsettings.Local.json, read on a local run) and a deployed target's
+# (appsettings.Target.json, mounted by Wheelhouse); neither is ever committed.
 appsettings.Local.json
+appsettings.Target.json
+appsettings.Machine.json
+.env
+.env.local
 
 # IDE
 .idea/

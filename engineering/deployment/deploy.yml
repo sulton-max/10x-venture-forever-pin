@@ -1,9 +1,34 @@
-# yaml-language-server: $schema=../../../../../conventions/deployment/descriptor/deploy.schema.json
-# ForeverPin's deployable services: this descriptor feeds CI, Wheelhouse's release.py and the runner.
-# Format: wow-two-ws/conventions/deployment/descriptor/deploy-descriptor.md
-descriptor: 1
+# yaml-language-server: $schema=../../../../../../../conventions/deployment/descriptor/deploy.schema.json
+# What ForeverPin deploys: its sites, its services, how each builds, what changes it and which paths it serves.
+# Format and rules: wow-two-ws/conventions/deployment/descriptor/deploy-descriptor.md. Hostnames, secrets and
+# environments live in Wheelhouse targets, never here. Paths are relative to engineering/.
+descriptor: 2
 product: foreverpin
 platform: linux/amd64
+# Dev runs as .NET Development, prod as Production; appsettings.Development.json holds defaults only, and an IDE
+# run's own values live in appsettings.Local.json.
+dotnetEnvironment: true
+# The dev check: once a dev rollout succeeds, the management image asks both services for their health and status
+# over the platform network. A pass lets auto-promote take the release. Each request carries the probe Host
+# (localhost): a target's AllowedHosts names its public hosts plus localhost, so a service's platform-network name in
+# the URL would answer 400 from host filtering.
+verify:
+  service: management
+  command:
+    - sh
+    - -c
+    - >-
+      for service in "$VERIFY_SERVICE_MANAGEMENT" "$VERIFY_SERVICE_REDIRECT"; do
+      curl --fail --silent --show-error --max-time 10 --header "Host: localhost" --output /dev/null "$service/health"
+      && curl --fail --silent --show-error --max-time 10 --header "Host: localhost" --output /dev/null
+      "$service/api/system/status" || exit 1; done
+      && echo "management and redirect answered"
+  timeout: 2m
+# `app` is the front door: the Vue app and its API. `go` is the short-link host every printed code points at, so its
+# host must never change once codes are printed.
+sites:
+  app: { primary: true }
+  go: {}
 shared:
   - codebase/forever-pin.backend-services/Directory.*.props
   - codebase/forever-pin.backend-services/global.json
@@ -18,26 +43,24 @@ services:
     health: /health
     memory: 768m
     stopGrace: 45s
+    # The redirect base and Stripe's return pages follow the derived Sites:go:Url and Sites:app:Url; nobody types
+    # an origin. Billing stays off until its secret key is set, and then needs its webhook secret and every price.
     settings:
       required:
         - DatabaseSettings:ConnectionString
-        - ApiSettings:RedirectBaseUrl
-        - Auth:Google:ClientId
-        - Billing:SecretKey
-        - Billing:WebhookSecret
-        - Billing:Prices:Solo
-        - Billing:Prices:Pro
-        - Billing:Prices:Agency
-        - Billing:SuccessUrl
-        - Billing:CancelUrl
-        - Billing:PortalReturnUrl
-        - AllowedHosts
-        - Deployment:TrustedProxies
+      keys:
+        Auth:Google:ClientId: {}
+        Billing:SecretKey: { secret: true }
+        Billing:WebhookSecret: { secret: true }
+        Billing:Prices:Solo: {}
+        Billing:Prices:Pro: {}
+        Billing:Prices:Agency: {}
     volumes:
       keys: /data/keys
     needs: [postgres]
+    # The Vue app at /, and the API under the same host's /api: /api routes ahead of /, never /apiary.
     sites:
-      app: {}
+      app: { paths: [/, /api] }
   redirect:
     build:
       dockerfile: deployment/Dockerfile
@@ -50,8 +73,9 @@ services:
     settings:
       required:
         - DatabaseSettings:ConnectionString
-        - AllowedHosts
-        - Deployment:TrustedProxies
+      keys:
+        # Country rules read the DB-IP Lite database, downloaded monthly unless this is false.
+        IpLocation:EnableDownload: { type: boolean }
     volumes:
       geo: /data/geo
     needs: [postgres]
