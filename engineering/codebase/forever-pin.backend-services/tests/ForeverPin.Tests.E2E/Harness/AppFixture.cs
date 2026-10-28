@@ -68,7 +68,7 @@ public sealed class AppFixture : MultiHostFixture, IAsyncLifetime
     public AppFixture()
     {
         _postgres = AddSharedFixture(
-            new PostgresFixture(new PostgreSqlBuilder().WithImage("postgres:16-alpine").Build()));
+            new PostgresFixture(new PostgreSqlBuilder().WithImage("postgres:18-alpine").Build()));
 
         ApiHost = AddHost(new WebApiTestHost<ApiProgram>
         {

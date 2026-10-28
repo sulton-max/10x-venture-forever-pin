@@ -1,13 +1,13 @@
 # Disposable local acceptance stack; never use these defaults on a public host.
 services:
   database:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: foreverpin
       POSTGRES_USER: foreverpin
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U foreverpin -d foreverpin"]
       interval: 5s

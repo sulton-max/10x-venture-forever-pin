@@ -12,6 +12,7 @@
 - `Dockerfile` builds the `management` and `redirect` images from one source revision.
 - `deploy.yml` (descriptor 2) declares both services, their sites and settings for CI, the generator and Wheelhouse.
 - `compose.local.yml` runs both hosts with disposable local PostgreSQL; `smoke.py` exercises them.
+- A `compose.local.yml` `database` volume holding PostgreSQL 16 data cannot start on 18: remove it once (`docker compose -f compose.local.yml down -v`); the database is recreated.
 - `/health` checks database readiness on both hosts; `api/system/status` reports each host's version and commit.
 - The management image persists data-protection keys in `/data/keys`.
 - The SPA loads public environment settings from `/api/runtime-config`.
